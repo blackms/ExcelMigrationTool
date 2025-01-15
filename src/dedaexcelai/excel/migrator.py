@@ -48,21 +48,49 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
         logger.info(f"Starting migration from {input_file} to {output_file}")
         logger.info(f"Using template: {template_file}")
         
-        # Load workbooks with additional parameters to handle external links
-        # Load one copy with data_only=True for values and one without for formulas
+        # Load input workbook
         logger.info("Loading input workbook...")
         input_wb_data = openpyxl.load_workbook(input_file, data_only=True, keep_links=False)
         input_wb_formulas = openpyxl.load_workbook(input_file, data_only=False, keep_links=False)
         
-        logger.info("Loading template workbook...")
-        template_wb = openpyxl.load_workbook(template_file, keep_links=False)
+        # Create new workbook for output
+        logger.info("Creating new workbook...")
+        output_wb = openpyxl.Workbook()
         
-        # Skip EXPORT sheet for now as requested
-        logger.info("Skipping EXPORT sheet handling for now...")
-
-        # Clean any existing external references in template
-        logger.info("Cleaning any existing external references in template...")
-        clean_external_references(template_wb)
+        # Keep PRIMITIVE sheet from input
+        logger.info("Copying PRIMITIVE sheet...")
+        if 'PRIMITIVE' not in input_wb_data.sheetnames:
+            logger.error("PRIMITIVE sheet not found in input workbook")
+            raise ValueError("PRIMITIVE sheet not found in input workbook")
+            
+        # Copy PRIMITIVE sheet
+        source_sheet = input_wb_data['PRIMITIVE']
+        if 'Sheet' in output_wb.sheetnames:  # Remove default sheet
+            del output_wb['Sheet']
+        target_sheet = output_wb.create_sheet('PRIMITIVE')
+        for row in source_sheet.values:
+            target_sheet.append(row)
+            
+        # Create new SCHEMA sheet with headers
+        logger.info("Creating SCHEMA sheet...")
+        schema_sheet = output_wb.create_sheet('SCHEMA', 0)  # Make it the first sheet
+        
+        # Add headers from green background image
+        headers = [
+            'Lenght', 'Product Element', 'Type', 'GG Startup', 'RU', 'RU Qty',
+            'RU Unit of measure', 'Q.ty min', 'Q.ty MAX', '%Sconto MAX',
+            'Startup Costo', 'Startup Margine', 'Startup Prezzo',
+            'Canone Costo Mese', 'Canone Margine', 'Canone Prezzo Mese',
+            'Extended Description', 'Profit Center Prevalente', 'Status', 'Note'
+        ]
+        
+        # Set header background color (green)
+        green_fill = openpyxl.styles.PatternFill(start_color='92D050', end_color='92D050', fill_type='solid')
+        
+        for col, header in enumerate(headers, 1):
+            cell = schema_sheet.cell(row=1, column=col, value=header)
+            cell.fill = green_fill
+            cell.font = openpyxl.styles.Font(bold=True)
         
         # Get SCHEMA sheet from input workbook
         if "SCHEMA" not in input_wb_data.sheetnames:
@@ -71,7 +99,19 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
         
         input_sheet = input_wb_data["SCHEMA"]
         input_sheet_formulas = input_wb_formulas["SCHEMA"]
-        output_sheet = template_wb.active
+        
+        # Column mapping from old to new schema
+        column_mapping = {
+            'Type': 3,  # Type in new schema
+            'Service Element (Building block)': 2,  # Product Element in new schema
+            'Resource Unit': 5,  # RU in new schema
+            'WBS': None,  # Not used in new schema
+            'Materiale': None,  # Not used in new schema
+            'Profit Center': 18,  # Profit Center Prevalente in new schema
+            'Unatantu': 11,  # Startup Costo in new schema
+            'Ricorrente mese': 14,  # Canone Costo Mese in new schema
+            'Canone': 16,  # Canone Prezzo Mese in new schema
+        }
         
         logger.info("Found SCHEMA sheet, processing data...")
         
@@ -80,171 +120,70 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
         logger.debug(f"Header row found at row {header_row}")
         
         # Process each row after headers
-        current_output_row = 2  # Start after headers in template
+        current_output_row = 2  # Start after headers
         rows_processed = 0
-        processed_rows = set()  # Keep track of rows we've processed as sub-elements
         
         for row in range(header_row + 1, input_sheet.max_row + 1):
-            # Get service element from column B
-            service_element = get_cell_value(input_sheet.cell(row=row, column=2))
+            # Get type and service element
+            element_type = get_cell_value(input_sheet.cell(row=row, column=1))  # Type column
+            service_element = get_cell_value(input_sheet.cell(row=row, column=2))  # Service Element column
             
-            # Skip completely empty rows or already processed rows
-            if service_element is None or row in processed_rows:
+            # Skip empty rows
+            if service_element is None or is_empty_or_dashes(service_element):
                 continue
+                
+            logger.debug(f"Processing row {row} -> {current_output_row}")
             
-            # Handle empty or dash-only service elements differently
-            if is_empty_or_dashes(service_element):
-                logger.debug(f"Empty row {row}, adding formula to column P")
-                # Copy Canone Prezzo Mese from input (column M) to output (column P)
-                canone_value = get_cell_value(input_sheet.cell(row=row, column=13))  # Column M is 13
-                if canone_value is not None and is_number(canone_value):
-                    output_cell = output_sheet.cell(row=current_output_row, column=16)  # Column P is 16
-                    output_cell.value = float(canone_value)
-                    set_euro_format(output_cell)
-                    logger.debug(f"Copied Canone Prezzo Mese: {canone_value} to row {current_output_row}")
-                else:
-                    # If no value, set to 0
-                    output_cell = output_sheet.cell(row=current_output_row, column=16)
-                    output_cell.value = 0
-                    set_euro_format(output_cell)
+            # Set Lenght (first column) only for Elements
+            if element_type == 'Element':
+                # Get length of text in column B
+                text_length = len(str(service_element)) if service_element else 0
+                schema_sheet.cell(row=current_output_row, column=1).value = text_length
             else:
-                logger.debug(f"Processing row {row} -> {current_output_row}")
-                
-                # Copy element to column B
-                element_cell = output_sheet.cell(row=current_output_row, column=2)
-                element_cell.value = service_element
-                
-                # Check if this is an element catalog by looking for bold text in input
-                cell = input_sheet.cell(row=row, column=2)
-                is_element_catalog = cell.font and cell.font.b
-                
-                # Set formatting based on whether it's an element catalog or sub-element
-                if is_element_catalog:
-                    # Element catalog - set bold
-                    if not element_cell.font:
-                        element_cell.font = openpyxl.styles.Font(bold=True)
-                    else:
-                        element_cell.font = openpyxl.styles.Font(bold=True, name=element_cell.font.name, size=element_cell.font.size)
-                else:
-                    # Sub-element - set italic
-                    if not element_cell.font:
-                        element_cell.font = openpyxl.styles.Font(italic=True)
-                    else:
-                        element_cell.font = openpyxl.styles.Font(italic=True, name=element_cell.font.name, size=element_cell.font.size)
-                
-                # Determine and set cost type (column C)
+                schema_sheet.cell(row=current_output_row, column=1).value = ""
+            
+            # Copy Product Element
+            element_cell = schema_sheet.cell(row=current_output_row, column=2)
+            element_cell.value = service_element
+            
+            # Set Type
+            schema_sheet.cell(row=current_output_row, column=3).value = element_type
+            
+            # Handle GG Startup (column 4) for Fixed costs
+            if element_type == 'SubElement':  # Only process startup days for sub-elements
                 cost_type = determine_cost_type(row, input_sheet)
-                output_sheet.cell(row=current_output_row, column=3).value = cost_type
-
-                # Handle GG Startup (column D) for Fixed costs
-                logger.info(f"Processing GG Startup for row {row} -> {current_output_row}")
-                logger.info(f"Cost type: {cost_type}")
-                
                 if cost_type in ['Fixed Optional', 'Fixed Mandatory']:
-                    # Get formula from column H using the formulas workbook
                     formula_cell = input_sheet_formulas.cell(row=row, column=8)
                     formula = formula_cell.value if formula_cell else None
-                    logger.info(f"Formula from column H: {formula}")
-                    
                     if formula and isinstance(formula, str):
                         try:
-                            # Get PRIMITIVE sheet from both workbooks
-                            if 'PRIMITIVE' not in input_wb_data.sheetnames:
-                                logger.error("PRIMITIVE sheet not found in workbook")
-                                continue
-                            
                             primitive_sheet_data = input_wb_data['PRIMITIVE']
                             primitive_sheet_formulas = input_wb_formulas['PRIMITIVE']
-                            startup_days = startup_analyzer.analyze_startup_days(formula, primitive_sheet_formulas, primitive_sheet_data, row, input_sheet)
-                            
+                            startup_days = startup_analyzer.analyze_startup_days(formula, primitive_sheet_formulas, primitive_sheet_data, row, input_sheet, input_sheet_formulas)
                             if startup_days is not None:
-                                output_sheet.cell(row=current_output_row, column=4).value = startup_days
-                                logger.info(f"Set GG Startup to {startup_days} days for row {current_output_row}")
-                            else:
-                                logger.warning(f"Could not extract startup days from formula on row {row}")
+                                schema_sheet.cell(row=current_output_row, column=4).value = startup_days
                         except Exception as e:
                             logger.error(f"Error analyzing startup days for row {row}: {str(e)}")
-                    else:
-                        logger.warning(f"No valid PRIMITIVE formula found in column H for row {row}")
-                else:
-                    logger.debug(f"Skipping GG Startup for non-Fixed cost type: {cost_type}")
-                
-                # Copy Canone Prezzo Mese (column M in input to column N in output)
-                canone_value = get_cell_value(input_sheet.cell(row=row, column=13))  # Column M is 13
-                if canone_value is not None and is_number(canone_value):
-                    output_cell = output_sheet.cell(row=current_output_row, column=14)  # Column N is 14
-                    output_cell.value = float(canone_value)
-                    set_euro_format(output_cell)
-                    logger.debug(f"Copied Canone Prezzo Mese: {canone_value} to row {current_output_row}")
-                
-                # Handle element catalogs and sub-elements
-                if is_element_catalog:
-                    # Set SUM formula in P2 (current row)
-                    sum_cell = output_sheet.cell(row=current_output_row, column=16)  # Column P
-                    sum_cell.value = f"=SUM(P{current_output_row + 1}:P{current_output_row + 9})"
-                    set_euro_format(sum_cell)
-                    
-                    # Find and process existing sub-elements
-                    sub_elements = []
-                    for r in range(row + 1, input_sheet.max_row + 1):
-                        sub_cell = input_sheet.cell(row=r, column=2)
-                        sub_value = get_cell_value(sub_cell)
-                        if sub_value and isinstance(sub_value, str) and "---" in sub_value:
-                            break
-                        if sub_value and not is_empty_or_dashes(sub_value):
-                            sub_elements.append(r)
-                            processed_rows.add(r)  # Mark this row as processed
-                    
-                    # Move to next row for sub-elements
-                    current_output_row += 1
-                    
-                    # Process existing sub-elements first
-                    for i, sub_row in enumerate(sub_elements):
-                        # Copy sub-element name
-                        sub_cell = output_sheet.cell(row=current_output_row + i, column=2)
-                        sub_cell.value = get_cell_value(input_sheet.cell(row=sub_row, column=2))
-                        if not sub_cell.font:
-                            sub_cell.font = openpyxl.styles.Font(italic=True)
-                        else:
-                            sub_cell.font = openpyxl.styles.Font(italic=True, name=sub_cell.font.name, size=sub_cell.font.size)
-                        
-                        # Copy original formula from column H to column P
-                        formula = input_sheet_formulas.cell(row=sub_row, column=8).value  # Column H
-                        if formula and isinstance(formula, str):
-                            output_cell = output_sheet.cell(row=current_output_row + i, column=16)  # Column P
-                            output_cell.value = formula
-                            set_euro_format(output_cell)
-                    
-                    # Add remaining empty rows with single dash
-                    remaining_rows = 9 - len(sub_elements)
-                    for i in range(remaining_rows):
-                        sub_row = current_output_row + len(sub_elements) + i
-                        dash_cell = output_sheet.cell(row=sub_row, column=2)
-                        dash_cell.value = "-"
-                        if not dash_cell.font:
-                            dash_cell.font = openpyxl.styles.Font(italic=True)
-                        else:
-                            dash_cell.font = openpyxl.styles.Font(italic=True, name=dash_cell.font.name, size=dash_cell.font.size)
-                        set_euro_format(output_sheet.cell(row=sub_row, column=16))
-                    
-                    current_output_row += 9  # Move past all sub-elements (exactly 9 total)
-                else:
-                    # This is a sub-element
-                    # Copy value to column P
-                    canone_value = get_cell_value(input_sheet.cell(row=row, column=13))  # Column M is 13
-                    if canone_value is not None and is_number(canone_value):
-                        output_cell = output_sheet.cell(row=current_output_row, column=16)  # Column P
-                        output_cell.value = float(canone_value)
-                        set_euro_format(output_cell)
-                    current_output_row += 1
-                
-                rows_processed += 1
+            
+            # Copy other mapped columns
+            for old_col in range(1, input_sheet.max_column + 1):
+                old_header = get_cell_value(input_sheet.cell(row=header_row, column=old_col))
+                if old_header in column_mapping and column_mapping[old_header] is not None:
+                    new_col = column_mapping[old_header]
+                    value = get_cell_value(input_sheet.cell(row=row, column=old_col))
+                    if value is not None:
+                        schema_sheet.cell(row=current_output_row, column=new_col).value = value
+            
+            # Set formatting based on type
+            if element_type == 'Element':
+                element_cell.font = openpyxl.styles.Font(bold=True)
+            else:  # SubElement
+                element_cell.font = openpyxl.styles.Font(italic=True)
+            
+            current_output_row += 1
+            rows_processed += 1
         
         logger.info(f"Successfully processed {rows_processed} rows")
-        
-        # Final cleanup and save
-        logger.info("Performing final cleanup of external references...")
-        clean_external_references(template_wb)
         
         # Save to temporary file first
         logger.info("Saving output workbook...")
@@ -255,7 +194,7 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
             os.close(temp_fd)  # Close file descriptor
             
             # Save to temp file
-            template_wb.save(temp_path)
+            output_wb.save(temp_path)
             logger.debug(f"Saved to temporary file: {temp_path}")
             
             # Try to replace output file with temp file

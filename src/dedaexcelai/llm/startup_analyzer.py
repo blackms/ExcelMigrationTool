@@ -45,7 +45,7 @@ class StartupDaysAnalyzer:
         
         return context
 
-    def analyze_startup_days(self, formula: str, primitive_sheet_formulas, primitive_sheet_data, current_row: int, sheet: openpyxl.worksheet.worksheet.Worksheet) -> Optional[float]:
+    def analyze_startup_days(self, formula: str, primitive_sheet_formulas, primitive_sheet_data, current_row: int, sheet: openpyxl.worksheet.worksheet.Worksheet, input_sheet_formulas: openpyxl.worksheet.worksheet.Worksheet) -> Optional[float]:
         """
         Analyze a formula from column H to determine startup days by looking up values in PRIMITIVE sheet.
         For element catalog rows (in bold), looks at formulas from rows below until the separator.
@@ -64,20 +64,36 @@ class StartupDaysAnalyzer:
         
         # Check if this is an element catalog row (in bold)
         cell = sheet.cell(row=current_row, column=2)  # Service Element column
-        if cell.font.b:  # Bold font indicates element catalog row
+        cell_value = get_cell_value(cell)
+        logger.debug(f"Analyzing row {current_row}: '{cell_value}' (bold: {cell.font and cell.font.b})")
+        
+        if cell.font and cell.font.b:  # Bold font indicates element catalog row
+            logger.info(f"Found element catalog: '{cell_value}' at row {current_row}")
             # For element catalogs, look at formulas in sub-elements
             for r in range(current_row + 1, sheet.max_row + 1):
                 sub_cell = sheet.cell(row=r, column=2)
                 sub_value = get_cell_value(sub_cell)
+                logger.debug(f"Checking sub-element at row {r}: '{sub_value}'")
+                
                 if sub_value and isinstance(sub_value, str) and "---" in sub_value:
+                    logger.debug(f"Found separator at row {r}")
                     break
+                    
                 if sub_value and not is_empty_or_dashes(sub_value):
-                    # Found a sub-element, analyze its formula
-                    sub_formula = sheet.cell(row=r, column=8).value  # Column H
-                    if sub_formula and isinstance(sub_formula, str):
+                    logger.info(f"Found sub-element: '{sub_value}' at row {r}")
+                    # Found a sub-element, get its formula from the formulas workbook
+                    sub_formula = input_sheet_formulas.cell(row=r, column=8).value  # Column H
+                    logger.debug(f"Sub-element formula: {sub_formula}")
+                    
+                    if sub_formula and isinstance(sub_formula, str) and sub_formula.startswith('='):
                         result = self._analyze_single_formula(sub_formula, primitive_sheet_formulas, primitive_sheet_data)
                         if result is not None:
+                            logger.info(f"Found startup days {result} from sub-element '{sub_value}'")
                             return result
+                        else:
+                            logger.debug(f"Could not extract startup days from sub-element '{sub_value}'")
+            
+            logger.warning(f"No startup days found in any sub-elements of '{cell_value}'")
             return None
         else:
             # For non-element catalog rows (sub-elements), analyze the formula directly
