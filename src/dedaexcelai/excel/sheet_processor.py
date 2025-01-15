@@ -4,6 +4,7 @@ from typing import Optional, Dict, Any
 from ..logger import get_logger
 from .cell_operations import get_cell_value, is_empty_or_dashes
 from .style_manager import set_euro_format
+from .file_rules import FileRules
 
 logger = get_logger()
 
@@ -135,16 +136,24 @@ class SchemaSheetProcessor(SheetProcessor):
     def process_mapped_columns(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
                              target_sheet: openpyxl.worksheet.worksheet.Worksheet) -> None:
         """Process columns based on mapping."""
-        # Copy Resource Unit (RU)
-        self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
-        
-        # Copy Profit Center
-        self.copy_value(row, source_sheet, target_sheet, 6, 18)  # Profit Center -> Profit Center Prevalente
-        
-        # Copy Cost and Price columns
-        self.copy_value(row, source_sheet, target_sheet, 7, 11)  # Unatantu -> Startup Costo
-        self.copy_value(row, source_sheet, target_sheet, 8, 14)  # Ricorrente mese -> Canone Costo Mese
-        self.copy_value(row, source_sheet, target_sheet, 10, 16)  # Canone -> Canone Prezzo Mese
+        try:
+            element_type = source_sheet.cell(row=row, column=1).value
+            
+            # Get column mapping for this file type
+            column_mapping = FileRules.get_column_mapping(self.filename)
+            
+            # Process Resource Unit (RU)
+            source_value = get_cell_value(source_sheet.cell(row=row, column=3))
+            ru_value = FileRules.apply_column_rules(self.filename, element_type, "ru", source_value)
+            if ru_value is not None:
+                target_cell = target_sheet.cell(row=self.current_output_row, column=column_mapping["ru"])
+                target_cell.value = ru_value
+                logger.debug(f"Set RU value: {ru_value} for row {row}")
+            
+            # Process other columns...
+            
+        except Exception as e:
+            logger.error(f"Error in process_mapped_columns: {str(e)}")
     
     def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
                             target_sheet: openpyxl.worksheet.worksheet.Worksheet, 
@@ -189,7 +198,7 @@ class SchemaSheetProcessor(SheetProcessor):
                 logger.info(f"Setting startup days to {days} for row {row}")
                 target_cell = target_sheet.cell(row=self.current_output_row, column=5)
                 target_cell.value = days
-                target_cell.number_format = '#,##0.00'  # Formato con 2 decimali
+                target_cell.number_format = '#,##0.000000'  # Formato con 6 decimali
             else:
                 logger.debug(f"No startup days determined for row {row}")
             
