@@ -82,13 +82,14 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
         # Process each row after headers
         current_output_row = 2  # Start after headers in template
         rows_processed = 0
+        processed_rows = set()  # Keep track of rows we've processed as sub-elements
         
         for row in range(header_row + 1, input_sheet.max_row + 1):
             # Get service element from column B
             service_element = get_cell_value(input_sheet.cell(row=row, column=2))
             
-            # Skip completely empty rows
-            if service_element is None:
+            # Skip completely empty rows or already processed rows
+            if service_element is None or row in processed_rows:
                 continue
             
             # Handle empty or dash-only service elements differently
@@ -192,6 +193,7 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
                             break
                         if sub_value and not is_empty_or_dashes(sub_value):
                             sub_elements.append(r)
+                            processed_rows.add(r)  # Mark this row as processed
                     
                     # Move to next row for sub-elements
                     current_output_row += 1

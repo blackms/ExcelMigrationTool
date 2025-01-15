@@ -3,6 +3,12 @@ import openpyxl
 from openai import OpenAI
 from typing import Optional, Tuple, Dict, Any
 from ..logger import get_logger
+from ..excel.cell_operations import (
+    get_cell_value, 
+    is_empty_or_dashes, 
+    extract_cell_references,
+    get_cell_value_with_fallback
+)
 
 logger = get_logger()
 
@@ -10,30 +16,6 @@ class StartupDaysAnalyzer:
     def __init__(self, openai_key: Optional[str] = None):
         self.client = OpenAI(api_key=openai_key or os.getenv('OPENAI_API_KEY'))
         
-    def extract_cell_references(self, formula: str) -> list[Tuple[str, str]]:
-        """
-        Extract sheet name and cell references from a formula.
-        Example: "=PRIMITIVE!U25*PRIMITIVE!B12" -> [("PRIMITIVE", "U25"), ("PRIMITIVE", "B12")]
-        """
-        try:
-            # Remove the leading = if present
-            if formula.startswith('='):
-                formula = formula[1:]
-            
-            refs = []
-            parts = formula.split('*')  # Split by multiplication operator
-            
-            for part in parts:
-                if '!' in part:  # Contains sheet reference
-                    sheet, cell = part.split('!')
-                    refs.append((sheet, cell))
-                    logger.debug(f"Extracted reference: Sheet={sheet}, Cell={cell}")
-            
-            return refs
-        except Exception as e:
-            logger.error(f"Error extracting cell references: {str(e)}")
-            return []
-
     def get_primitive_context(self, primitive_sheet) -> Dict[str, Any]:
         """
         Extract relevant context from the PRIMITIVE sheet to help GPT understand its structure.
@@ -83,7 +65,19 @@ class StartupDaysAnalyzer:
         # Check if this is an element catalog row (in bold)
         cell = sheet.cell(row=current_row, column=2)  # Service Element column
         if cell.font.b:  # Bold font indicates element catalog row
-            # Skip analyzing element catalog rows (with SUM formulas)
+            # For element catalogs, look at formulas in sub-elements
+            for r in range(current_row + 1, sheet.max_row + 1):
+                sub_cell = sheet.cell(row=r, column=2)
+                sub_value = get_cell_value(sub_cell)
+                if sub_value and isinstance(sub_value, str) and "---" in sub_value:
+                    break
+                if sub_value and not is_empty_or_dashes(sub_value):
+                    # Found a sub-element, analyze its formula
+                    sub_formula = sheet.cell(row=r, column=8).value  # Column H
+                    if sub_formula and isinstance(sub_formula, str):
+                        result = self._analyze_single_formula(sub_formula, primitive_sheet_formulas, primitive_sheet_data)
+                        if result is not None:
+                            return result
             return None
         else:
             # For non-element catalog rows (sub-elements), analyze the formula directly
@@ -97,27 +91,25 @@ class StartupDaysAnalyzer:
             logger.info(f"Analyzing formula for startup days: {formula}")
             
             # First try direct formula extraction
-            refs = self.extract_cell_references(formula)
+            logger.debug(f"Analyzing formula: {formula}")
+            refs = extract_cell_references(formula, logger)
             if refs:
                 sheet_name, cell_ref = refs[0]
                 if sheet_name.upper() == 'PRIMITIVE':
+                    logger.debug(f"Found PRIMITIVE sheet reference: {cell_ref}")
                     # Convert column letter and row number to cell coordinates
                     col = openpyxl.utils.column_index_from_string(cell_ref[0])
                     row = int(cell_ref[1:])
+                    logger.debug(f"Converted to coordinates: row={row}, col={col}")
                     
                     # Try to get the value from both sheets
-                    formula_value = primitive_sheet_formulas.cell(row=row, column=col).value
-                    data_value = primitive_sheet_data.cell(row=row, column=col).value
-                    
-                    logger.info(f"Found values - Formula: {formula_value}, Data: {data_value}")
-                    
-                    # Prefer the data value if available
-                    if data_value is not None and isinstance(data_value, (int, float)):
-                        logger.info(f"Using data value: {data_value}")
-                        return float(data_value)
-                    elif formula_value is not None and isinstance(formula_value, (int, float)):
-                        logger.info(f"Using formula value: {formula_value}")
-                        return float(formula_value)
+                    formula_cell = primitive_sheet_formulas.cell(row=row, column=col)
+                    data_cell = primitive_sheet_data.cell(row=row, column=col)
+                    value = get_cell_value_with_fallback(formula_cell, data_cell, logger)
+                    if value is not None:
+                        return value
+                else:
+                    logger.debug(f"Sheet name '{sheet_name}' is not PRIMITIVE")
             
             # If direct extraction fails, use GPT-4 to analyze the sheet
             logger.info("Direct reference extraction failed, using GPT-4 for analysis")
