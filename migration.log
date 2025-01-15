@@ -1,0 +1,496 @@
+2025-01-15 10:35:27 | INFO | Starting migration from .\COaaS_Schema Prod.xlsx to output.xlsx
+2025-01-15 10:35:27 | INFO | Using template: C:\Users\rocch\Projects\DedaExcelAI\template\template.xlsx
+2025-01-15 10:35:27 | INFO | Found SCHEMA sheet, processing data...
+2025-01-15 10:35:27 | DEBUG | Header row found at row 3
+2025-01-15 10:35:27 | DEBUG | Processing row 5 -> 2
+2025-01-15 10:35:27 | WARNING | Row 5: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 6 -> 3
+2025-01-15 10:35:27 | WARNING | Row 6: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 7 -> 4
+2025-01-15 10:35:27 | WARNING | Row 7: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 8 -> 5
+2025-01-15 10:35:27 | WARNING | Row 8: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 9 -> 6
+2025-01-15 10:35:27 | WARNING | Row 9: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 10 -> 7
+2025-01-15 10:35:27 | WARNING | Row 10: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 12 -> 8
+2025-01-15 10:35:27 | WARNING | Row 12: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 13 -> 9
+2025-01-15 10:35:27 | WARNING | Row 13: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 14 -> 10
+2025-01-15 10:35:27 | WARNING | Row 14: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 15 -> 11
+2025-01-15 10:35:27 | WARNING | Row 15: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 16 -> 12
+2025-01-15 10:35:27 | WARNING | Row 16: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 17 -> 13
+2025-01-15 10:35:27 | WARNING | Row 17: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 19 -> 14
+2025-01-15 10:35:27 | WARNING | Row 19: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 20 -> 15
+2025-01-15 10:35:27 | WARNING | Row 20: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 21 -> 16
+2025-01-15 10:35:27 | WARNING | Row 21: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 22 -> 17
+2025-01-15 10:35:27 | WARNING | Row 22: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 23 -> 18
+2025-01-15 10:35:27 | WARNING | Row 23: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 24 -> 19
+2025-01-15 10:35:27 | WARNING | Row 24: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 26 -> 20
+2025-01-15 10:35:27 | WARNING | Row 26: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 27 -> 21
+2025-01-15 10:35:27 | WARNING | Row 27: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 28 -> 22
+2025-01-15 10:35:27 | WARNING | Row 28: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 29 -> 23
+2025-01-15 10:35:27 | WARNING | Row 29: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 30 -> 24
+2025-01-15 10:35:27 | WARNING | Row 30: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 31 -> 25
+2025-01-15 10:35:27 | WARNING | Row 31: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 33 -> 26
+2025-01-15 10:35:27 | WARNING | Row 33: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 34 -> 27
+2025-01-15 10:35:27 | WARNING | Row 34: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 35 -> 28
+2025-01-15 10:35:27 | WARNING | Row 35: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 36 -> 29
+2025-01-15 10:35:27 | WARNING | Row 36: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 37 -> 30
+2025-01-15 10:35:27 | WARNING | Row 37: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 38 -> 31
+2025-01-15 10:35:27 | WARNING | Row 38: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 40 -> 32
+2025-01-15 10:35:27 | WARNING | Row 40: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 41 -> 33
+2025-01-15 10:35:27 | WARNING | Row 41: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 42 -> 34
+2025-01-15 10:35:27 | WARNING | Row 42: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 43 -> 35
+2025-01-15 10:35:27 | WARNING | Row 43: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 44 -> 36
+2025-01-15 10:35:27 | WARNING | Row 44: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 45 -> 37
+2025-01-15 10:35:27 | WARNING | Row 45: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 47 -> 38
+2025-01-15 10:35:27 | WARNING | Row 47: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 48 -> 39
+2025-01-15 10:35:27 | WARNING | Row 48: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 49 -> 40
+2025-01-15 10:35:27 | WARNING | Row 49: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 50 -> 41
+2025-01-15 10:35:27 | WARNING | Row 50: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 51 -> 42
+2025-01-15 10:35:27 | WARNING | Row 51: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 52 -> 43
+2025-01-15 10:35:27 | WARNING | Row 52: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 54 -> 44
+2025-01-15 10:35:27 | WARNING | Row 54: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 55 -> 45
+2025-01-15 10:35:27 | WARNING | Row 55: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 56 -> 46
+2025-01-15 10:35:27 | WARNING | Row 56: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 57 -> 47
+2025-01-15 10:35:27 | WARNING | Row 57: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 58 -> 48
+2025-01-15 10:35:27 | WARNING | Row 58: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 59 -> 49
+2025-01-15 10:35:27 | WARNING | Row 59: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 61 -> 50
+2025-01-15 10:35:27 | WARNING | Row 61: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 62 -> 51
+2025-01-15 10:35:27 | WARNING | Row 62: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 63 -> 52
+2025-01-15 10:35:27 | WARNING | Row 63: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 64 -> 53
+2025-01-15 10:35:27 | WARNING | Row 64: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 65 -> 54
+2025-01-15 10:35:27 | WARNING | Row 65: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 66 -> 55
+2025-01-15 10:35:27 | WARNING | Row 66: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 68 -> 56
+2025-01-15 10:35:27 | WARNING | Row 68: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 69 -> 57
+2025-01-15 10:35:27 | WARNING | Row 69: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 70 -> 58
+2025-01-15 10:35:27 | WARNING | Row 70: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 71 -> 59
+2025-01-15 10:35:27 | WARNING | Row 71: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 72 -> 60
+2025-01-15 10:35:27 | WARNING | Row 72: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 73 -> 61
+2025-01-15 10:35:27 | WARNING | Row 73: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 75 -> 62
+2025-01-15 10:35:27 | WARNING | Row 75: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 76 -> 63
+2025-01-15 10:35:27 | WARNING | Row 76: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 77 -> 64
+2025-01-15 10:35:27 | WARNING | Row 77: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 78 -> 65
+2025-01-15 10:35:27 | WARNING | Row 78: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 79 -> 66
+2025-01-15 10:35:27 | WARNING | Row 79: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 80 -> 67
+2025-01-15 10:35:27 | WARNING | Row 80: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 82 -> 68
+2025-01-15 10:35:27 | WARNING | Row 82: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 83 -> 69
+2025-01-15 10:35:27 | WARNING | Row 83: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 84 -> 70
+2025-01-15 10:35:27 | WARNING | Row 84: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 85 -> 71
+2025-01-15 10:35:27 | WARNING | Row 85: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 86 -> 72
+2025-01-15 10:35:27 | WARNING | Row 86: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 87 -> 73
+2025-01-15 10:35:27 | WARNING | Row 87: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 89 -> 74
+2025-01-15 10:35:27 | WARNING | Row 89: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 90 -> 75
+2025-01-15 10:35:27 | WARNING | Row 90: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 91 -> 76
+2025-01-15 10:35:27 | WARNING | Row 91: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 92 -> 77
+2025-01-15 10:35:27 | WARNING | Row 92: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 93 -> 78
+2025-01-15 10:35:27 | WARNING | Row 93: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 94 -> 79
+2025-01-15 10:35:27 | WARNING | Row 94: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 96 -> 80
+2025-01-15 10:35:27 | WARNING | Row 96: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 97 -> 81
+2025-01-15 10:35:27 | WARNING | Row 97: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 98 -> 82
+2025-01-15 10:35:27 | WARNING | Row 98: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 99 -> 83
+2025-01-15 10:35:27 | WARNING | Row 99: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 100 -> 84
+2025-01-15 10:35:27 | WARNING | Row 100: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 101 -> 85
+2025-01-15 10:35:27 | WARNING | Row 101: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 103 -> 86
+2025-01-15 10:35:27 | WARNING | Row 103: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 104 -> 87
+2025-01-15 10:35:27 | WARNING | Row 104: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 105 -> 88
+2025-01-15 10:35:27 | WARNING | Row 105: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 106 -> 89
+2025-01-15 10:35:27 | WARNING | Row 106: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 107 -> 90
+2025-01-15 10:35:27 | WARNING | Row 107: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 108 -> 91
+2025-01-15 10:35:27 | WARNING | Row 108: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 110 -> 92
+2025-01-15 10:35:27 | WARNING | Row 110: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 111 -> 93
+2025-01-15 10:35:27 | WARNING | Row 111: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 112 -> 94
+2025-01-15 10:35:27 | WARNING | Row 112: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 113 -> 95
+2025-01-15 10:35:27 | WARNING | Row 113: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 114 -> 96
+2025-01-15 10:35:27 | WARNING | Row 114: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 115 -> 97
+2025-01-15 10:35:27 | WARNING | Row 115: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 117 -> 98
+2025-01-15 10:35:27 | WARNING | Row 117: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 118 -> 99
+2025-01-15 10:35:27 | WARNING | Row 118: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 119 -> 100
+2025-01-15 10:35:27 | WARNING | Row 119: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 120 -> 101
+2025-01-15 10:35:27 | WARNING | Row 120: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 121 -> 102
+2025-01-15 10:35:27 | WARNING | Row 121: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 122 -> 103
+2025-01-15 10:35:27 | WARNING | Row 122: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 124 -> 104
+2025-01-15 10:35:27 | WARNING | Row 124: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 125 -> 105
+2025-01-15 10:35:27 | WARNING | Row 125: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 126 -> 106
+2025-01-15 10:35:27 | WARNING | Row 126: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 127 -> 107
+2025-01-15 10:35:27 | WARNING | Row 127: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 128 -> 108
+2025-01-15 10:35:27 | WARNING | Row 128: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 129 -> 109
+2025-01-15 10:35:27 | WARNING | Row 129: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 131 -> 110
+2025-01-15 10:35:27 | WARNING | Row 131: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 132 -> 111
+2025-01-15 10:35:27 | WARNING | Row 132: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 133 -> 112
+2025-01-15 10:35:27 | WARNING | Row 133: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 134 -> 113
+2025-01-15 10:35:27 | WARNING | Row 134: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 135 -> 114
+2025-01-15 10:35:27 | WARNING | Row 135: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 136 -> 115
+2025-01-15 10:35:27 | WARNING | Row 136: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 138 -> 116
+2025-01-15 10:35:27 | WARNING | Row 138: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 139 -> 117
+2025-01-15 10:35:27 | WARNING | Row 139: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 140 -> 118
+2025-01-15 10:35:27 | WARNING | Row 140: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 141 -> 119
+2025-01-15 10:35:27 | WARNING | Row 141: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 142 -> 120
+2025-01-15 10:35:27 | WARNING | Row 142: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | DEBUG | Processing row 143 -> 121
+2025-01-15 10:35:27 | WARNING | Row 143: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:35:27 | INFO | Successfully processed 120 rows
+2025-01-15 10:35:27 | SUCCESS | Migration completed successfully. Output saved to: output.xlsx
+2025-01-15 10:35:27 | INFO | Migration completed successfully!
+2025-01-15 10:35:27 | INFO | Output file: output.xlsx
+2025-01-15 10:37:13 | INFO | Starting migration from .\COaaS_Schema Prod.xlsx to output.xlsx
+2025-01-15 10:37:13 | INFO | Using template: C:\Users\rocch\Projects\DedaExcelAI\template\template.xlsx
+2025-01-15 10:37:13 | INFO | Found SCHEMA sheet, processing data...
+2025-01-15 10:37:13 | DEBUG | Header row found at row 3
+2025-01-15 10:37:13 | DEBUG | Processing row 5 -> 2
+2025-01-15 10:37:13 | WARNING | Row 5: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 6 -> 3
+2025-01-15 10:37:13 | WARNING | Row 6: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 7 -> 4
+2025-01-15 10:37:13 | WARNING | Row 7: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 8 -> 5
+2025-01-15 10:37:13 | WARNING | Row 8: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 9 -> 6
+2025-01-15 10:37:13 | WARNING | Row 9: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 10 -> 7
+2025-01-15 10:37:13 | WARNING | Row 10: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 12 -> 8
+2025-01-15 10:37:13 | WARNING | Row 12: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 13 -> 9
+2025-01-15 10:37:13 | WARNING | Row 13: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 14 -> 10
+2025-01-15 10:37:13 | WARNING | Row 14: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 15 -> 11
+2025-01-15 10:37:13 | WARNING | Row 15: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 16 -> 12
+2025-01-15 10:37:13 | WARNING | Row 16: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 17 -> 13
+2025-01-15 10:37:13 | WARNING | Row 17: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 19 -> 14
+2025-01-15 10:37:13 | WARNING | Row 19: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 20 -> 15
+2025-01-15 10:37:13 | WARNING | Row 20: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 21 -> 16
+2025-01-15 10:37:13 | WARNING | Row 21: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 22 -> 17
+2025-01-15 10:37:13 | WARNING | Row 22: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 23 -> 18
+2025-01-15 10:37:13 | WARNING | Row 23: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 24 -> 19
+2025-01-15 10:37:13 | WARNING | Row 24: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 26 -> 20
+2025-01-15 10:37:13 | WARNING | Row 26: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 27 -> 21
+2025-01-15 10:37:13 | WARNING | Row 27: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 28 -> 22
+2025-01-15 10:37:13 | WARNING | Row 28: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 29 -> 23
+2025-01-15 10:37:13 | WARNING | Row 29: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 30 -> 24
+2025-01-15 10:37:13 | WARNING | Row 30: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 31 -> 25
+2025-01-15 10:37:13 | WARNING | Row 31: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 33 -> 26
+2025-01-15 10:37:13 | WARNING | Row 33: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 34 -> 27
+2025-01-15 10:37:13 | WARNING | Row 34: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 35 -> 28
+2025-01-15 10:37:13 | WARNING | Row 35: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 36 -> 29
+2025-01-15 10:37:13 | WARNING | Row 36: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 37 -> 30
+2025-01-15 10:37:13 | WARNING | Row 37: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 38 -> 31
+2025-01-15 10:37:13 | WARNING | Row 38: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 40 -> 32
+2025-01-15 10:37:13 | WARNING | Row 40: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 41 -> 33
+2025-01-15 10:37:13 | WARNING | Row 41: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 42 -> 34
+2025-01-15 10:37:13 | WARNING | Row 42: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 43 -> 35
+2025-01-15 10:37:13 | WARNING | Row 43: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 44 -> 36
+2025-01-15 10:37:13 | WARNING | Row 44: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 45 -> 37
+2025-01-15 10:37:13 | WARNING | Row 45: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 47 -> 38
+2025-01-15 10:37:13 | WARNING | Row 47: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 48 -> 39
+2025-01-15 10:37:13 | WARNING | Row 48: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 49 -> 40
+2025-01-15 10:37:13 | WARNING | Row 49: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 50 -> 41
+2025-01-15 10:37:13 | WARNING | Row 50: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 51 -> 42
+2025-01-15 10:37:13 | WARNING | Row 51: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 52 -> 43
+2025-01-15 10:37:13 | WARNING | Row 52: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 54 -> 44
+2025-01-15 10:37:13 | WARNING | Row 54: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 55 -> 45
+2025-01-15 10:37:13 | WARNING | Row 55: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 56 -> 46
+2025-01-15 10:37:13 | WARNING | Row 56: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 57 -> 47
+2025-01-15 10:37:13 | WARNING | Row 57: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 58 -> 48
+2025-01-15 10:37:13 | WARNING | Row 58: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 59 -> 49
+2025-01-15 10:37:13 | WARNING | Row 59: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 61 -> 50
+2025-01-15 10:37:13 | WARNING | Row 61: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 62 -> 51
+2025-01-15 10:37:13 | WARNING | Row 62: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 63 -> 52
+2025-01-15 10:37:13 | WARNING | Row 63: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 64 -> 53
+2025-01-15 10:37:13 | WARNING | Row 64: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 65 -> 54
+2025-01-15 10:37:13 | WARNING | Row 65: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 66 -> 55
+2025-01-15 10:37:13 | WARNING | Row 66: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 68 -> 56
+2025-01-15 10:37:13 | WARNING | Row 68: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 69 -> 57
+2025-01-15 10:37:13 | WARNING | Row 69: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 70 -> 58
+2025-01-15 10:37:13 | WARNING | Row 70: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 71 -> 59
+2025-01-15 10:37:13 | WARNING | Row 71: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 72 -> 60
+2025-01-15 10:37:13 | WARNING | Row 72: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 73 -> 61
+2025-01-15 10:37:13 | WARNING | Row 73: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 75 -> 62
+2025-01-15 10:37:13 | WARNING | Row 75: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 76 -> 63
+2025-01-15 10:37:13 | WARNING | Row 76: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 77 -> 64
+2025-01-15 10:37:13 | WARNING | Row 77: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 78 -> 65
+2025-01-15 10:37:13 | WARNING | Row 78: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 79 -> 66
+2025-01-15 10:37:13 | WARNING | Row 79: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 80 -> 67
+2025-01-15 10:37:13 | WARNING | Row 80: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 82 -> 68
+2025-01-15 10:37:13 | WARNING | Row 82: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 83 -> 69
+2025-01-15 10:37:13 | WARNING | Row 83: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 84 -> 70
+2025-01-15 10:37:13 | WARNING | Row 84: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 85 -> 71
+2025-01-15 10:37:13 | WARNING | Row 85: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 86 -> 72
+2025-01-15 10:37:13 | WARNING | Row 86: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 87 -> 73
+2025-01-15 10:37:13 | WARNING | Row 87: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 89 -> 74
+2025-01-15 10:37:13 | WARNING | Row 89: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 90 -> 75
+2025-01-15 10:37:13 | WARNING | Row 90: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 91 -> 76
+2025-01-15 10:37:13 | WARNING | Row 91: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 92 -> 77
+2025-01-15 10:37:13 | WARNING | Row 92: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 93 -> 78
+2025-01-15 10:37:13 | WARNING | Row 93: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 94 -> 79
+2025-01-15 10:37:13 | WARNING | Row 94: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 96 -> 80
+2025-01-15 10:37:13 | WARNING | Row 96: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 97 -> 81
+2025-01-15 10:37:13 | WARNING | Row 97: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 98 -> 82
+2025-01-15 10:37:13 | WARNING | Row 98: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 99 -> 83
+2025-01-15 10:37:13 | WARNING | Row 99: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 100 -> 84
+2025-01-15 10:37:13 | WARNING | Row 100: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 101 -> 85
+2025-01-15 10:37:13 | WARNING | Row 101: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 103 -> 86
+2025-01-15 10:37:13 | WARNING | Row 103: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 104 -> 87
+2025-01-15 10:37:13 | WARNING | Row 104: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 105 -> 88
+2025-01-15 10:37:13 | WARNING | Row 105: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 106 -> 89
+2025-01-15 10:37:13 | WARNING | Row 106: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 107 -> 90
+2025-01-15 10:37:13 | WARNING | Row 107: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 108 -> 91
+2025-01-15 10:37:13 | WARNING | Row 108: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 110 -> 92
+2025-01-15 10:37:13 | WARNING | Row 110: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 111 -> 93
+2025-01-15 10:37:13 | WARNING | Row 111: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 112 -> 94
+2025-01-15 10:37:13 | WARNING | Row 112: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 113 -> 95
+2025-01-15 10:37:13 | WARNING | Row 113: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 114 -> 96
+2025-01-15 10:37:13 | WARNING | Row 114: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 115 -> 97
+2025-01-15 10:37:13 | WARNING | Row 115: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 117 -> 98
+2025-01-15 10:37:13 | WARNING | Row 117: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 118 -> 99
+2025-01-15 10:37:13 | WARNING | Row 118: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 119 -> 100
+2025-01-15 10:37:13 | WARNING | Row 119: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 120 -> 101
+2025-01-15 10:37:13 | WARNING | Row 120: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 121 -> 102
+2025-01-15 10:37:13 | WARNING | Row 121: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 122 -> 103
+2025-01-15 10:37:13 | WARNING | Row 122: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 124 -> 104
+2025-01-15 10:37:13 | WARNING | Row 124: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 125 -> 105
+2025-01-15 10:37:13 | WARNING | Row 125: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 126 -> 106
+2025-01-15 10:37:13 | WARNING | Row 126: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 127 -> 107
+2025-01-15 10:37:13 | WARNING | Row 127: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 128 -> 108
+2025-01-15 10:37:13 | WARNING | Row 128: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 129 -> 109
+2025-01-15 10:37:13 | WARNING | Row 129: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 131 -> 110
+2025-01-15 10:37:13 | WARNING | Row 131: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 132 -> 111
+2025-01-15 10:37:13 | WARNING | Row 132: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 133 -> 112
+2025-01-15 10:37:13 | WARNING | Row 133: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 134 -> 113
+2025-01-15 10:37:13 | WARNING | Row 134: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 135 -> 114
+2025-01-15 10:37:13 | WARNING | Row 135: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 136 -> 115
+2025-01-15 10:37:13 | WARNING | Row 136: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 138 -> 116
+2025-01-15 10:37:13 | WARNING | Row 138: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 139 -> 117
+2025-01-15 10:37:13 | WARNING | Row 139: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 140 -> 118
+2025-01-15 10:37:13 | WARNING | Row 140: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 141 -> 119
+2025-01-15 10:37:13 | WARNING | Row 141: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 142 -> 120
+2025-01-15 10:37:13 | WARNING | Row 142: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | DEBUG | Processing row 143 -> 121
+2025-01-15 10:37:13 | WARNING | Row 143: No valid cost found, defaulting to Fee Optional
+2025-01-15 10:37:13 | INFO | Successfully processed 120 rows
+2025-01-15 10:37:13 | SUCCESS | Migration completed successfully. Output saved to: output.xlsx
+2025-01-15 10:37:13 | INFO | Migration completed successfully!
+2025-01-15 10:37:13 | INFO | Output file: output.xlsx
