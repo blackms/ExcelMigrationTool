@@ -1,45 +1,50 @@
+#!/usr/bin/env python3
 import argparse
 import os
-from pathlib import Path
-from dedaexcelai import migrate_excel
-from dedaexcelai.logger import setup_logging, get_logger
+from dedaexcelai import migrate_excel, get_logger
+from typing import Optional
+from dedaexcelai.logger import setup_logging
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Excel Migration Tool')
-    parser.add_argument('--input', '-i', required=True, help='Input Excel file path')
-    parser.add_argument('--output', '-o', required=True, help='Output Excel file path')
-    parser.add_argument('--template', '-t', default=str(Path(__file__).parent.parent / 'template' / 'template.xlsx'),
-                       help='Template Excel file path (default: template/template.xlsx)')
-    parser.add_argument('--verbose', '-v', action='store_true', help='Enable verbose logging')
-    return parser.parse_args()
+logger = get_logger()
 
 def main():
-    args = parse_args()
+    """Main entry point for the Excel migration tool"""
+    # Get the default template path relative to this script
+    default_template = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'template', 'template.xlsx')
     
-    # Setup logging based on verbose flag
+    parser = argparse.ArgumentParser(description='Excel Migration Tool')
+    parser.add_argument('-i', '--input', required=True, help='Input Excel file')
+    parser.add_argument('-o', '--output', required=True, help='Output Excel file')
+    parser.add_argument('-t', '--template', default=default_template, help='Template Excel file (default: template/template.xlsx)')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose logging')
+    parser.add_argument('--openai-key', help='OpenAI API key for GG Startup analysis. If not provided, will try OPENAI_API_KEY environment variable')
+    
+    args = parser.parse_args()
+    
+    # Configure logging based on verbose flag
     setup_logging(args.verbose)
-    logger = get_logger()
     
     # Validate input file exists
     if not os.path.exists(args.input):
-        logger.error(f"Input file '{args.input}' does not exist")
+        logger.error(f"Input file does not exist: {args.input}")
         return 1
-        
+    
     # Validate template file exists
     if not os.path.exists(args.template):
-        logger.error(f"Template file '{args.template}' does not exist")
+        logger.error(f"Template file does not exist: {args.template}")
         return 1
     
-    # Execute migration
-    success = migrate_excel(args.input, args.output, args.template)
+    # Get OpenAI API key from argument or environment
+    openai_key: Optional[str] = args.openai_key or os.getenv('OPENAI_API_KEY')
+    if not openai_key:
+        logger.warning("No OpenAI API key provided. GG Startup analysis will be skipped.")
     
-    if success:
-        logger.success("Migration completed successfully!")
-        logger.info(f"Output file: {args.output}")
-        return 0
-    else:
-        logger.error("Migration failed!")
+    # Perform migration
+    success = migrate_excel(args.input, args.output, args.template, openai_key)
+    
+    if not success:
         return 1
+    return 0
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     exit(main())
