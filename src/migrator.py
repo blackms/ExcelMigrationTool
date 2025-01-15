@@ -1,30 +1,8 @@
 import argparse
 import os
 from pathlib import Path
-from loguru import logger
-import sys
 from dedaexcelai import migrate_excel
-
-# Configure logger
-logger.remove()  # Remove default handler
-
-# File logger - no colors
-logger.add(
-    "migration.log",
-    rotation="1 day",
-    retention="7 days",
-    level="DEBUG",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
-    colorize=False
-)
-
-# Console logger with colors
-logger.add(
-    sys.stderr,
-    level="INFO",
-    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
-    colorize=True
-)
+from dedaexcelai.logger import setup_logging, get_logger
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Excel Migration Tool')
@@ -38,23 +16,9 @@ def parse_args():
 def main():
     args = parse_args()
     
-    # Adjust log level if verbose flag is set
-    if args.verbose:
-        logger.remove()
-        logger.add(
-            "migration.log",
-            rotation="1 day",
-            retention="7 days",
-            level="DEBUG",
-            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
-            colorize=False
-        )
-        logger.add(
-            sys.stderr,
-            level="DEBUG",
-            format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
-            colorize=True
-        )
+    # Setup logging based on verbose flag
+    setup_logging(args.verbose)
+    logger = get_logger()
     
     # Validate input file exists
     if not os.path.exists(args.input):

@@ -2,9 +2,11 @@ import openpyxl
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
 import re
-from loguru import logger
 from copy import copy
 from decimal import Decimal
+from .logger import get_logger
+
+logger = get_logger()
 
 def get_cell_value(cell: Optional[Any]) -> Any:
     """Helper function to safely get cell value"""
@@ -35,17 +37,28 @@ def find_element_catalog_interval(sheet: openpyxl.worksheet.worksheet.Worksheet,
     Find the interval for the current element catalog by looking for separator rows
     Returns: (start_row, end_row)
     """
+    # First, go back to find the start of this catalog if we're in the middle
+    while start_row > 1:
+        service_element = get_cell_value(sheet.cell(row=start_row - 1, column=2))
+        if is_empty_or_dashes(service_element) and isinstance(service_element, str) and "-" in service_element:
+            break
+        start_row -= 1
+    
+    # Then find the end (next separator row)
     end_row = start_row
     max_row = sheet.max_row
     
-    # Find the next separator row (row with dashes)
     while end_row <= max_row:
         service_element = get_cell_value(sheet.cell(row=end_row, column=2))
-        if is_empty_or_dashes(service_element) and isinstance(service_element, str) and "-" in service_element:
+        if end_row > start_row and is_empty_or_dashes(service_element) and isinstance(service_element, str) and "-" in service_element:
+            end_row -= 1  # Don't include the separator row
             break
         end_row += 1
     
-    return (start_row, end_row - 1)
+    if end_row > max_row:
+        end_row = max_row
+    
+    return (start_row, end_row)
 
 def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet) -> str:
     """
@@ -54,7 +67,10 @@ def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet)
     """
     # Find the interval for the current element catalog
     interval_start, interval_end = find_element_catalog_interval(sheet, row)
-    logger.debug(f"Found Element catalog interval from row <yellow>{interval_start}</yellow> to <yellow>{interval_end}</yellow>")
+    
+    # Get the service element name for better logging
+    service_element = get_cell_value(sheet.cell(row=interval_start, column=2))
+    logger.debug(f"Element catalog '<yellow>{service_element}</yellow>' (rows <blue>{interval_start}</blue>-<blue>{interval_end}</blue>)")
     
     # Look for FIXED or CANONE in the WBS column (column D) within the interval
     wbs_type = None
@@ -64,21 +80,21 @@ def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet)
             wbs_value = wbs_value.upper().strip()
             if wbs_value == "FIXED":
                 wbs_type = "FIXED"
-                logger.debug(f"Found FIXED type at row <yellow>{r}</yellow>")
+                logger.debug(f"Found <magenta>FIXED</magenta> type at row <blue>{r}</blue>")
                 break
             elif wbs_value == "CANONE":
                 wbs_type = "CANONE"
-                logger.debug(f"Found CANONE type at row <yellow>{r}</yellow>")
+                logger.debug(f"Found <magenta>CANONE</magenta> type at row <blue>{r}</blue>")
                 break
     
     if wbs_type == "FIXED":
-        logger.debug(f"Row {row}: Using Fixed Optional based on WBS type")
+        logger.debug(f"Using <green>Fixed Optional</green> based on WBS type")
         return "Fixed Optional"
     elif wbs_type == "CANONE":
-        logger.debug(f"Row {row}: Using Fee Optional based on WBS type")
+        logger.debug(f"Using <green>Fee Optional</green> based on WBS type")
         return "Fee Optional"
     else:
-        logger.warning(f"Row {row}: No WBS type found in interval, defaulting to Fee Optional")
+        logger.warning(f"No WBS type found in interval, defaulting to <yellow>Fee Optional</yellow>")
         return "Fee Optional"
 
 def find_header_row(sheet: openpyxl.worksheet.worksheet.Worksheet) -> int:
@@ -137,7 +153,7 @@ def migrate_excel(input_file: str, output_file: str, template_file: str) -> bool
         
         # Find header row in input sheet
         header_row = find_header_row(input_sheet)
-        logger.debug(f"Header row found at row <yellow>{header_row}</yellow>")
+        logger.debug(f"Header row found at row <blue>{header_row}</blue>")
         
         # Process each row after headers
         current_output_row = 2  # Start after headers in template
@@ -153,7 +169,7 @@ def migrate_excel(input_file: str, output_file: str, template_file: str) -> bool
             
             # Handle empty or dash-only service elements differently
             if is_empty_or_dashes(service_element):
-                logger.debug(f"Row {row}: Empty or dash-only service element, adding formula to column P")
+                logger.debug(f"Empty row <blue>{row}</blue>, adding formula to column P")
                 # Add formula to column P (16): =N{row}/(1-O{row})
                 cell = output_sheet.cell(row=current_output_row, column=16)
                 formula = f"=N{current_output_row}/(1-O{current_output_row})"
