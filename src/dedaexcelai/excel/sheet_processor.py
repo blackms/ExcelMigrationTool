@@ -32,15 +32,19 @@ class PrimitiveSheetProcessor(SheetProcessor):
 class SchemaSheetProcessor(SheetProcessor):
     """Processor for SCHEMA sheet."""
     
-    def __init__(self, startup_analyzer=None):
+    def __init__(self, startup_analyzer=None, filename: str = "", 
+                 primitive_data=None, primitive_formulas=None):
         self.startup_analyzer = startup_analyzer
+        self.filename = filename
+        self.primitive_data = primitive_data
+        self.primitive_formulas = primitive_formulas
         self.header_row = None
         self.current_output_row = 2  # Start after headers
         
     def setup_headers(self, target_sheet: openpyxl.worksheet.worksheet.Worksheet) -> None:
         """Set up headers with green background."""
         headers = [
-            'Lenght', 'Product Element', 'Type', 'GG Startup', 'RU', 'RU Qty',
+            'Lenght', 'Product Element', 'Object', 'Type', 'GG Startup', 'RU', 'RU Qty',
             'RU Unit of measure', 'Q.ty min', 'Q.ty MAX', '%Sconto MAX',
             'Startup Costo', 'Startup Margine', 'Startup Prezzo',
             'Canone Costo Mese', 'Canone Margine', 'Canone Prezzo Mese',
@@ -54,12 +58,31 @@ class SchemaSheetProcessor(SheetProcessor):
             cell.fill = green_fill
             cell.font = openpyxl.styles.Font(bold=True)
     
+    def determine_type(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet) -> str:
+        """Determine if cost is Fee or Fixed based on values."""
+        # Check WBS column (D) for FIXED
+        wbs = get_cell_value(source_sheet.cell(row=row, column=4))
+        if isinstance(wbs, str) and 'FIXED' in wbs.upper():
+            return 'Fixed Optional'
+            
+        # Check ricorrente (H) and canone (I)
+        ricorrente = get_cell_value(source_sheet.cell(row=row, column=8))
+        canone = get_cell_value(source_sheet.cell(row=row, column=9))
+        
+        # If has ricorrente but no canone, it's a startup cost (Fixed)
+        if (ricorrente and str(ricorrente).strip() and not str(ricorrente).strip().startswith('-') and
+            (not canone or not str(canone).strip() or str(canone).strip().startswith('-'))):
+            return 'Fixed Optional'
+            
+        # Default to Fee Optional
+        return 'Fee Optional'
+    
     def process_row(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
                    target_sheet: openpyxl.worksheet.worksheet.Worksheet, source_formulas: openpyxl.worksheet.worksheet.Worksheet) -> None:
         """Process a single row from source to target."""
         # Get type and service element
-        element_type = get_cell_value(source_sheet.cell(row=row, column=1))
-        service_element = get_cell_value(source_sheet.cell(row=row, column=2))
+        element_type = get_cell_value(source_sheet.cell(row=row, column=1))  # Type column
+        service_element = get_cell_value(source_sheet.cell(row=row, column=2))  # Service Element column
         
         if service_element is None or is_empty_or_dashes(service_element):
             return
@@ -74,55 +97,104 @@ class SchemaSheetProcessor(SheetProcessor):
         element_cell.value = service_element
         element_cell.font = openpyxl.styles.Font(bold=(element_type == 'Element'), italic=(element_type == 'SubElement'))
         
-        # Set Type
+        # Set Object (Element/SubElement)
         target_sheet.cell(row=self.current_output_row, column=3).value = element_type
+        
+        # Set Type (Fee/Fixed)
+        cost_type = self.determine_type(row, source_sheet)
+        target_sheet.cell(row=self.current_output_row, column=4).value = cost_type
         
         # Process other columns based on mapping
         self.process_mapped_columns(row, source_sheet, target_sheet)
         
-        # Handle GG Startup for SubElements
-        if element_type == 'SubElement':
+        # Handle GG Startup for Fixed costs
+        cost_type = self.determine_type(row, source_sheet)
+        logger.info(f"Row {row} - Element Type: {element_type}, Cost Type: {cost_type}")
+        
+        if cost_type.startswith('Fixed'):
+            logger.info(f"Processing startup days for Fixed cost in row {row}")
+            formula = source_formulas.cell(row=row, column=8).value  # Column H
+            logger.info(f"Found formula in column H: {formula}")
             self.process_startup_days(row, source_sheet, target_sheet, source_formulas)
+        else:
+            logger.debug(f"Skipping startup days for non-Fixed cost in row {row}")
         
         self.current_output_row += 1
+    
+    def copy_value(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                  target_sheet: openpyxl.worksheet.worksheet.Worksheet, source_col: int, target_col: int) -> None:
+        """Copy value from source to target cell."""
+        value = get_cell_value(source_sheet.cell(row=row, column=source_col))
+        if value is not None:
+            target_cell = target_sheet.cell(row=self.current_output_row, column=target_col)
+            target_cell.value = value
+            # Set number format with 4 decimal places for numeric values
+            if isinstance(value, (int, float)):
+                target_cell.number_format = '#,##0.0000'
     
     def process_mapped_columns(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
                              target_sheet: openpyxl.worksheet.worksheet.Worksheet) -> None:
         """Process columns based on mapping."""
-        column_mapping = {
-            'Resource Unit': 5,  # RU
-            'Profit Center': 18,  # Profit Center Prevalente
-            'Unatantu': 11,  # Startup Costo
-            'Ricorrente mese': 14,  # Canone Costo Mese
-            'Canone': 16,  # Canone Prezzo Mese
-        }
+        # Copy Resource Unit (RU)
+        self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
         
-        for old_col in range(1, source_sheet.max_column + 1):
-            old_header = get_cell_value(source_sheet.cell(row=self.header_row, column=old_col))
-            if old_header in column_mapping:
-                value = get_cell_value(source_sheet.cell(row=row, column=old_col))
-                if value is not None:
-                    target_sheet.cell(row=self.current_output_row, column=column_mapping[old_header]).value = value
+        # Copy Profit Center
+        self.copy_value(row, source_sheet, target_sheet, 6, 18)  # Profit Center -> Profit Center Prevalente
+        
+        # Copy Cost and Price columns
+        self.copy_value(row, source_sheet, target_sheet, 7, 11)  # Unatantu -> Startup Costo
+        self.copy_value(row, source_sheet, target_sheet, 8, 14)  # Ricorrente mese -> Canone Costo Mese
+        self.copy_value(row, source_sheet, target_sheet, 10, 16)  # Canone -> Canone Prezzo Mese
     
-    def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
-                           target_sheet: openpyxl.worksheet.worksheet.Worksheet,
-                           source_formulas: openpyxl.worksheet.worksheet.Worksheet) -> None:
-        """Process startup days for a row."""
-        if not self.startup_analyzer:
-            return
+    def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
+                            target_sheet: openpyxl.worksheet.worksheet.Worksheet, 
+                            source_formulas: openpyxl.worksheet.worksheet.Worksheet) -> None:
+        """Process startup days for the given row."""
+        try:
+            logger.info(f"Processing startup days for row {row}")
             
-        formula_cell = source_formulas.cell(row=row, column=8)
-        formula = formula_cell.value if formula_cell else None
-        
-        if formula and isinstance(formula, str):
-            try:
-                startup_days = self.startup_analyzer.analyze_startup_days(
-                    formula, source_formulas, source_sheet, row, source_sheet, source_formulas
-                )
-                if startup_days is not None:
-                    target_sheet.cell(row=self.current_output_row, column=4).value = startup_days
-            except Exception as e:
-                logger.error(f"Error analyzing startup days for row {row}: {str(e)}")
+            # Get element type and cost type from correct columns
+            element_type = get_cell_value(source_sheet.cell(row=row, column=1))  # Column A
+            cost_type = self.determine_type(row, source_sheet)
+            
+            formula = source_formulas.cell(row=row, column=8).value  # H column
+            
+            if not formula:
+                logger.debug(f"No formula found in column H for row {row}")
+                return
+            
+            logger.info(f"Found formula in column H: {formula}")
+            
+            if not self.startup_analyzer:
+                logger.warning("No startup analyzer available")
+                return
+            
+            logger.info("Calling startup analyzer...")
+            logger.debug(f"Processing element type: {element_type}")
+            logger.debug(f"Processing cost type: {cost_type}")
+            
+            days = self.startup_analyzer.analyze_startup_days(
+                formula=formula,
+                primitive_formulas=self.primitive_formulas,
+                primitive_data=self.primitive_data,
+                row=row,
+                schema_sheet=source_sheet,
+                schema_formulas=source_formulas,
+                filename=self.filename,
+                element_type=element_type,
+                wbs_type=cost_type
+            )
+            
+            if days is not None:
+                logger.info(f"Setting startup days to {days} for row {row}")
+                target_cell = target_sheet.cell(row=self.current_output_row, column=5)
+                target_cell.value = days
+                target_cell.number_format = '#,##0.00'  # Formato con 2 decimali
+            else:
+                logger.debug(f"No startup days determined for row {row}")
+            
+        except Exception as e:
+            logger.error(f"Error analyzing startup days for row {row}: {str(e)}")
     
     def process(self, source_sheet: openpyxl.worksheet.worksheet.Worksheet, target_sheet: openpyxl.worksheet.worksheet.Worksheet,
                 source_formulas: Optional[openpyxl.worksheet.worksheet.Worksheet] = None) -> bool:

@@ -20,26 +20,32 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
         bool: True if migration was successful, False otherwise
     """
     try:
-        # Initialize components
+        # Initialize startup analyzer
+        logger.info("Initializing StartupDaysAnalyzer...")
         startup_analyzer = StartupDaysAnalyzer(openai_key)
-        workbook_handler = WorkbookHandler(input_file, output_file)
+        if startup_analyzer.client:
+            logger.info("Successfully initialized StartupDaysAnalyzer with GPT-4")
+        
+        # Initialize workbook handler
+        workbook_handler = WorkbookHandler(input_file, output_file, template_file)
         
         # Load workbooks
         if not workbook_handler.load_workbooks():
             return False
             
-        # Create output workbook
-        if not workbook_handler.create_output_workbook():
-            return False
-            
+        # Create processor factory
+        processor_factory = SheetProcessorFactory()
+        
         # Process PRIMITIVE sheet
-        primitive_processor = SheetProcessorFactory.create_processor('PRIMITIVE')
+        logger.info("Creating PRIMITIVE processor...")
+        primitive_processor = processor_factory.create_primitive_processor()
         if not primitive_processor:
             logger.error("Failed to create PRIMITIVE processor")
             return False
             
         source_primitive = workbook_handler.get_sheet('PRIMITIVE')
-        if not source_primitive:
+        source_primitive_formulas = workbook_handler.get_sheet('PRIMITIVE', data_only=False)  # Get formulas version
+        if not source_primitive or not source_primitive_formulas:
             logger.error("PRIMITIVE sheet not found in input workbook")
             return False
             
@@ -52,7 +58,13 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
             return False
             
         # Process SCHEMA sheet
-        schema_processor = SheetProcessorFactory.create_processor('SCHEMA', startup_analyzer)
+        logger.info("Creating SCHEMA processor with startup analyzer...")
+        schema_processor = processor_factory.create_schema_processor(
+            startup_analyzer=startup_analyzer,
+            filename=workbook_handler.filename,
+            primitive_data=source_primitive,
+            primitive_formulas=source_primitive_formulas
+        )
         if not schema_processor:
             logger.error("Failed to create SCHEMA processor")
             return False
@@ -68,6 +80,7 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
             logger.error("Failed to create SCHEMA sheet in output workbook")
             return False
             
+        logger.info("Processing SCHEMA sheet with startup analyzer...")
         if not schema_processor.process(source_schema, target_schema, source_schema_formulas):
             return False
             

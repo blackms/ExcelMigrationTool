@@ -1,217 +1,229 @@
-import os
-import openpyxl
 from openai import OpenAI
-from typing import Optional, Tuple, Dict, Any
-from ..logger import get_logger
-from ..excel.cell_operations import (
-    get_cell_value, 
-    is_empty_or_dashes, 
-    extract_cell_references,
-    get_cell_value_with_fallback
-)
+from typing import Optional, List, Tuple, Dict, Any
+import openpyxl
+import re
+
+from ..logger import get_logger, blue, green, yellow, red, magenta, cyan
+from ..excel.cell_operations import get_cell_value, extract_cell_references
+from ..excel.startup_rules import get_startup_days_override
 
 logger = get_logger()
 
 class StartupDaysAnalyzer:
-    def __init__(self, openai_key: Optional[str] = None):
-        self.client = OpenAI(api_key=openai_key or os.getenv('OPENAI_API_KEY'))
+    """Analyzer for determining startup days from Excel formulas."""
+    
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialize with optional OpenAI API key."""
+        self.api_key = api_key
+        self.client = OpenAI(api_key=api_key) if api_key else None
+    
+    def convert_excel_ref(self, ref: str) -> Tuple[int, int]:
+        """Convert Excel reference (e.g. 'A1' or '$A$1') to row, col."""
+        ref = ref.replace('$', '')  # Remove $ signs
+        match = re.match(r'([A-Z]+)(\d+)', ref)
+        if not match:
+            raise ValueError("Invalid Excel reference: {}".format(ref))
+            
+        col_str, row_str = match.groups()
         
-    def get_primitive_context(self, primitive_sheet) -> Dict[str, Any]:
-        """
-        Extract relevant context from the PRIMITIVE sheet to help GPT understand its structure.
-        """
+        # Convert column letters to number (A=1, B=2, etc.)
+        col = 0
+        for char in col_str:
+            col = col * 26 + (ord(char) - ord('A') + 1)
+            
+        return int(row_str), col
+    
+    def get_surrounding_context(self, row: int, col: int, sheet: openpyxl.worksheet.worksheet.Worksheet, radius: int = 2) -> Dict[str, Any]:
+        """Get values from cells surrounding the target cell."""
+        context = {}
+        for r in range(max(1, row - radius), min(sheet.max_row + 1, row + radius + 1)):
+            for c in range(max(1, col - radius), min(sheet.max_column + 1, col + radius + 1)):
+                if r != row or c != col:  # Skip the target cell itself
+                    cell = sheet.cell(row=r, column=c)
+                    if cell.value is not None:
+                        key = f"{chr(64 + c)}{r}"  # Convert col number back to letter
+                        context[key] = str(cell.value)
+        return context
+    
+    def sheet_to_json(self, sheet: openpyxl.worksheet.worksheet.Worksheet, max_rows: int = 50) -> List[Dict[str, Any]]:
+        """Convert Excel sheet to JSON format."""
+        result = []
+        headers = []
+        
+        # Get headers from first row
+        for col in range(1, sheet.max_column + 1):
+            cell = sheet.cell(row=1, column=col)
+            headers.append(cell.value or f"Column{col}")
+            
+        # Convert rows to dictionaries
+        for row in range(2, min(sheet.max_row + 1, max_rows + 1)):
+            row_data = {}
+            for col in range(1, sheet.max_column + 1):
+                cell = sheet.cell(row=row, column=col)
+                value = get_cell_value(cell)
+                if value is not None:
+                    row_data[headers[col-1]] = value
+            if row_data:  # Only add non-empty rows
+                result.append(row_data)
+                
+        return result
+    
+    def get_formula_context(self, formula: str,
+                          primitive_formulas: openpyxl.worksheet.worksheet.Worksheet,
+                          primitive_data: openpyxl.worksheet.worksheet.Worksheet,
+                          row: int,
+                          schema_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                          schema_formulas: openpyxl.worksheet.worksheet.Worksheet) -> Dict[str, Any]:
+        """Get all relevant context for the formula."""
+        # Convert sheets to JSON
+        primitive_json = self.sheet_to_json(primitive_data)
+        schema_json = self.sheet_to_json(schema_sheet)
+        
+        # Get basic formula info
+        refs = extract_cell_references(formula)
+        logger.debug("Found {} references", len(refs))
+        
+        # Build context
         context = {
-            'headers': [],
-            'startup_related_cells': []
+            'formula': formula,
+            'service_element': get_cell_value(schema_sheet.cell(row=row, column=2)),
+            'primitive_sheet': primitive_json,
+            'schema_sheet': schema_json,
+            'references': []
         }
         
-        # Scan first few rows for headers
-        for row in range(1, min(20, primitive_sheet.max_row + 1)):
-            for col in range(1, primitive_sheet.max_column + 1):
-                cell = primitive_sheet.cell(row=row, column=col)
-                value = cell.value
-                if value:
-                    col_letter = openpyxl.utils.get_column_letter(col)
-                    context['headers'].append({
-                        'cell': f'{col_letter}{row}',
-                        'value': str(value)
-                    })
-                    # Look for cells that might be related to startup/setup days
-                    if any(keyword in str(value).lower() for keyword in ['gg', 'giorni', 'setup', 'startup']):
-                        context['startup_related_cells'].append({
-                            'cell': f'{col_letter}{row}',
-                            'value': str(value)
-                        })
+        # Add referenced cells
+        for sheet_name, cell_ref in refs:
+            try:
+                row_num, col_num = self.convert_excel_ref(cell_ref)
+                if sheet_name.upper() == 'PRIMITIVE':
+                    value = get_cell_value(primitive_data.cell(row=row_num, column=col_num))
+                    formula_value = primitive_formulas.cell(row=row_num, column=col_num).value
+                    surrounding = self.get_surrounding_context(row_num, col_num, primitive_data)
+                else:
+                    value = get_cell_value(schema_sheet.cell(row=row_num, column=col_num))
+                    formula_value = schema_formulas.cell(row=row_num, column=col_num).value
+                    surrounding = self.get_surrounding_context(row_num, col_num, schema_sheet)
+                    
+                context['references'].append({
+                    'cell': cell_ref,
+                    'sheet': sheet_name,
+                    'value': value,
+                    'formula': formula_value,
+                    'surrounding': surrounding
+                })
+                
+                logger.debug("Cell {}: value={}, formula={}", 
+                           cell_ref, str(value)[:50], str(formula_value)[:50])
+                
+            except Exception as e:
+                logger.error("Error processing cell reference {}: {}", cell_ref, str(e))
         
         return context
-
-    def analyze_startup_days(self, formula: str, primitive_sheet_formulas, primitive_sheet_data, current_row: int, sheet: openpyxl.worksheet.worksheet.Worksheet, input_sheet_formulas: openpyxl.worksheet.worksheet.Worksheet) -> Optional[float]:
+    
+    def analyze_startup_days(self, formula: str,
+                           primitive_formulas: openpyxl.worksheet.worksheet.Worksheet,
+                           primitive_data: openpyxl.worksheet.worksheet.Worksheet,
+                           row: int,
+                           schema_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                           schema_formulas: openpyxl.worksheet.worksheet.Worksheet,
+                           filename: str,
+                           element_type: str,
+                           wbs_type: str) -> Optional[float]:
         """
-        Analyze a formula from column H to determine startup days by looking up values in PRIMITIVE sheet.
-        For element catalog rows (in bold), looks at formulas from rows below until the separator.
-        
-        Args:
-            formula: The formula from column H (e.g., "=PRIMITIVE!U25*PRIMITIVE!B12")
-            primitive_sheet_formulas: The PRIMITIVE worksheet object with formulas
-            primitive_sheet_data: The PRIMITIVE worksheet object with values
-            current_row: The current row being analyzed
-            sheet: The worksheet containing the element catalog
-            
-        Returns:
-            Optional[float]: The startup days value if found, None otherwise
-        """
-        from ..excel.structure_analyzer import find_element_catalog_interval
-        
-        # Check if this is an element catalog row (in bold)
-        cell = sheet.cell(row=current_row, column=2)  # Service Element column
-        cell_value = get_cell_value(cell)
-        logger.debug(f"Analyzing row {current_row}: '{cell_value}' (bold: {cell.font and cell.font.b})")
-        
-        if cell.font and cell.font.b:  # Bold font indicates element catalog row
-            logger.info(f"Found element catalog: '{cell_value}' at row {current_row}")
-            # For element catalogs, look at formulas in sub-elements
-            for r in range(current_row + 1, sheet.max_row + 1):
-                sub_cell = sheet.cell(row=r, column=2)
-                sub_value = get_cell_value(sub_cell)
-                logger.debug(f"Checking sub-element at row {r}: '{sub_value}'")
-                
-                if sub_value and isinstance(sub_value, str) and "---" in sub_value:
-                    logger.debug(f"Found separator at row {r}")
-                    break
-                    
-                if sub_value and not is_empty_or_dashes(sub_value):
-                    logger.info(f"Found sub-element: '{sub_value}' at row {r}")
-                    # Found a sub-element, get its formula from the formulas workbook
-                    sub_formula = input_sheet_formulas.cell(row=r, column=8).value  # Column H
-                    logger.debug(f"Sub-element formula: {sub_formula}")
-                    
-                    if sub_formula and isinstance(sub_formula, str) and sub_formula.startswith('='):
-                        result = self._analyze_single_formula(sub_formula, primitive_sheet_formulas, primitive_sheet_data)
-                        if result is not None:
-                            logger.info(f"Found startup days {result} from sub-element '{sub_value}'")
-                            return result
-                        else:
-                            logger.debug(f"Could not extract startup days from sub-element '{sub_value}'")
-            
-            logger.warning(f"No startup days found in any sub-elements of '{cell_value}'")
-            return None
-        else:
-            # For non-element catalog rows (sub-elements), analyze the formula directly
-            return self._analyze_single_formula(formula, primitive_sheet_formulas, primitive_sheet_data)
-            
-    def _analyze_single_formula(self, formula: str, primitive_sheet_formulas, primitive_sheet_data) -> Optional[float]:
-        """
-        Analyze a single formula to determine startup days.
+        Analyze formula to determine startup days using OpenAI.
         """
         try:
-            logger.info(f"Analyzing formula for startup days: {formula}")
+            logger.debug(f"Analyzing formula for startup days")
+            logger.debug(f"Element type: {yellow(element_type)}, WBS type: {yellow(wbs_type)}")
             
-            # First try direct formula extraction
-            logger.debug(f"Analyzing formula: {formula}")
-            refs = extract_cell_references(formula, logger)
-            if refs:
-                sheet_name, cell_ref = refs[0]
-                if sheet_name.upper() == 'PRIMITIVE':
-                    logger.debug(f"Found PRIMITIVE sheet reference: {cell_ref}")
-                    # Convert column letter and row number to cell coordinates
-                    col = openpyxl.utils.column_index_from_string(cell_ref[0])
-                    row = int(cell_ref[1:])
-                    logger.debug(f"Converted to coordinates: row={row}, col={col}")
-                    
-                    # Try to get the value from both sheets
-                    formula_cell = primitive_sheet_formulas.cell(row=row, column=col)
-                    data_cell = primitive_sheet_data.cell(row=row, column=col)
-                    value = get_cell_value_with_fallback(formula_cell, data_cell, logger)
-                    if value is not None:
-                        return value
-                else:
-                    logger.debug(f"Sheet name '{sheet_name}' is not PRIMITIVE")
-            
-            # If direct extraction fails, use GPT-4 to analyze the sheet
-            logger.info("Direct reference extraction failed, using GPT-4 for analysis")
-            
-            # Get context from both PRIMITIVE sheets
-            context_formulas = self.get_primitive_context(primitive_sheet_formulas)
-            context_data = self.get_primitive_context(primitive_sheet_data)
-            
-            # Construct prompt for GPT-4
-            prompt = f"""
-            Analizza questa formula Excel e il contesto del foglio PRIMITIVE per determinare i giorni di startup.
-
-            Formula analizzata: {formula}
-
-            Contesto del foglio PRIMITIVE (Formule):
-            Headers trovati:
-            {[f"{h['cell']}: {h['value']}" for h in context_formulas['headers']]}
-            
-            Celle relative allo startup:
-            {[f"{c['cell']}: {c['value']}" for c in context_formulas['startup_related_cells']]}
-
-            Contesto del foglio PRIMITIVE (Valori):
-            Headers trovati:
-            {[f"{h['cell']}: {h['value']}" for h in context_data['headers']]}
-            
-            Celle relative allo startup:
-            {[f"{c['cell']}: {c['value']}" for c in context_data['startup_related_cells']]}
-
-            La formula fa riferimento al foglio PRIMITIVE. Analizza:
-            1. Il primo riferimento nella formula (es. U25 in PRIMITIVE!U25*PRIMITIVE!B12) solitamente contiene i giorni
-            2. Cerca valori numerici che rappresentano giorni di setup/startup
-            3. Se trovi più valori, scegli quello che sembra più appropriato basandoti sul contesto
-
-            Rispondi SOLO con il numero di giorni (come numero decimale) o 'None' se non determinabile.
-            Non includere spiegazioni o altro testo.
-            """
-            
-            completion = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "Sei un esperto di analisi di fogli Excel e formule."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.2
-            )
-            
-            response = completion.choices[0].message.content.strip()
-            logger.info(f"GPT-4 analysis response: {response}")
-            
-            try:
-                if response.lower() == 'none':
-                    return None
-                return float(response)
-            except ValueError:
-                logger.warning(f"Could not convert GPT-4 response to float: {response}")
+            # Early return if not a SubElement or not eligible WBS type
+            if element_type != 'SubElement':
+                logger.debug(f"Skipping - not a SubElement (type: {red(element_type)})")
                 return None
                 
+            if wbs_type not in ['Fixed Optional', 'Fixed Mandatory']:
+                logger.debug(f"Skipping - WBS type not eligible: {red(wbs_type)}")
+                return None
+            
+            # Check for special cases based on filename
+            logger.info(f"Checking for special cases with filename: {blue(filename)}")
+            override_days = get_startup_days_override(filename, primitive_data, primitive_formulas, 
+                                                    formula, element_type, wbs_type)
+            if override_days is not None:
+                logger.info(f"Using override value: {green(str(override_days))} days")
+                return override_days
+            
+            if not self.client:
+                logger.warning("No OpenAI client available")
+                return None
+                
+            # Get formula context
+            context = self.get_formula_context(formula, primitive_formulas, primitive_data, row, schema_sheet, schema_formulas)
+            logger.debug("Got context with {} references", len(context['references']))
+            
+            # Build prompt with context
+            refs_text = []
+            for ref in context['references']:
+                ref_text = [f"- {ref['sheet']} {ref['cell']}:"]
+                ref_text.append(f"  Value: {ref['value']}")
+                ref_text.append(f"  Formula: {ref['formula']}")
+                if 'surrounding' in ref:
+                    ref_text.append("  Surrounding cells:")
+                    for pos, val in ref['surrounding'].items():
+                        ref_text.append(f"    {pos}: {val}")
+                refs_text.append("\n".join(ref_text))
+            
+            refs_text = "\n".join(refs_text)
+            primitive_data = "\n".join(str(row) for row in context['primitive_sheet'][:10])
+            schema_data = "\n".join(str(row) for row in context['schema_sheet'][:10])
+            
+            prompt = f"""You have access to Excel sheets in JSON format. Find the number of startup days for this service.
+
+Service Element: {context['service_element']}
+Formula being analyzed: {context['formula']}
+
+Referenced cells and their context:
+{refs_text}
+
+PRIMITIVE sheet data (first 10 rows):
+{primitive_data}
+
+SCHEMA sheet data (first 10 rows):
+{schema_data}
+
+Question: Looking at the formula and referenced cells, what is the number of startup days?
+Specifically:
+1. Look for cells containing "giorni" or "pari a n giorni" in the surrounding text
+2. When you find such text, look at the numeric value in the referenced cell
+3. Keep the exact decimal value (like 4.44)
+4. The text about days should be near the cell with the numeric value
+
+IMPORTANT: Return ONLY a single decimal number between 0 and 365, keeping all decimal places. Just the number, no text.
+Examples: '5.25' or '42.33' or '120.0'"""
+            
+            logger.debug("Calling OpenAI API...")
+            response = self.client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a calculator that only outputs decimal numbers. Never explain or add text to your response."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0,
+                max_tokens=10
+            )
+            
+            # Extract number from response
+            try:
+                days = float(response.choices[0].message.content.strip())
+                logger.info(f"Determined startup days: {green(str(days))}")
+                return days
+            except ValueError:
+                logger.error("Failed to parse response as number")
+                return None
+                
+            return None
+            
         except Exception as e:
             logger.error(f"Error analyzing startup days: {str(e)}")
             return None
-            
-    def calculate_sum_range(self, sheet: openpyxl.worksheet.worksheet.Worksheet, row: int, column: int) -> str:
-        """
-        Calculate the sum range for an element catalog row.
-        
-        Args:
-            sheet: The worksheet
-            row: The current row (element catalog row)
-            column: The column to sum (H for Fixed, I for Fee)
-            
-        Returns:
-            str: Excel formula for summing the range (e.g., "=SUM(H6:H11)")
-        """
-        from ..excel.structure_analyzer import find_element_catalog_interval
-        
-        # Find the interval for this element catalog
-        start_row, end_row = find_element_catalog_interval(sheet, row)
-        
-        # Only create sum if this is an element catalog row (in bold)
-        cell = sheet.cell(row=row, column=2)  # Service Element column
-        if cell.font.b:
-            # Get column letter
-            col_letter = openpyxl.utils.get_column_letter(column)
-            
-            # Create sum formula for the range below this row until the separator
-            # Add 1 to start_row to skip the element catalog row itself
-            return f"=SUM({col_letter}{start_row + 1}:{col_letter}{end_row})"
-        
-        return ""

@@ -1,15 +1,14 @@
 from typing import Optional
 from .sheet_processor import SheetProcessor, PrimitiveSheetProcessor, SchemaSheetProcessor
-from ..llm import StartupDaysAnalyzer
 
 class SheetProcessorFactory:
     """Factory for creating sheet processors."""
     
-    @staticmethod
-    def create_processor(sheet_name: str, startup_analyzer: Optional[StartupDaysAnalyzer] = None) -> Optional[SheetProcessor]:
-        """Create appropriate processor for given sheet name."""
-        processors = {
-            'PRIMITIVE': PrimitiveSheetProcessor(),
-            'SCHEMA': SchemaSheetProcessor(startup_analyzer)
-        }
-        return processors.get(sheet_name)
+    def create_primitive_processor(self) -> SheetProcessor:
+        """Create PRIMITIVE sheet processor."""
+        return PrimitiveSheetProcessor()
+    
+    def create_schema_processor(self, startup_analyzer=None, filename: str = "", 
+                              primitive_data=None, primitive_formulas=None) -> Optional[SchemaSheetProcessor]:
+        """Create a processor for SCHEMA sheet."""
+        return SchemaSheetProcessor(startup_analyzer, filename, primitive_data, primitive_formulas)

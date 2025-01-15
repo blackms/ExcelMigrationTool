@@ -1,77 +1,57 @@
-from typing import Any, Optional
-from decimal import Decimal
-from openpyxl.cell import Cell
+from typing import Any, Optional, List, Tuple
+import openpyxl
+import re
 
-def get_cell_value(cell: Optional[Any]) -> Any:
-    """Helper function to safely get cell value"""
-    if cell is None:
-        return None
-    return cell.value
+def get_cell_value(cell: Optional[openpyxl.cell.cell.Cell]) -> Any:
+    """Get cell value, handling None cells."""
+    return cell.value if cell else None
 
 def is_empty_or_dashes(value: Any) -> bool:
-    """Check if a value is empty, None, or contains only dashes"""
-    if value is None or value == "":
+    """Check if value is empty or contains only dashes."""
+    if value is None:
         return True
     if isinstance(value, str):
-        return value.strip().replace("-", "") == ""
+        return not value.strip() or all(c == '-' for c in value.strip())
     return False
 
 def is_number(value: Any) -> bool:
-    """Check if a value is a number (including string representations)"""
-    if value is None:
-        return False
+    """Check if value can be converted to float."""
     try:
-        Decimal(str(value))
+        float(value)
         return True
-    except:
+    except (ValueError, TypeError):
         return False
 
-def extract_cell_references(formula: str, logger) -> list[tuple[str, str]]:
-    """
-    Extract sheet name and cell references from a formula.
-    Example: "=PRIMITIVE!U25*PRIMITIVE!B12" -> [("PRIMITIVE", "U25"), ("PRIMITIVE", "B12")]
-    """
-    try:
-        # Remove the leading = if present
-        if formula.startswith('='):
-            formula = formula[1:]
+def extract_cell_references(formula: str) -> List[Tuple[str, str]]:
+    """Extract sheet and cell references from Excel formula."""
+    refs = []
+    
+    # Handle SUM ranges
+    sum_pattern = r'SUM\((?:([^!]+)!)?([A-Z]+\d+):([A-Z]+\d+)\)'
+    sum_matches = re.finditer(sum_pattern, formula)
+    for match in sum_matches:
+        sheet = match.group(1) if match.group(1) else 'SCHEMA'  # Default to current sheet if no sheet specified
+        start_cell = match.group(2)
+        end_cell = match.group(3)
         
-        refs = []
-        parts = formula.split('*')  # Split by multiplication operator
-        logger.debug(f"Split formula '{formula}' into parts: {parts}")
+        # Convert to column letters and row numbers
+        start_col = ''.join(c for c in start_cell if c.isalpha())
+        start_row = int(''.join(c for c in start_cell if c.isdigit()))
+        end_col = ''.join(c for c in end_cell if c.isalpha())
+        end_row = int(''.join(c for c in end_cell if c.isdigit()))
         
-        for part in parts:
-            if '!' in part:  # Contains sheet reference
-                sheet, cell = part.split('!')
-                refs.append((sheet, cell))
-                logger.debug(f"Extracted reference: Sheet={sheet}, Cell={cell}")
-        
-        return refs
-    except Exception as e:
-        logger.error(f"Error extracting cell references from '{formula}': {str(e)}")
-        return []
-
-def get_cell_value_with_fallback(cell_formulas, cell_data, logger) -> Optional[float]:
-    """
-    Try to get a numeric value from either a formula cell or data cell.
-    Prefers data value over formula value.
-    """
-    try:
-        # Try to get the value from both cells
-        formula_value = get_cell_value(cell_formulas)
-        data_value = get_cell_value(cell_data)
-        
-        logger.debug(f"Found values - Formula: {formula_value}, Data: {data_value}")
-        
-        # Prefer the data value if available
-        if data_value is not None and isinstance(data_value, (int, float)):
-            logger.info(f"Using data value: {data_value}")
-            return float(data_value)
-        elif formula_value is not None and isinstance(formula_value, (int, float)):
-            logger.info(f"Using formula value: {formula_value}")
-            return float(formula_value)
-        
-        return None
-    except Exception as e:
-        logger.error(f"Error getting cell value: {str(e)}")
-        return None
+        # Add all cells in range
+        for row in range(start_row, end_row + 1):
+            cell_ref = f"{start_col}{row}"
+            refs.append((sheet, cell_ref))
+    
+    # Handle direct cell references (including multiplication)
+    cell_pattern = r"(?:'?([^'!]+)'?|([^!*]+))!(\$?[A-Z]+\$?\d+)"
+    cell_matches = re.finditer(cell_pattern, formula)
+    for match in cell_matches:
+        sheet = match.group(1) or match.group(2)  # Either quoted or unquoted sheet name
+        if sheet.startswith('='): sheet = sheet[1:]  # Remove leading = if present
+        cell = match.group(3)
+        refs.append((sheet, cell.replace('$', '')))  # Remove $ signs
+    
+    return refs
