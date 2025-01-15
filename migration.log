@@ -494,3 +494,963 @@
 2025-01-15 10:37:13 | SUCCESS | Migration completed successfully. Output saved to: output.xlsx
 2025-01-15 10:37:13 | INFO | Migration completed successfully!
 2025-01-15 10:37:13 | INFO | Output file: output.xlsx
+2025-01-15 10:43:01 | INFO | Starting migration from <blue>.\COaaS_Schema Prod.xlsx</blue> to <blue>output.xlsx</blue>
+2025-01-15 10:43:01 | INFO | Using template: <blue>C:\Users\rocch\Projects\DedaExcelAI\template\template.xlsx</blue>
+2025-01-15 10:43:01 | INFO | <green>Found SCHEMA sheet, processing data...</green>
+2025-01-15 10:43:01 | DEBUG | Header row found at row <yellow>3</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>5</blue> -> <green>2</green>
+2025-01-15 10:43:01 | WARNING | Row 5: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>6</blue> -> <green>3</green>
+2025-01-15 10:43:01 | WARNING | Row 6: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 7: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N4/(1-O4)</yellow> to row <blue>4</blue>
+2025-01-15 10:43:01 | DEBUG | Row 8: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N5/(1-O5)</yellow> to row <blue>5</blue>
+2025-01-15 10:43:01 | DEBUG | Row 9: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N6/(1-O6)</yellow> to row <blue>6</blue>
+2025-01-15 10:43:01 | DEBUG | Row 10: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N7/(1-O7)</yellow> to row <blue>7</blue>
+2025-01-15 10:43:01 | DEBUG | Row 11: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N8/(1-O8)</yellow> to row <blue>8</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>12</blue> -> <green>9</green>
+2025-01-15 10:43:01 | WARNING | Row 12: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>13</blue> -> <green>10</green>
+2025-01-15 10:43:01 | WARNING | Row 13: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 14: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N11/(1-O11)</yellow> to row <blue>11</blue>
+2025-01-15 10:43:01 | DEBUG | Row 15: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N12/(1-O12)</yellow> to row <blue>12</blue>
+2025-01-15 10:43:01 | DEBUG | Row 16: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N13/(1-O13)</yellow> to row <blue>13</blue>
+2025-01-15 10:43:01 | DEBUG | Row 17: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N14/(1-O14)</yellow> to row <blue>14</blue>
+2025-01-15 10:43:01 | DEBUG | Row 18: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N15/(1-O15)</yellow> to row <blue>15</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>19</blue> -> <green>16</green>
+2025-01-15 10:43:01 | WARNING | Row 19: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>20</blue> -> <green>17</green>
+2025-01-15 10:43:01 | WARNING | Row 20: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 21: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N18/(1-O18)</yellow> to row <blue>18</blue>
+2025-01-15 10:43:01 | DEBUG | Row 22: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N19/(1-O19)</yellow> to row <blue>19</blue>
+2025-01-15 10:43:01 | DEBUG | Row 23: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N20/(1-O20)</yellow> to row <blue>20</blue>
+2025-01-15 10:43:01 | DEBUG | Row 24: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N21/(1-O21)</yellow> to row <blue>21</blue>
+2025-01-15 10:43:01 | DEBUG | Row 25: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N22/(1-O22)</yellow> to row <blue>22</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>26</blue> -> <green>23</green>
+2025-01-15 10:43:01 | WARNING | Row 26: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>27</blue> -> <green>24</green>
+2025-01-15 10:43:01 | WARNING | Row 27: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 28: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N25/(1-O25)</yellow> to row <blue>25</blue>
+2025-01-15 10:43:01 | DEBUG | Row 29: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N26/(1-O26)</yellow> to row <blue>26</blue>
+2025-01-15 10:43:01 | DEBUG | Row 30: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N27/(1-O27)</yellow> to row <blue>27</blue>
+2025-01-15 10:43:01 | DEBUG | Row 31: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N28/(1-O28)</yellow> to row <blue>28</blue>
+2025-01-15 10:43:01 | DEBUG | Row 32: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N29/(1-O29)</yellow> to row <blue>29</blue>
+2025-01-15 10:43:01 | DEBUG | Row 33: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N30/(1-O30)</yellow> to row <blue>30</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>34</blue> -> <green>31</green>
+2025-01-15 10:43:01 | WARNING | Row 34: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>35</blue> -> <green>32</green>
+2025-01-15 10:43:01 | WARNING | Row 35: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>36</blue> -> <green>33</green>
+2025-01-15 10:43:01 | WARNING | Row 36: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>37</blue> -> <green>34</green>
+2025-01-15 10:43:01 | WARNING | Row 37: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>38</blue> -> <green>35</green>
+2025-01-15 10:43:01 | WARNING | Row 38: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 39: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N36/(1-O36)</yellow> to row <blue>36</blue>
+2025-01-15 10:43:01 | DEBUG | Row 40: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N37/(1-O37)</yellow> to row <blue>37</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>41</blue> -> <green>38</green>
+2025-01-15 10:43:01 | WARNING | Row 41: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>42</blue> -> <green>39</green>
+2025-01-15 10:43:01 | WARNING | Row 42: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>43</blue> -> <green>40</green>
+2025-01-15 10:43:01 | WARNING | Row 43: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>44</blue> -> <green>41</green>
+2025-01-15 10:43:01 | WARNING | Row 44: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>45</blue> -> <green>42</green>
+2025-01-15 10:43:01 | WARNING | Row 45: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 46: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N43/(1-O43)</yellow> to row <blue>43</blue>
+2025-01-15 10:43:01 | DEBUG | Row 47: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N44/(1-O44)</yellow> to row <blue>44</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>48</blue> -> <green>45</green>
+2025-01-15 10:43:01 | WARNING | Row 48: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>49</blue> -> <green>46</green>
+2025-01-15 10:43:01 | WARNING | Row 49: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>50</blue> -> <green>47</green>
+2025-01-15 10:43:01 | WARNING | Row 50: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>51</blue> -> <green>48</green>
+2025-01-15 10:43:01 | WARNING | Row 51: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>52</blue> -> <green>49</green>
+2025-01-15 10:43:01 | WARNING | Row 52: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 53: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N50/(1-O50)</yellow> to row <blue>50</blue>
+2025-01-15 10:43:01 | DEBUG | Row 54: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N51/(1-O51)</yellow> to row <blue>51</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>55</blue> -> <green>52</green>
+2025-01-15 10:43:01 | WARNING | Row 55: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>56</blue> -> <green>53</green>
+2025-01-15 10:43:01 | WARNING | Row 56: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>57</blue> -> <green>54</green>
+2025-01-15 10:43:01 | WARNING | Row 57: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>58</blue> -> <green>55</green>
+2025-01-15 10:43:01 | WARNING | Row 58: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>59</blue> -> <green>56</green>
+2025-01-15 10:43:01 | WARNING | Row 59: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 60: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N57/(1-O57)</yellow> to row <blue>57</blue>
+2025-01-15 10:43:01 | DEBUG | Row 61: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N58/(1-O58)</yellow> to row <blue>58</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>62</blue> -> <green>59</green>
+2025-01-15 10:43:01 | WARNING | Row 62: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>63</blue> -> <green>60</green>
+2025-01-15 10:43:01 | WARNING | Row 63: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>64</blue> -> <green>61</green>
+2025-01-15 10:43:01 | WARNING | Row 64: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>65</blue> -> <green>62</green>
+2025-01-15 10:43:01 | WARNING | Row 65: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>66</blue> -> <green>63</green>
+2025-01-15 10:43:01 | WARNING | Row 66: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 67: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N64/(1-O64)</yellow> to row <blue>64</blue>
+2025-01-15 10:43:01 | DEBUG | Row 68: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N65/(1-O65)</yellow> to row <blue>65</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>69</blue> -> <green>66</green>
+2025-01-15 10:43:01 | WARNING | Row 69: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>70</blue> -> <green>67</green>
+2025-01-15 10:43:01 | WARNING | Row 70: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>71</blue> -> <green>68</green>
+2025-01-15 10:43:01 | WARNING | Row 71: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>72</blue> -> <green>69</green>
+2025-01-15 10:43:01 | WARNING | Row 72: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>73</blue> -> <green>70</green>
+2025-01-15 10:43:01 | WARNING | Row 73: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 74: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N71/(1-O71)</yellow> to row <blue>71</blue>
+2025-01-15 10:43:01 | DEBUG | Row 75: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N72/(1-O72)</yellow> to row <blue>72</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>76</blue> -> <green>73</green>
+2025-01-15 10:43:01 | WARNING | Row 76: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>77</blue> -> <green>74</green>
+2025-01-15 10:43:01 | WARNING | Row 77: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>78</blue> -> <green>75</green>
+2025-01-15 10:43:01 | WARNING | Row 78: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>79</blue> -> <green>76</green>
+2025-01-15 10:43:01 | WARNING | Row 79: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>80</blue> -> <green>77</green>
+2025-01-15 10:43:01 | WARNING | Row 80: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 81: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N78/(1-O78)</yellow> to row <blue>78</blue>
+2025-01-15 10:43:01 | DEBUG | Row 82: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N79/(1-O79)</yellow> to row <blue>79</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>83</blue> -> <green>80</green>
+2025-01-15 10:43:01 | WARNING | Row 83: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>84</blue> -> <green>81</green>
+2025-01-15 10:43:01 | WARNING | Row 84: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>85</blue> -> <green>82</green>
+2025-01-15 10:43:01 | WARNING | Row 85: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>86</blue> -> <green>83</green>
+2025-01-15 10:43:01 | WARNING | Row 86: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>87</blue> -> <green>84</green>
+2025-01-15 10:43:01 | WARNING | Row 87: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 88: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N85/(1-O85)</yellow> to row <blue>85</blue>
+2025-01-15 10:43:01 | DEBUG | Row 89: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N86/(1-O86)</yellow> to row <blue>86</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>90</blue> -> <green>87</green>
+2025-01-15 10:43:01 | WARNING | Row 90: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>91</blue> -> <green>88</green>
+2025-01-15 10:43:01 | WARNING | Row 91: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>92</blue> -> <green>89</green>
+2025-01-15 10:43:01 | WARNING | Row 92: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>93</blue> -> <green>90</green>
+2025-01-15 10:43:01 | WARNING | Row 93: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>94</blue> -> <green>91</green>
+2025-01-15 10:43:01 | WARNING | Row 94: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 95: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N92/(1-O92)</yellow> to row <blue>92</blue>
+2025-01-15 10:43:01 | DEBUG | Row 96: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N93/(1-O93)</yellow> to row <blue>93</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>97</blue> -> <green>94</green>
+2025-01-15 10:43:01 | WARNING | Row 97: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>98</blue> -> <green>95</green>
+2025-01-15 10:43:01 | WARNING | Row 98: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>99</blue> -> <green>96</green>
+2025-01-15 10:43:01 | WARNING | Row 99: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>100</blue> -> <green>97</green>
+2025-01-15 10:43:01 | WARNING | Row 100: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>101</blue> -> <green>98</green>
+2025-01-15 10:43:01 | WARNING | Row 101: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 102: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N99/(1-O99)</yellow> to row <blue>99</blue>
+2025-01-15 10:43:01 | DEBUG | Row 103: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N100/(1-O100)</yellow> to row <blue>100</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>104</blue> -> <green>101</green>
+2025-01-15 10:43:01 | WARNING | Row 104: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>105</blue> -> <green>102</green>
+2025-01-15 10:43:01 | WARNING | Row 105: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>106</blue> -> <green>103</green>
+2025-01-15 10:43:01 | WARNING | Row 106: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>107</blue> -> <green>104</green>
+2025-01-15 10:43:01 | WARNING | Row 107: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>108</blue> -> <green>105</green>
+2025-01-15 10:43:01 | WARNING | Row 108: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 109: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N106/(1-O106)</yellow> to row <blue>106</blue>
+2025-01-15 10:43:01 | DEBUG | Row 110: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N107/(1-O107)</yellow> to row <blue>107</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>111</blue> -> <green>108</green>
+2025-01-15 10:43:01 | WARNING | Row 111: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>112</blue> -> <green>109</green>
+2025-01-15 10:43:01 | WARNING | Row 112: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>113</blue> -> <green>110</green>
+2025-01-15 10:43:01 | WARNING | Row 113: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>114</blue> -> <green>111</green>
+2025-01-15 10:43:01 | WARNING | Row 114: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>115</blue> -> <green>112</green>
+2025-01-15 10:43:01 | WARNING | Row 115: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 116: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N113/(1-O113)</yellow> to row <blue>113</blue>
+2025-01-15 10:43:01 | DEBUG | Row 117: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N114/(1-O114)</yellow> to row <blue>114</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>118</blue> -> <green>115</green>
+2025-01-15 10:43:01 | WARNING | Row 118: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>119</blue> -> <green>116</green>
+2025-01-15 10:43:01 | WARNING | Row 119: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>120</blue> -> <green>117</green>
+2025-01-15 10:43:01 | WARNING | Row 120: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>121</blue> -> <green>118</green>
+2025-01-15 10:43:01 | WARNING | Row 121: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>122</blue> -> <green>119</green>
+2025-01-15 10:43:01 | WARNING | Row 122: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 123: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N120/(1-O120)</yellow> to row <blue>120</blue>
+2025-01-15 10:43:01 | DEBUG | Row 124: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N121/(1-O121)</yellow> to row <blue>121</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>125</blue> -> <green>122</green>
+2025-01-15 10:43:01 | WARNING | Row 125: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>126</blue> -> <green>123</green>
+2025-01-15 10:43:01 | WARNING | Row 126: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>127</blue> -> <green>124</green>
+2025-01-15 10:43:01 | WARNING | Row 127: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>128</blue> -> <green>125</green>
+2025-01-15 10:43:01 | WARNING | Row 128: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>129</blue> -> <green>126</green>
+2025-01-15 10:43:01 | WARNING | Row 129: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 130: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N127/(1-O127)</yellow> to row <blue>127</blue>
+2025-01-15 10:43:01 | DEBUG | Row 131: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N128/(1-O128)</yellow> to row <blue>128</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>132</blue> -> <green>129</green>
+2025-01-15 10:43:01 | WARNING | Row 132: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>133</blue> -> <green>130</green>
+2025-01-15 10:43:01 | WARNING | Row 133: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>134</blue> -> <green>131</green>
+2025-01-15 10:43:01 | WARNING | Row 134: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>135</blue> -> <green>132</green>
+2025-01-15 10:43:01 | WARNING | Row 135: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>136</blue> -> <green>133</green>
+2025-01-15 10:43:01 | WARNING | Row 136: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 137: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N134/(1-O134)</yellow> to row <blue>134</blue>
+2025-01-15 10:43:01 | DEBUG | Row 138: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N135/(1-O135)</yellow> to row <blue>135</blue>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>139</blue> -> <green>136</green>
+2025-01-15 10:43:01 | WARNING | Row 139: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>140</blue> -> <green>137</green>
+2025-01-15 10:43:01 | WARNING | Row 140: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>141</blue> -> <green>138</green>
+2025-01-15 10:43:01 | WARNING | Row 141: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>142</blue> -> <green>139</green>
+2025-01-15 10:43:01 | WARNING | Row 142: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Processing row <blue>143</blue> -> <green>140</green>
+2025-01-15 10:43:01 | WARNING | Row 143: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:43:01 | DEBUG | Row 144: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:43:01 | DEBUG | Added formula: <yellow>=N141/(1-O141)</yellow> to row <blue>141</blue>
+2025-01-15 10:43:01 | INFO | Successfully processed <green>140</green> rows
+2025-01-15 10:43:02 | SUCCESS | Migration completed successfully. Output saved to: <blue>output.xlsx</blue>
+2025-01-15 10:43:02 | SUCCESS | Migration completed successfully!
+2025-01-15 10:43:02 | INFO | Output file: output.xlsx
+2025-01-15 10:44:50 | INFO | Starting migration from <blue>.\COaaS_Schema Prod.xlsx</blue> to <blue>output.xlsx</blue>
+2025-01-15 10:44:50 | INFO | Using template: <blue>C:\Users\rocch\Projects\DedaExcelAI\template\template.xlsx</blue>
+2025-01-15 10:44:50 | INFO | <green>Found SCHEMA sheet, processing data...</green>
+2025-01-15 10:44:50 | DEBUG | Header row found at row <yellow>3</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>5</blue> -> <green>2</green>
+2025-01-15 10:44:50 | WARNING | Row 5: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>6</blue> -> <green>3</green>
+2025-01-15 10:44:50 | WARNING | Row 6: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 7: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N4/(1-O4)</yellow> to row <blue>4</blue>
+2025-01-15 10:44:50 | DEBUG | Row 8: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N5/(1-O5)</yellow> to row <blue>5</blue>
+2025-01-15 10:44:50 | DEBUG | Row 9: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N6/(1-O6)</yellow> to row <blue>6</blue>
+2025-01-15 10:44:50 | DEBUG | Row 10: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N7/(1-O7)</yellow> to row <blue>7</blue>
+2025-01-15 10:44:50 | DEBUG | Row 11: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N8/(1-O8)</yellow> to row <blue>8</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>12</blue> -> <green>9</green>
+2025-01-15 10:44:50 | WARNING | Row 12: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>13</blue> -> <green>10</green>
+2025-01-15 10:44:50 | WARNING | Row 13: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 14: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N11/(1-O11)</yellow> to row <blue>11</blue>
+2025-01-15 10:44:50 | DEBUG | Row 15: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N12/(1-O12)</yellow> to row <blue>12</blue>
+2025-01-15 10:44:50 | DEBUG | Row 16: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N13/(1-O13)</yellow> to row <blue>13</blue>
+2025-01-15 10:44:50 | DEBUG | Row 17: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N14/(1-O14)</yellow> to row <blue>14</blue>
+2025-01-15 10:44:50 | DEBUG | Row 18: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N15/(1-O15)</yellow> to row <blue>15</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>19</blue> -> <green>16</green>
+2025-01-15 10:44:50 | WARNING | Row 19: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>20</blue> -> <green>17</green>
+2025-01-15 10:44:50 | WARNING | Row 20: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 21: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N18/(1-O18)</yellow> to row <blue>18</blue>
+2025-01-15 10:44:50 | DEBUG | Row 22: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N19/(1-O19)</yellow> to row <blue>19</blue>
+2025-01-15 10:44:50 | DEBUG | Row 23: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N20/(1-O20)</yellow> to row <blue>20</blue>
+2025-01-15 10:44:50 | DEBUG | Row 24: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N21/(1-O21)</yellow> to row <blue>21</blue>
+2025-01-15 10:44:50 | DEBUG | Row 25: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N22/(1-O22)</yellow> to row <blue>22</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>26</blue> -> <green>23</green>
+2025-01-15 10:44:50 | WARNING | Row 26: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>27</blue> -> <green>24</green>
+2025-01-15 10:44:50 | WARNING | Row 27: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 28: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N25/(1-O25)</yellow> to row <blue>25</blue>
+2025-01-15 10:44:50 | DEBUG | Row 29: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N26/(1-O26)</yellow> to row <blue>26</blue>
+2025-01-15 10:44:50 | DEBUG | Row 30: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N27/(1-O27)</yellow> to row <blue>27</blue>
+2025-01-15 10:44:50 | DEBUG | Row 31: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N28/(1-O28)</yellow> to row <blue>28</blue>
+2025-01-15 10:44:50 | DEBUG | Row 32: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N29/(1-O29)</yellow> to row <blue>29</blue>
+2025-01-15 10:44:50 | DEBUG | Row 33: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N30/(1-O30)</yellow> to row <blue>30</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>34</blue> -> <green>31</green>
+2025-01-15 10:44:50 | WARNING | Row 34: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>35</blue> -> <green>32</green>
+2025-01-15 10:44:50 | WARNING | Row 35: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>36</blue> -> <green>33</green>
+2025-01-15 10:44:50 | WARNING | Row 36: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>37</blue> -> <green>34</green>
+2025-01-15 10:44:50 | WARNING | Row 37: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>38</blue> -> <green>35</green>
+2025-01-15 10:44:50 | WARNING | Row 38: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 39: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N36/(1-O36)</yellow> to row <blue>36</blue>
+2025-01-15 10:44:50 | DEBUG | Row 40: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N37/(1-O37)</yellow> to row <blue>37</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>41</blue> -> <green>38</green>
+2025-01-15 10:44:50 | WARNING | Row 41: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>42</blue> -> <green>39</green>
+2025-01-15 10:44:50 | WARNING | Row 42: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>43</blue> -> <green>40</green>
+2025-01-15 10:44:50 | WARNING | Row 43: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>44</blue> -> <green>41</green>
+2025-01-15 10:44:50 | WARNING | Row 44: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>45</blue> -> <green>42</green>
+2025-01-15 10:44:50 | WARNING | Row 45: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 46: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N43/(1-O43)</yellow> to row <blue>43</blue>
+2025-01-15 10:44:50 | DEBUG | Row 47: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N44/(1-O44)</yellow> to row <blue>44</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>48</blue> -> <green>45</green>
+2025-01-15 10:44:50 | WARNING | Row 48: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>49</blue> -> <green>46</green>
+2025-01-15 10:44:50 | WARNING | Row 49: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>50</blue> -> <green>47</green>
+2025-01-15 10:44:50 | WARNING | Row 50: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>51</blue> -> <green>48</green>
+2025-01-15 10:44:50 | WARNING | Row 51: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>52</blue> -> <green>49</green>
+2025-01-15 10:44:50 | WARNING | Row 52: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 53: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N50/(1-O50)</yellow> to row <blue>50</blue>
+2025-01-15 10:44:50 | DEBUG | Row 54: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N51/(1-O51)</yellow> to row <blue>51</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>55</blue> -> <green>52</green>
+2025-01-15 10:44:50 | WARNING | Row 55: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>56</blue> -> <green>53</green>
+2025-01-15 10:44:50 | WARNING | Row 56: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>57</blue> -> <green>54</green>
+2025-01-15 10:44:50 | WARNING | Row 57: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>58</blue> -> <green>55</green>
+2025-01-15 10:44:50 | WARNING | Row 58: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>59</blue> -> <green>56</green>
+2025-01-15 10:44:50 | WARNING | Row 59: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 60: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N57/(1-O57)</yellow> to row <blue>57</blue>
+2025-01-15 10:44:50 | DEBUG | Row 61: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N58/(1-O58)</yellow> to row <blue>58</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>62</blue> -> <green>59</green>
+2025-01-15 10:44:50 | WARNING | Row 62: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>63</blue> -> <green>60</green>
+2025-01-15 10:44:50 | WARNING | Row 63: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>64</blue> -> <green>61</green>
+2025-01-15 10:44:50 | WARNING | Row 64: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>65</blue> -> <green>62</green>
+2025-01-15 10:44:50 | WARNING | Row 65: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>66</blue> -> <green>63</green>
+2025-01-15 10:44:50 | WARNING | Row 66: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 67: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N64/(1-O64)</yellow> to row <blue>64</blue>
+2025-01-15 10:44:50 | DEBUG | Row 68: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N65/(1-O65)</yellow> to row <blue>65</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>69</blue> -> <green>66</green>
+2025-01-15 10:44:50 | WARNING | Row 69: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>70</blue> -> <green>67</green>
+2025-01-15 10:44:50 | WARNING | Row 70: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>71</blue> -> <green>68</green>
+2025-01-15 10:44:50 | WARNING | Row 71: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>72</blue> -> <green>69</green>
+2025-01-15 10:44:50 | WARNING | Row 72: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>73</blue> -> <green>70</green>
+2025-01-15 10:44:50 | WARNING | Row 73: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 74: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N71/(1-O71)</yellow> to row <blue>71</blue>
+2025-01-15 10:44:50 | DEBUG | Row 75: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N72/(1-O72)</yellow> to row <blue>72</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>76</blue> -> <green>73</green>
+2025-01-15 10:44:50 | WARNING | Row 76: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>77</blue> -> <green>74</green>
+2025-01-15 10:44:50 | WARNING | Row 77: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>78</blue> -> <green>75</green>
+2025-01-15 10:44:50 | WARNING | Row 78: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>79</blue> -> <green>76</green>
+2025-01-15 10:44:50 | WARNING | Row 79: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>80</blue> -> <green>77</green>
+2025-01-15 10:44:50 | WARNING | Row 80: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 81: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N78/(1-O78)</yellow> to row <blue>78</blue>
+2025-01-15 10:44:50 | DEBUG | Row 82: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N79/(1-O79)</yellow> to row <blue>79</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>83</blue> -> <green>80</green>
+2025-01-15 10:44:50 | WARNING | Row 83: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>84</blue> -> <green>81</green>
+2025-01-15 10:44:50 | WARNING | Row 84: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>85</blue> -> <green>82</green>
+2025-01-15 10:44:50 | WARNING | Row 85: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>86</blue> -> <green>83</green>
+2025-01-15 10:44:50 | WARNING | Row 86: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>87</blue> -> <green>84</green>
+2025-01-15 10:44:50 | WARNING | Row 87: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 88: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N85/(1-O85)</yellow> to row <blue>85</blue>
+2025-01-15 10:44:50 | DEBUG | Row 89: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N86/(1-O86)</yellow> to row <blue>86</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>90</blue> -> <green>87</green>
+2025-01-15 10:44:50 | WARNING | Row 90: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>91</blue> -> <green>88</green>
+2025-01-15 10:44:50 | WARNING | Row 91: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>92</blue> -> <green>89</green>
+2025-01-15 10:44:50 | WARNING | Row 92: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>93</blue> -> <green>90</green>
+2025-01-15 10:44:50 | WARNING | Row 93: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>94</blue> -> <green>91</green>
+2025-01-15 10:44:50 | WARNING | Row 94: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 95: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N92/(1-O92)</yellow> to row <blue>92</blue>
+2025-01-15 10:44:50 | DEBUG | Row 96: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N93/(1-O93)</yellow> to row <blue>93</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>97</blue> -> <green>94</green>
+2025-01-15 10:44:50 | WARNING | Row 97: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>98</blue> -> <green>95</green>
+2025-01-15 10:44:50 | WARNING | Row 98: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>99</blue> -> <green>96</green>
+2025-01-15 10:44:50 | WARNING | Row 99: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>100</blue> -> <green>97</green>
+2025-01-15 10:44:50 | WARNING | Row 100: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>101</blue> -> <green>98</green>
+2025-01-15 10:44:50 | WARNING | Row 101: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 102: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N99/(1-O99)</yellow> to row <blue>99</blue>
+2025-01-15 10:44:50 | DEBUG | Row 103: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N100/(1-O100)</yellow> to row <blue>100</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>104</blue> -> <green>101</green>
+2025-01-15 10:44:50 | WARNING | Row 104: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>105</blue> -> <green>102</green>
+2025-01-15 10:44:50 | WARNING | Row 105: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>106</blue> -> <green>103</green>
+2025-01-15 10:44:50 | WARNING | Row 106: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>107</blue> -> <green>104</green>
+2025-01-15 10:44:50 | WARNING | Row 107: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>108</blue> -> <green>105</green>
+2025-01-15 10:44:50 | WARNING | Row 108: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 109: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N106/(1-O106)</yellow> to row <blue>106</blue>
+2025-01-15 10:44:50 | DEBUG | Row 110: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N107/(1-O107)</yellow> to row <blue>107</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>111</blue> -> <green>108</green>
+2025-01-15 10:44:50 | WARNING | Row 111: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>112</blue> -> <green>109</green>
+2025-01-15 10:44:50 | WARNING | Row 112: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>113</blue> -> <green>110</green>
+2025-01-15 10:44:50 | WARNING | Row 113: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>114</blue> -> <green>111</green>
+2025-01-15 10:44:50 | WARNING | Row 114: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>115</blue> -> <green>112</green>
+2025-01-15 10:44:50 | WARNING | Row 115: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 116: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N113/(1-O113)</yellow> to row <blue>113</blue>
+2025-01-15 10:44:50 | DEBUG | Row 117: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N114/(1-O114)</yellow> to row <blue>114</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>118</blue> -> <green>115</green>
+2025-01-15 10:44:50 | WARNING | Row 118: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>119</blue> -> <green>116</green>
+2025-01-15 10:44:50 | WARNING | Row 119: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>120</blue> -> <green>117</green>
+2025-01-15 10:44:50 | WARNING | Row 120: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>121</blue> -> <green>118</green>
+2025-01-15 10:44:50 | WARNING | Row 121: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>122</blue> -> <green>119</green>
+2025-01-15 10:44:50 | WARNING | Row 122: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 123: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N120/(1-O120)</yellow> to row <blue>120</blue>
+2025-01-15 10:44:50 | DEBUG | Row 124: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N121/(1-O121)</yellow> to row <blue>121</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>125</blue> -> <green>122</green>
+2025-01-15 10:44:50 | WARNING | Row 125: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>126</blue> -> <green>123</green>
+2025-01-15 10:44:50 | WARNING | Row 126: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>127</blue> -> <green>124</green>
+2025-01-15 10:44:50 | WARNING | Row 127: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>128</blue> -> <green>125</green>
+2025-01-15 10:44:50 | WARNING | Row 128: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>129</blue> -> <green>126</green>
+2025-01-15 10:44:50 | WARNING | Row 129: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 130: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N127/(1-O127)</yellow> to row <blue>127</blue>
+2025-01-15 10:44:50 | DEBUG | Row 131: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N128/(1-O128)</yellow> to row <blue>128</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>132</blue> -> <green>129</green>
+2025-01-15 10:44:50 | WARNING | Row 132: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>133</blue> -> <green>130</green>
+2025-01-15 10:44:50 | WARNING | Row 133: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>134</blue> -> <green>131</green>
+2025-01-15 10:44:50 | WARNING | Row 134: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>135</blue> -> <green>132</green>
+2025-01-15 10:44:50 | WARNING | Row 135: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>136</blue> -> <green>133</green>
+2025-01-15 10:44:50 | WARNING | Row 136: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 137: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N134/(1-O134)</yellow> to row <blue>134</blue>
+2025-01-15 10:44:50 | DEBUG | Row 138: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N135/(1-O135)</yellow> to row <blue>135</blue>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>139</blue> -> <green>136</green>
+2025-01-15 10:44:50 | WARNING | Row 139: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>140</blue> -> <green>137</green>
+2025-01-15 10:44:50 | WARNING | Row 140: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>141</blue> -> <green>138</green>
+2025-01-15 10:44:50 | WARNING | Row 141: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>142</blue> -> <green>139</green>
+2025-01-15 10:44:50 | WARNING | Row 142: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Processing row <blue>143</blue> -> <green>140</green>
+2025-01-15 10:44:50 | WARNING | Row 143: No valid cost found, defaulting to <yellow>Fee Optional</yellow>
+2025-01-15 10:44:50 | DEBUG | Row 144: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:44:50 | DEBUG | Added formula: <yellow>=N141/(1-O141)</yellow> to row <blue>141</blue>
+2025-01-15 10:44:50 | INFO | Successfully processed <green>140</green> rows
+2025-01-15 10:44:50 | SUCCESS | Migration completed successfully. Output saved to: <blue>output.xlsx</blue>
+2025-01-15 10:44:50 | SUCCESS | Migration completed successfully!
+2025-01-15 10:44:50 | INFO | Output file: output.xlsx
+2025-01-15 10:52:16 | INFO | Starting migration from <blue>.\COaaS_Schema Prod.xlsx</blue> to <blue>output.xlsx</blue>
+2025-01-15 10:52:16 | INFO | Using template: <blue>C:\Users\rocch\Projects\DedaExcelAI\template\template.xlsx</blue>
+2025-01-15 10:52:16 | INFO | <green>Found SCHEMA sheet, processing data...</green>
+2025-01-15 10:52:16 | DEBUG | Header row found at row <yellow>3</yellow>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>5</blue> -> <green>2</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>5</yellow> to <yellow>6</yellow>
+2025-01-15 10:52:16 | DEBUG | Found FIXED type at row <yellow>6</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 5: Using Fixed Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>6</blue> -> <green>3</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>6</yellow> to <yellow>6</yellow>
+2025-01-15 10:52:16 | DEBUG | Found FIXED type at row <yellow>6</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 6: Using Fixed Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Row 7: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N4/(1-O4)</yellow> to row <blue>4</blue>
+2025-01-15 10:52:16 | DEBUG | Row 8: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N5/(1-O5)</yellow> to row <blue>5</blue>
+2025-01-15 10:52:16 | DEBUG | Row 9: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N6/(1-O6)</yellow> to row <blue>6</blue>
+2025-01-15 10:52:16 | DEBUG | Row 10: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N7/(1-O7)</yellow> to row <blue>7</blue>
+2025-01-15 10:52:16 | DEBUG | Row 11: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N8/(1-O8)</yellow> to row <blue>8</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>12</blue> -> <green>9</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>12</yellow> to <yellow>13</yellow>
+2025-01-15 10:52:16 | DEBUG | Found CANONE type at row <yellow>13</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 12: Using Fee Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>13</blue> -> <green>10</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>13</yellow> to <yellow>13</yellow>
+2025-01-15 10:52:16 | DEBUG | Found CANONE type at row <yellow>13</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 13: Using Fee Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Row 14: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N11/(1-O11)</yellow> to row <blue>11</blue>
+2025-01-15 10:52:16 | DEBUG | Row 15: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N12/(1-O12)</yellow> to row <blue>12</blue>
+2025-01-15 10:52:16 | DEBUG | Row 16: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N13/(1-O13)</yellow> to row <blue>13</blue>
+2025-01-15 10:52:16 | DEBUG | Row 17: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N14/(1-O14)</yellow> to row <blue>14</blue>
+2025-01-15 10:52:16 | DEBUG | Row 18: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N15/(1-O15)</yellow> to row <blue>15</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>19</blue> -> <green>16</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>19</yellow> to <yellow>20</yellow>
+2025-01-15 10:52:16 | DEBUG | Found CANONE type at row <yellow>20</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 19: Using Fee Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>20</blue> -> <green>17</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>20</yellow> to <yellow>20</yellow>
+2025-01-15 10:52:16 | DEBUG | Found CANONE type at row <yellow>20</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 20: Using Fee Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Row 21: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N18/(1-O18)</yellow> to row <blue>18</blue>
+2025-01-15 10:52:16 | DEBUG | Row 22: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N19/(1-O19)</yellow> to row <blue>19</blue>
+2025-01-15 10:52:16 | DEBUG | Row 23: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N20/(1-O20)</yellow> to row <blue>20</blue>
+2025-01-15 10:52:16 | DEBUG | Row 24: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N21/(1-O21)</yellow> to row <blue>21</blue>
+2025-01-15 10:52:16 | DEBUG | Row 25: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N22/(1-O22)</yellow> to row <blue>22</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>26</blue> -> <green>23</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>26</yellow> to <yellow>27</yellow>
+2025-01-15 10:52:16 | DEBUG | Found CANONE type at row <yellow>27</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 26: Using Fee Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>27</blue> -> <green>24</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>27</yellow> to <yellow>27</yellow>
+2025-01-15 10:52:16 | DEBUG | Found CANONE type at row <yellow>27</yellow>
+2025-01-15 10:52:16 | DEBUG | Row 27: Using Fee Optional based on WBS type
+2025-01-15 10:52:16 | DEBUG | Row 28: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N25/(1-O25)</yellow> to row <blue>25</blue>
+2025-01-15 10:52:16 | DEBUG | Row 29: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N26/(1-O26)</yellow> to row <blue>26</blue>
+2025-01-15 10:52:16 | DEBUG | Row 30: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N27/(1-O27)</yellow> to row <blue>27</blue>
+2025-01-15 10:52:16 | DEBUG | Row 31: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N28/(1-O28)</yellow> to row <blue>28</blue>
+2025-01-15 10:52:16 | DEBUG | Row 32: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N29/(1-O29)</yellow> to row <blue>29</blue>
+2025-01-15 10:52:16 | DEBUG | Row 33: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N30/(1-O30)</yellow> to row <blue>30</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>34</blue> -> <green>31</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>34</yellow> to <yellow>38</yellow>
+2025-01-15 10:52:16 | WARNING | Row 34: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>35</blue> -> <green>32</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>35</yellow> to <yellow>38</yellow>
+2025-01-15 10:52:16 | WARNING | Row 35: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>36</blue> -> <green>33</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>36</yellow> to <yellow>38</yellow>
+2025-01-15 10:52:16 | WARNING | Row 36: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>37</blue> -> <green>34</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>37</yellow> to <yellow>38</yellow>
+2025-01-15 10:52:16 | WARNING | Row 37: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>38</blue> -> <green>35</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>38</yellow> to <yellow>38</yellow>
+2025-01-15 10:52:16 | WARNING | Row 38: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 39: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N36/(1-O36)</yellow> to row <blue>36</blue>
+2025-01-15 10:52:16 | DEBUG | Row 40: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N37/(1-O37)</yellow> to row <blue>37</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>41</blue> -> <green>38</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>41</yellow> to <yellow>45</yellow>
+2025-01-15 10:52:16 | WARNING | Row 41: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>42</blue> -> <green>39</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>42</yellow> to <yellow>45</yellow>
+2025-01-15 10:52:16 | WARNING | Row 42: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>43</blue> -> <green>40</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>43</yellow> to <yellow>45</yellow>
+2025-01-15 10:52:16 | WARNING | Row 43: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>44</blue> -> <green>41</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>44</yellow> to <yellow>45</yellow>
+2025-01-15 10:52:16 | WARNING | Row 44: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>45</blue> -> <green>42</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>45</yellow> to <yellow>45</yellow>
+2025-01-15 10:52:16 | WARNING | Row 45: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 46: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N43/(1-O43)</yellow> to row <blue>43</blue>
+2025-01-15 10:52:16 | DEBUG | Row 47: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N44/(1-O44)</yellow> to row <blue>44</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>48</blue> -> <green>45</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>48</yellow> to <yellow>52</yellow>
+2025-01-15 10:52:16 | WARNING | Row 48: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>49</blue> -> <green>46</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>49</yellow> to <yellow>52</yellow>
+2025-01-15 10:52:16 | WARNING | Row 49: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>50</blue> -> <green>47</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>50</yellow> to <yellow>52</yellow>
+2025-01-15 10:52:16 | WARNING | Row 50: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>51</blue> -> <green>48</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>51</yellow> to <yellow>52</yellow>
+2025-01-15 10:52:16 | WARNING | Row 51: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>52</blue> -> <green>49</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>52</yellow> to <yellow>52</yellow>
+2025-01-15 10:52:16 | WARNING | Row 52: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 53: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N50/(1-O50)</yellow> to row <blue>50</blue>
+2025-01-15 10:52:16 | DEBUG | Row 54: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N51/(1-O51)</yellow> to row <blue>51</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>55</blue> -> <green>52</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>55</yellow> to <yellow>59</yellow>
+2025-01-15 10:52:16 | WARNING | Row 55: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>56</blue> -> <green>53</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>56</yellow> to <yellow>59</yellow>
+2025-01-15 10:52:16 | WARNING | Row 56: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>57</blue> -> <green>54</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>57</yellow> to <yellow>59</yellow>
+2025-01-15 10:52:16 | WARNING | Row 57: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>58</blue> -> <green>55</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>58</yellow> to <yellow>59</yellow>
+2025-01-15 10:52:16 | WARNING | Row 58: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>59</blue> -> <green>56</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>59</yellow> to <yellow>59</yellow>
+2025-01-15 10:52:16 | WARNING | Row 59: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 60: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N57/(1-O57)</yellow> to row <blue>57</blue>
+2025-01-15 10:52:16 | DEBUG | Row 61: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N58/(1-O58)</yellow> to row <blue>58</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>62</blue> -> <green>59</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>62</yellow> to <yellow>66</yellow>
+2025-01-15 10:52:16 | WARNING | Row 62: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>63</blue> -> <green>60</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>63</yellow> to <yellow>66</yellow>
+2025-01-15 10:52:16 | WARNING | Row 63: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>64</blue> -> <green>61</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>64</yellow> to <yellow>66</yellow>
+2025-01-15 10:52:16 | WARNING | Row 64: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>65</blue> -> <green>62</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>65</yellow> to <yellow>66</yellow>
+2025-01-15 10:52:16 | WARNING | Row 65: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>66</blue> -> <green>63</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>66</yellow> to <yellow>66</yellow>
+2025-01-15 10:52:16 | WARNING | Row 66: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 67: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N64/(1-O64)</yellow> to row <blue>64</blue>
+2025-01-15 10:52:16 | DEBUG | Row 68: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N65/(1-O65)</yellow> to row <blue>65</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>69</blue> -> <green>66</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>69</yellow> to <yellow>73</yellow>
+2025-01-15 10:52:16 | WARNING | Row 69: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>70</blue> -> <green>67</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>70</yellow> to <yellow>73</yellow>
+2025-01-15 10:52:16 | WARNING | Row 70: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>71</blue> -> <green>68</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>71</yellow> to <yellow>73</yellow>
+2025-01-15 10:52:16 | WARNING | Row 71: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>72</blue> -> <green>69</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>72</yellow> to <yellow>73</yellow>
+2025-01-15 10:52:16 | WARNING | Row 72: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>73</blue> -> <green>70</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>73</yellow> to <yellow>73</yellow>
+2025-01-15 10:52:16 | WARNING | Row 73: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 74: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N71/(1-O71)</yellow> to row <blue>71</blue>
+2025-01-15 10:52:16 | DEBUG | Row 75: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N72/(1-O72)</yellow> to row <blue>72</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>76</blue> -> <green>73</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>76</yellow> to <yellow>80</yellow>
+2025-01-15 10:52:16 | WARNING | Row 76: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>77</blue> -> <green>74</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>77</yellow> to <yellow>80</yellow>
+2025-01-15 10:52:16 | WARNING | Row 77: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>78</blue> -> <green>75</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>78</yellow> to <yellow>80</yellow>
+2025-01-15 10:52:16 | WARNING | Row 78: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>79</blue> -> <green>76</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>79</yellow> to <yellow>80</yellow>
+2025-01-15 10:52:16 | WARNING | Row 79: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>80</blue> -> <green>77</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>80</yellow> to <yellow>80</yellow>
+2025-01-15 10:52:16 | WARNING | Row 80: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 81: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N78/(1-O78)</yellow> to row <blue>78</blue>
+2025-01-15 10:52:16 | DEBUG | Row 82: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N79/(1-O79)</yellow> to row <blue>79</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>83</blue> -> <green>80</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>83</yellow> to <yellow>87</yellow>
+2025-01-15 10:52:16 | WARNING | Row 83: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>84</blue> -> <green>81</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>84</yellow> to <yellow>87</yellow>
+2025-01-15 10:52:16 | WARNING | Row 84: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>85</blue> -> <green>82</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>85</yellow> to <yellow>87</yellow>
+2025-01-15 10:52:16 | WARNING | Row 85: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>86</blue> -> <green>83</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>86</yellow> to <yellow>87</yellow>
+2025-01-15 10:52:16 | WARNING | Row 86: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>87</blue> -> <green>84</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>87</yellow> to <yellow>87</yellow>
+2025-01-15 10:52:16 | WARNING | Row 87: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 88: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N85/(1-O85)</yellow> to row <blue>85</blue>
+2025-01-15 10:52:16 | DEBUG | Row 89: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N86/(1-O86)</yellow> to row <blue>86</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>90</blue> -> <green>87</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>90</yellow> to <yellow>94</yellow>
+2025-01-15 10:52:16 | WARNING | Row 90: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>91</blue> -> <green>88</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>91</yellow> to <yellow>94</yellow>
+2025-01-15 10:52:16 | WARNING | Row 91: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>92</blue> -> <green>89</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>92</yellow> to <yellow>94</yellow>
+2025-01-15 10:52:16 | WARNING | Row 92: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>93</blue> -> <green>90</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>93</yellow> to <yellow>94</yellow>
+2025-01-15 10:52:16 | WARNING | Row 93: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>94</blue> -> <green>91</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>94</yellow> to <yellow>94</yellow>
+2025-01-15 10:52:16 | WARNING | Row 94: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 95: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N92/(1-O92)</yellow> to row <blue>92</blue>
+2025-01-15 10:52:16 | DEBUG | Row 96: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N93/(1-O93)</yellow> to row <blue>93</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>97</blue> -> <green>94</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>97</yellow> to <yellow>101</yellow>
+2025-01-15 10:52:16 | WARNING | Row 97: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>98</blue> -> <green>95</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>98</yellow> to <yellow>101</yellow>
+2025-01-15 10:52:16 | WARNING | Row 98: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>99</blue> -> <green>96</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>99</yellow> to <yellow>101</yellow>
+2025-01-15 10:52:16 | WARNING | Row 99: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>100</blue> -> <green>97</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>100</yellow> to <yellow>101</yellow>
+2025-01-15 10:52:16 | WARNING | Row 100: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>101</blue> -> <green>98</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>101</yellow> to <yellow>101</yellow>
+2025-01-15 10:52:16 | WARNING | Row 101: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 102: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N99/(1-O99)</yellow> to row <blue>99</blue>
+2025-01-15 10:52:16 | DEBUG | Row 103: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N100/(1-O100)</yellow> to row <blue>100</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>104</blue> -> <green>101</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>104</yellow> to <yellow>108</yellow>
+2025-01-15 10:52:16 | WARNING | Row 104: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>105</blue> -> <green>102</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>105</yellow> to <yellow>108</yellow>
+2025-01-15 10:52:16 | WARNING | Row 105: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>106</blue> -> <green>103</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>106</yellow> to <yellow>108</yellow>
+2025-01-15 10:52:16 | WARNING | Row 106: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>107</blue> -> <green>104</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>107</yellow> to <yellow>108</yellow>
+2025-01-15 10:52:16 | WARNING | Row 107: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>108</blue> -> <green>105</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>108</yellow> to <yellow>108</yellow>
+2025-01-15 10:52:16 | WARNING | Row 108: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 109: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N106/(1-O106)</yellow> to row <blue>106</blue>
+2025-01-15 10:52:16 | DEBUG | Row 110: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N107/(1-O107)</yellow> to row <blue>107</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>111</blue> -> <green>108</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>111</yellow> to <yellow>115</yellow>
+2025-01-15 10:52:16 | WARNING | Row 111: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>112</blue> -> <green>109</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>112</yellow> to <yellow>115</yellow>
+2025-01-15 10:52:16 | WARNING | Row 112: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>113</blue> -> <green>110</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>113</yellow> to <yellow>115</yellow>
+2025-01-15 10:52:16 | WARNING | Row 113: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>114</blue> -> <green>111</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>114</yellow> to <yellow>115</yellow>
+2025-01-15 10:52:16 | WARNING | Row 114: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>115</blue> -> <green>112</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>115</yellow> to <yellow>115</yellow>
+2025-01-15 10:52:16 | WARNING | Row 115: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 116: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N113/(1-O113)</yellow> to row <blue>113</blue>
+2025-01-15 10:52:16 | DEBUG | Row 117: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N114/(1-O114)</yellow> to row <blue>114</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>118</blue> -> <green>115</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>118</yellow> to <yellow>122</yellow>
+2025-01-15 10:52:16 | WARNING | Row 118: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>119</blue> -> <green>116</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>119</yellow> to <yellow>122</yellow>
+2025-01-15 10:52:16 | WARNING | Row 119: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>120</blue> -> <green>117</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>120</yellow> to <yellow>122</yellow>
+2025-01-15 10:52:16 | WARNING | Row 120: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>121</blue> -> <green>118</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>121</yellow> to <yellow>122</yellow>
+2025-01-15 10:52:16 | WARNING | Row 121: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>122</blue> -> <green>119</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>122</yellow> to <yellow>122</yellow>
+2025-01-15 10:52:16 | WARNING | Row 122: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 123: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N120/(1-O120)</yellow> to row <blue>120</blue>
+2025-01-15 10:52:16 | DEBUG | Row 124: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N121/(1-O121)</yellow> to row <blue>121</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>125</blue> -> <green>122</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>125</yellow> to <yellow>129</yellow>
+2025-01-15 10:52:16 | WARNING | Row 125: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>126</blue> -> <green>123</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>126</yellow> to <yellow>129</yellow>
+2025-01-15 10:52:16 | WARNING | Row 126: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>127</blue> -> <green>124</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>127</yellow> to <yellow>129</yellow>
+2025-01-15 10:52:16 | WARNING | Row 127: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>128</blue> -> <green>125</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>128</yellow> to <yellow>129</yellow>
+2025-01-15 10:52:16 | WARNING | Row 128: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>129</blue> -> <green>126</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>129</yellow> to <yellow>129</yellow>
+2025-01-15 10:52:16 | WARNING | Row 129: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 130: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N127/(1-O127)</yellow> to row <blue>127</blue>
+2025-01-15 10:52:16 | DEBUG | Row 131: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N128/(1-O128)</yellow> to row <blue>128</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>132</blue> -> <green>129</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>132</yellow> to <yellow>136</yellow>
+2025-01-15 10:52:16 | WARNING | Row 132: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>133</blue> -> <green>130</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>133</yellow> to <yellow>136</yellow>
+2025-01-15 10:52:16 | WARNING | Row 133: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>134</blue> -> <green>131</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>134</yellow> to <yellow>136</yellow>
+2025-01-15 10:52:16 | WARNING | Row 134: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>135</blue> -> <green>132</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>135</yellow> to <yellow>136</yellow>
+2025-01-15 10:52:16 | WARNING | Row 135: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>136</blue> -> <green>133</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>136</yellow> to <yellow>136</yellow>
+2025-01-15 10:52:16 | WARNING | Row 136: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 137: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N134/(1-O134)</yellow> to row <blue>134</blue>
+2025-01-15 10:52:16 | DEBUG | Row 138: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N135/(1-O135)</yellow> to row <blue>135</blue>
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>139</blue> -> <green>136</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>139</yellow> to <yellow>143</yellow>
+2025-01-15 10:52:16 | WARNING | Row 139: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>140</blue> -> <green>137</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>140</yellow> to <yellow>143</yellow>
+2025-01-15 10:52:16 | WARNING | Row 140: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>141</blue> -> <green>138</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>141</yellow> to <yellow>143</yellow>
+2025-01-15 10:52:16 | WARNING | Row 141: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>142</blue> -> <green>139</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>142</yellow> to <yellow>143</yellow>
+2025-01-15 10:52:16 | WARNING | Row 142: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Processing row <blue>143</blue> -> <green>140</green>
+2025-01-15 10:52:16 | DEBUG | Found Element catalog interval from row <yellow>143</yellow> to <yellow>143</yellow>
+2025-01-15 10:52:16 | WARNING | Row 143: No WBS type found in interval, defaulting to Fee Optional
+2025-01-15 10:52:16 | DEBUG | Row 144: Empty or dash-only service element, adding formula to column P
+2025-01-15 10:52:16 | DEBUG | Added formula: <yellow>=N141/(1-O141)</yellow> to row <blue>141</blue>
+2025-01-15 10:52:16 | INFO | Successfully processed <green>140</green> rows
+2025-01-15 10:52:16 | SUCCESS | Migration completed successfully. Output saved to: <blue>output.xlsx</blue>
+2025-01-15 10:52:16 | SUCCESS | Migration completed successfully!
+2025-01-15 10:52:16 | INFO | Output file: output.xlsx

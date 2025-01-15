@@ -1,6 +1,6 @@
 import openpyxl
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 import re
 from loguru import logger
 from copy import copy
@@ -12,6 +12,14 @@ def get_cell_value(cell: Optional[Any]) -> Any:
         return None
     return cell.value
 
+def is_empty_or_dashes(value: Any) -> bool:
+    """Check if a value is empty, None, or contains only dashes"""
+    if value is None or value == "":
+        return True
+    if isinstance(value, str):
+        return value.strip().replace("-", "") == ""
+    return False
+
 def is_number(value: Any) -> bool:
     """Check if a value is a number (including string representations)"""
     if value is None:
@@ -22,34 +30,55 @@ def is_number(value: Any) -> bool:
     except:
         return False
 
+def find_element_catalog_interval(sheet: openpyxl.worksheet.worksheet.Worksheet, start_row: int) -> Tuple[int, int]:
+    """
+    Find the interval for the current element catalog by looking for separator rows
+    Returns: (start_row, end_row)
+    """
+    end_row = start_row
+    max_row = sheet.max_row
+    
+    # Find the next separator row (row with dashes)
+    while end_row <= max_row:
+        service_element = get_cell_value(sheet.cell(row=end_row, column=2))
+        if is_empty_or_dashes(service_element) and isinstance(service_element, str) and "-" in service_element:
+            break
+        end_row += 1
+    
+    return (start_row, end_row - 1)
+
 def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet) -> str:
     """
-    Determine the cost type based on which cost column is filled
-    Returns: "Fee Optional" for una tantum costs, "Fixed Optional" for monthly recurrent costs
+    Determine the cost type based on WBS column within the element catalog interval
+    Returns: "Fee Optional" for CANONE, "Fixed Optional" for FIXED
     """
-    # Find the columns for Unatantu and Ricorrente Mese in Costo section
-    unatantu_value = None
-    ricorrente_value = None
+    # Find the interval for the current element catalog
+    interval_start, interval_end = find_element_catalog_interval(sheet, row)
+    logger.debug(f"Found Element catalog interval from row <yellow>{interval_start}</yellow> to <yellow>{interval_end}</yellow>")
     
-    # Scan the header row to find the correct columns
-    header_row = 1  # Assuming headers are in row 1
-    for col in range(1, sheet.max_column + 1):
-        header = get_cell_value(sheet.cell(row=header_row, column=col))
-        if isinstance(header, str):
-            if "unatantu" in header.lower():
-                unatantu_value = get_cell_value(sheet.cell(row=row, column=col))
-            elif "ricorrente" in header.lower() and "mese" in header.lower():
-                ricorrente_value = get_cell_value(sheet.cell(row=row, column=col))
-
-    # Check which type of cost is present
-    if is_number(unatantu_value) and float(unatantu_value) > 0:
-        logger.debug(f"Row {row}: Found una tantum cost: <yellow>{unatantu_value}</yellow>")
-        return "Fee Optional"
-    elif is_number(ricorrente_value) and float(ricorrente_value) > 0:
-        logger.debug(f"Row {row}: Found monthly recurrent cost: <yellow>{ricorrente_value}</yellow>")
+    # Look for FIXED or CANONE in the WBS column (column D) within the interval
+    wbs_type = None
+    for r in range(interval_start, interval_end + 1):
+        wbs_value = get_cell_value(sheet.cell(row=r, column=4))  # Column D is 4
+        if isinstance(wbs_value, str):
+            wbs_value = wbs_value.upper().strip()
+            if wbs_value == "FIXED":
+                wbs_type = "FIXED"
+                logger.debug(f"Found FIXED type at row <yellow>{r}</yellow>")
+                break
+            elif wbs_value == "CANONE":
+                wbs_type = "CANONE"
+                logger.debug(f"Found CANONE type at row <yellow>{r}</yellow>")
+                break
+    
+    if wbs_type == "FIXED":
+        logger.debug(f"Row {row}: Using Fixed Optional based on WBS type")
         return "Fixed Optional"
+    elif wbs_type == "CANONE":
+        logger.debug(f"Row {row}: Using Fee Optional based on WBS type")
+        return "Fee Optional"
     else:
-        logger.warning(f"Row {row}: No valid cost found, defaulting to <yellow>Fee Optional</yellow>")
+        logger.warning(f"Row {row}: No WBS type found in interval, defaulting to Fee Optional")
         return "Fee Optional"
 
 def find_header_row(sheet: openpyxl.worksheet.worksheet.Worksheet) -> int:
@@ -71,6 +100,10 @@ def copy_cell_style(source_cell: Any, target_cell: Any):
         target_cell.number_format = source_cell.number_format
         target_cell.protection = copy(source_cell.protection)
         target_cell.alignment = copy(source_cell.alignment)
+
+def set_euro_format(cell: Any):
+    """Set cell format to Euro"""
+    cell.number_format = '#,##0.00 €'
 
 def migrate_excel(input_file: str, output_file: str, template_file: str) -> bool:
     """
@@ -111,23 +144,34 @@ def migrate_excel(input_file: str, output_file: str, template_file: str) -> bool
         rows_processed = 0
         
         for row in range(header_row + 1, input_sheet.max_row + 1):
-            # Skip empty rows
-            if not get_cell_value(input_sheet.cell(row=row, column=2)):  # Check column B instead of A
-                continue
-                
-            # Skip separator rows
+            # Get service element from column B
             service_element = get_cell_value(input_sheet.cell(row=row, column=2))
-            if not service_element or service_element.startswith("---"):
+            
+            # Skip completely empty rows
+            if service_element is None:
                 continue
             
-            logger.debug(f"Processing row <blue>{row}</blue> -> <green>{current_output_row}</green>")
-            
-            # Copy product element (column B)
-            output_sheet.cell(row=current_output_row, column=2).value = service_element
-            
-            # Determine and set cost type (column C)
-            cost_type = determine_cost_type(row, input_sheet)
-            output_sheet.cell(row=current_output_row, column=3).value = cost_type
+            # Handle empty or dash-only service elements differently
+            if is_empty_or_dashes(service_element):
+                logger.debug(f"Row {row}: Empty or dash-only service element, adding formula to column P")
+                # Add formula to column P (16): =N{row}/(1-O{row})
+                cell = output_sheet.cell(row=current_output_row, column=16)
+                formula = f"=N{current_output_row}/(1-O{current_output_row})"
+                cell.value = formula
+                set_euro_format(cell)
+                logger.debug(f"Added formula: <yellow>{formula}</yellow> to row <blue>{current_output_row}</blue>")
+            else:
+                logger.debug(f"Processing row <blue>{row}</blue> -> <green>{current_output_row}</green>")
+                
+                # Copy product element (column B)
+                output_sheet.cell(row=current_output_row, column=2).value = service_element
+                
+                # Determine and set cost type (column C)
+                cost_type = determine_cost_type(row, input_sheet)
+                output_sheet.cell(row=current_output_row, column=3).value = cost_type
+                
+                # Set Euro format for column P
+                set_euro_format(output_sheet.cell(row=current_output_row, column=16))
             
             current_output_row += 1
             rows_processed += 1

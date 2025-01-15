@@ -2,23 +2,28 @@ import argparse
 import os
 from pathlib import Path
 from loguru import logger
+import sys
 from dedaexcelai import migrate_excel
 
 # Configure logger
 logger.remove()  # Remove default handler
+
+# File logger - no colors
 logger.add(
     "migration.log",
     rotation="1 day",
     retention="7 days",
     level="DEBUG",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
-    colorize=False  # No colors in file
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
+    colorize=False
 )
+
+# Console logger with colors
 logger.add(
-    lambda msg: print(msg),
+    sys.stderr,
     level="INFO",
-    format="<level>{level: <8}</level> | <cyan>{message}</cyan>",
-    colorize=True  # Enable colors in console
+    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
+    colorize=True
 )
 
 def parse_args():
@@ -41,13 +46,13 @@ def main():
             rotation="1 day",
             retention="7 days",
             level="DEBUG",
-            format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
+            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
             colorize=False
         )
         logger.add(
-            lambda msg: print(msg),
+            sys.stderr,
             level="DEBUG",
-            format="<blue>{time:HH:mm:ss}</blue> | <level>{level: <8}</level> | <cyan>{message}</cyan>",
+            format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
             colorize=True
         )
     
