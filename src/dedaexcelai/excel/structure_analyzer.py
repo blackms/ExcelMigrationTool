@@ -35,8 +35,12 @@ def find_element_catalog_interval(sheet: openpyxl.worksheet.worksheet.Worksheet,
 
 def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet) -> str:
     """
-    Determine the cost type based on WBS column within the element catalog interval
-    Returns: "Fee Optional" for CANONE, "Fixed Optional" for FIXED
+    Determine the cost type based on WBS column and mandatory flag within the element catalog interval
+    Returns: 
+        - "Fee Optional" for CANONE (non-mandatory)
+        - "Fee Mandatory" for CANONE (mandatory)
+        - "Fixed Optional" for FIXED (non-mandatory)
+        - "Fixed Mandatory" for FIXED (mandatory)
     """
     # Find the interval for the current element catalog
     interval_start, interval_end = find_element_catalog_interval(sheet, row)
@@ -45,8 +49,17 @@ def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet)
     service_element = get_cell_value(sheet.cell(row=interval_start, column=2))
     logger.debug(f"Element catalog '{yellow(service_element)}' (rows {blue(str(interval_start))}-{blue(str(interval_end))})")
     
-    # Look for FIXED or CANONE in the WBS column (column D) within the interval
+    # Look for FIXED or CANONE in the WBS column (column D) and mandatory flag in column F
     wbs_type = None
+    is_mandatory = False
+    
+    # First check if the current row is mandatory (column F)
+    mandatory_value = get_cell_value(sheet.cell(row=row, column=6))  # Column F is 6
+    if isinstance(mandatory_value, str) and mandatory_value.upper().strip() == "M":
+        is_mandatory = True
+        logger.debug(f"Found Mandatory flag at row {blue(str(row))}")
+    
+    # Then check the WBS type within the interval
     for r in range(interval_start, interval_end + 1):
         wbs_value = get_cell_value(sheet.cell(row=r, column=4))  # Column D is 4
         if isinstance(wbs_value, str):
@@ -60,15 +73,19 @@ def determine_cost_type(row: int, sheet: openpyxl.worksheet.worksheet.Worksheet)
                 logger.debug(f"Found {magenta('CANONE')} type at row {blue(str(r))}")
                 break
     
+    # Determine final cost type based on WBS type and mandatory flag
     if wbs_type == "FIXED":
-        logger.debug(f"Using {green('Fixed Optional')} based on WBS type")
-        return "Fixed Optional"
+        cost_type = "Fixed Mandatory" if is_mandatory else "Fixed Optional"
+        logger.debug(f"Using {green(cost_type)} based on WBS type and mandatory flag")
+        return cost_type
     elif wbs_type == "CANONE":
-        logger.debug(f"Using {green('Fee Optional')} based on WBS type")
-        return "Fee Optional"
+        cost_type = "Fee Mandatory" if is_mandatory else "Fee Optional"
+        logger.debug(f"Using {green(cost_type)} based on WBS type and mandatory flag")
+        return cost_type
     else:
-        logger.warning(f"No WBS type found in interval, defaulting to {yellow('Fee Optional')}")
-        return "Fee Optional"
+        default_type = "Fee Mandatory" if is_mandatory else "Fee Optional"
+        logger.warning(f"No WBS type found in interval, defaulting to {yellow(default_type)}")
+        return default_type
 
 def find_header_row(sheet: openpyxl.worksheet.worksheet.Worksheet) -> int:
     """Find the row containing headers"""

@@ -36,8 +36,6 @@ def main():
     
     # Get OpenAI API key from argument or environment
     openai_key: Optional[str] = args.openai_key or os.getenv('OPENAI_API_KEY')
-    if not openai_key:
-        logger.warning("No OpenAI API key provided. GG Startup analysis will be skipped.")
     
     # Perform migration
     success = migrate_excel(args.input, args.output, args.template, openai_key)
