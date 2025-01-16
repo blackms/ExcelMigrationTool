@@ -1,7 +1,7 @@
 """Excel workbook handling utilities."""
 import openpyxl
 from typing import Optional
-from ..logger import get_logger
+from dedaexcelai.logger import get_logger
 
 logger = get_logger()
 

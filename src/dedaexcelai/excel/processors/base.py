@@ -2,10 +2,11 @@
 from abc import ABC, abstractmethod
 import openpyxl
 from typing import Optional, List
-from ..logger import get_logger
-from .services import ElementService, CostService
-from .models import ElementType, Element
-from .style_manager import set_euro_format
+from ...logger import get_logger
+from ..services.element_service import ElementService
+from ..services.cost_service import CostService
+from ..models.elements import ElementType, Element
+from ..utils.styling import set_euro_format
 
 logger = get_logger()
 
@@ -164,7 +165,7 @@ class SchemaSheetProcessor(SheetProcessor):
             self.setup_headers(target_sheet)
             
             # Find header row in source
-            from .structure_analyzer import find_header_row
+            from ..utils.structure import find_header_row
             header_row = find_header_row(source_sheet)
             
             # Process rows

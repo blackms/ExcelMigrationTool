@@ -1,9 +1,9 @@
 """Services for Excel processing."""
 from typing import Optional, Tuple, List
 import openpyxl
-from .models import Element, ElementType, CostType, CostMapping, FixedCostMapping, FeeCostMapping
-from .cell_operations import get_cell_value
-from ..logger import get_logger
+from ..models.elements import Element, ElementType, CostType, CostMapping, FixedCostMapping, FeeCostMapping
+from ..utils.cell import get_cell_value
+from ...logger import get_logger
 
 logger = get_logger()
 
@@ -49,7 +49,7 @@ class ElementService:
     def _determine_cost_type(row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
                            primitive_sheet: Optional[openpyxl.worksheet.worksheet.Worksheet] = None) -> CostType:
         """Determine the cost type for a row."""
-        from .structure_analyzer import determine_cost_type
+        from ..utils.structure import determine_cost_type
         cost_type_str = determine_cost_type(row, source_sheet, primitive_sheet)
         return CostType(cost_type_str)
 

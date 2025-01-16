@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 import openpyxl
-from ..logger import get_logger
+from ...logger import get_logger
 
 logger = get_logger()
 
@@ -136,4 +136,4 @@ class FileRules:
                     "startup_price": f"=SUM(M{start_row}:M{end_row})"
                 })
                 
-        return formulas 
+        return formulas

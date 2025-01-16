@@ -1,10 +1,10 @@
 """Excel migration module."""
 from typing import Optional
 import openpyxl
-from ..logger import get_logger
-from .factory import create_sheet_processor
-from .workbook_handler import load_workbooks, create_output_workbook
-from ..llm.startup_analyzer import StartupDaysAnalyzer
+from dedaexcelai.logger import get_logger
+from dedaexcelai.excel.core.factory import create_sheet_processor
+from dedaexcelai.excel.core.workbook import load_workbooks, create_output_workbook
+from dedaexcelai.llm.startup_analyzer import StartupDaysAnalyzer
 
 logger = get_logger()
 

@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 import openpyxl
 from typing import Optional
-from ..logger import get_logger
-from .cell_operations import get_cell_value
+from ...logger import get_logger
+from ..utils.cell import get_cell_value
 
 logger = get_logger()
 
