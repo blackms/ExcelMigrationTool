@@ -5,6 +5,7 @@ from ..logger import get_logger
 from .cell_operations import get_cell_value, is_empty_or_dashes
 from .style_manager import set_euro_format
 from .column_formulas import ColumnFormulas
+from .cost_processor import create_cost_processor
 
 logger = get_logger()
 
@@ -105,12 +106,9 @@ class SchemaSheetProcessor(SheetProcessor):
         target_sheet.cell(row=self.current_output_row, column=4).value = cost_type
         
         # Process other columns based on mapping
-        self.process_mapped_columns(row, source_sheet, target_sheet)
+        self.process_mapped_columns(row, source_sheet, target_sheet, element_type, cost_type)
         
         # Handle GG Startup for Fixed costs
-        cost_type = self.determine_type(row, source_sheet)
-        logger.info("Row {} - Element Type: {}, Cost Type: {}", row, element_type, cost_type)
-        
         if cost_type.startswith('Fixed'):
             logger.info("Processing startup days for Fixed cost in row {}", row)
             formula = source_formulas.cell(row=row, column=8).value  # Column H
@@ -131,6 +129,20 @@ class SchemaSheetProcessor(SheetProcessor):
         
         self.current_output_row += 1
     
+    def process_mapped_columns(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
+                             target_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                             element_type: str, cost_type: str) -> None:
+        """Process columns based on mapping."""
+        # Copy Resource Unit (RU)
+        self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
+        
+        # Copy Profit Center
+        self.copy_value(row, source_sheet, target_sheet, 6, 18)  # Profit Center -> Profit Center Prevalente
+        
+        # Process cost-specific columns
+        cost_processor = create_cost_processor(cost_type, self.current_output_row)
+        cost_processor.process_columns(row, source_sheet, target_sheet, element_type)
+    
     def copy_value(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
                   target_sheet: openpyxl.worksheet.worksheet.Worksheet, source_col: int, target_col: int) -> None:
         """Copy value from source to target cell."""
@@ -141,23 +153,6 @@ class SchemaSheetProcessor(SheetProcessor):
             # Set number format with 4 decimal places for numeric values
             if isinstance(value, (int, float)):
                 target_cell.number_format = '#,##0.0000'
-    
-    def process_mapped_columns(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
-                             target_sheet: openpyxl.worksheet.worksheet.Worksheet) -> None:
-        """Process columns based on mapping."""
-        # Copy Resource Unit (RU)
-        self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
-        
-        # Copy Profit Center
-        self.copy_value(row, source_sheet, target_sheet, 6, 18)  # Profit Center -> Profit Center Prevalente
-        
-        # For SubElements, copy values from source
-        element_type = get_cell_value(source_sheet.cell(row=row, column=1))
-        if element_type == 'SubElement':
-            # Copy Fixed costs (H -> L, L -> N)
-            self.copy_value(row, source_sheet, target_sheet, 8, 12)   # H -> L (Startup Costo)
-            self.copy_value(row, source_sheet, target_sheet, 12, 14)  # L -> N (Startup Prezzo)
-            logger.debug("Copied Fixed costs H{} -> L{}, L{} -> N{}", row, self.current_output_row, row, self.current_output_row)
     
     def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
                            target_sheet: openpyxl.worksheet.worksheet.Worksheet,

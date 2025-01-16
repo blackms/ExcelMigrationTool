@@ -48,8 +48,9 @@ class ColumnFormulas:
         if subelements_range:
             start_row, end_row = subelements_range
             # Sum of subelements' column L values (Unatantu)
-            formulas['L'] = f'=SUM(L{start_row}:L{end_row})'
-            logger.debug("Generated formula for row {}: {}", row, formulas['L'])
+            formula = f'=SUM(L{start_row}:L{end_row})'
+            formulas['L'] = formula
+            logger.debug("Generated formula for row {}: {}", row, formula)
         
         return formulas
     
@@ -70,16 +71,18 @@ class ColumnFormulas:
                 
                 # Apply formulas for Fixed Elements
                 formulas = ColumnFormulas.get_element_formulas(target_row, subelements_range)
-                logger.debug("Generated formulas for row {}: {}", target_row, formulas)
-                
-                for col, formula in formulas.items():
-                    cell = target_sheet.cell(row=target_row, column=ord(col)-64)
-                    cell.value = formula
-                    logger.info("Set {}{} = {}", col, target_row, formula)
-                    
-                    # Verify formula was set
-                    actual_value = target_sheet.cell(row=target_row, column=ord(col)-64).value
-                    logger.debug("Verified {}{} value: {}", col, target_row, actual_value)
+                if formulas:
+                    logger.debug("Generated formulas for row {}", target_row)
+                    for col, formula in formulas.items():
+                        cell = target_sheet.cell(row=target_row, column=ord(col)-64)
+                        cell.value = formula
+                        logger.info("Set {}{} = {}", col, target_row, formula)
+                        
+                        # Verify formula was set
+                        actual_value = target_sheet.cell(row=target_row, column=ord(col)-64).value
+                        logger.debug("Verified {}{} value: {}", col, target_row, actual_value)
+                else:
+                    logger.debug("No formulas generated for row {}", target_row)
                         
         except Exception as e:
             logger.error("Error applying formulas: {}", str(e))
