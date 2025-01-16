@@ -27,10 +27,13 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
             logger.info("Successfully initialized StartupDaysAnalyzer with GPT-4")
         
         # Initialize workbook handler
-        workbook_handler = WorkbookHandler(input_file, output_file, template_file)
+        workbook_handler = WorkbookHandler(input_file, output_file)
         
-        # Load workbooks
+        # Load workbooks and create output
         if not workbook_handler.load_workbooks():
+            return False
+            
+        if not workbook_handler.create_output_workbook():
             return False
             
         # Create processor factory
@@ -61,13 +64,17 @@ def migrate_excel(input_file: str, output_file: str, template_file: str, openai_
         logger.info("Creating SCHEMA processor with startup analyzer...")
         schema_processor = processor_factory.create_schema_processor(
             startup_analyzer=startup_analyzer,
-            filename=workbook_handler.filename,
-            primitive_data=source_primitive,
-            primitive_formulas=source_primitive_formulas
+            filename=workbook_handler.filename
         )
         if not schema_processor:
             logger.error("Failed to create SCHEMA processor")
             return False
+            
+        # Set primitive sheets after creation
+        if hasattr(schema_processor, 'primitive_data'):
+            schema_processor.primitive_data = source_primitive
+        if hasattr(schema_processor, 'primitive_formulas'):
+            schema_processor.primitive_formulas = source_primitive_formulas
             
         source_schema = workbook_handler.get_sheet('SCHEMA')
         source_schema_formulas = workbook_handler.get_sheet('SCHEMA', 'formulas')

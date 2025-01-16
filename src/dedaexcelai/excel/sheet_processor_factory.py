@@ -8,7 +8,6 @@ class SheetProcessorFactory:
         """Create PRIMITIVE sheet processor."""
         return PrimitiveSheetProcessor()
     
-    def create_schema_processor(self, startup_analyzer=None, filename: str = "", 
-                              primitive_data=None, primitive_formulas=None) -> Optional[SchemaSheetProcessor]:
+    def create_schema_processor(self, startup_analyzer=None, filename: str = "") -> Optional[SchemaSheetProcessor]:
         """Create a processor for SCHEMA sheet."""
-        return SchemaSheetProcessor(startup_analyzer, filename, primitive_data, primitive_formulas)
+        return SchemaSheetProcessor(startup_analyzer, filename)

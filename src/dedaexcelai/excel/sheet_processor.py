@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 from ..logger import get_logger
 from .cell_operations import get_cell_value, is_empty_or_dashes
 from .style_manager import set_euro_format
-from .file_rules import FileRules
+from .column_formulas import ColumnFormulas
 
 logger = get_logger()
 
@@ -27,20 +27,19 @@ class PrimitiveSheetProcessor(SheetProcessor):
                 target_sheet.append(row)
             return True
         except Exception as e:
-            logger.error(f"Failed to process PRIMITIVE sheet: {str(e)}")
+            logger.error("Failed to process PRIMITIVE sheet: {}", str(e))
             return False
 
 class SchemaSheetProcessor(SheetProcessor):
     """Processor for SCHEMA sheet."""
     
-    def __init__(self, startup_analyzer=None, filename: str = "", 
-                 primitive_data=None, primitive_formulas=None):
+    def __init__(self, startup_analyzer=None, filename: str = ""):
         self.startup_analyzer = startup_analyzer
         self.filename = filename
-        self.primitive_data = primitive_data
-        self.primitive_formulas = primitive_formulas
         self.header_row = None
         self.current_output_row = 2  # Start after headers
+        self.primitive_data = None
+        self.primitive_formulas = None
         
     def setup_headers(self, target_sheet: openpyxl.worksheet.worksheet.Worksheet) -> None:
         """Set up headers with green background."""
@@ -110,15 +109,25 @@ class SchemaSheetProcessor(SheetProcessor):
         
         # Handle GG Startup for Fixed costs
         cost_type = self.determine_type(row, source_sheet)
-        logger.info(f"Row {row} - Element Type: {element_type}, Cost Type: {cost_type}")
+        logger.info("Row {} - Element Type: {}, Cost Type: {}", row, element_type, cost_type)
         
         if cost_type.startswith('Fixed'):
-            logger.info(f"Processing startup days for Fixed cost in row {row}")
+            logger.info("Processing startup days for Fixed cost in row {}", row)
             formula = source_formulas.cell(row=row, column=8).value  # Column H
-            logger.info(f"Found formula in column H: {formula}")
+            logger.info("Found formula in column H: {}", formula)
             self.process_startup_days(row, source_sheet, target_sheet, source_formulas)
         else:
-            logger.debug(f"Skipping startup days for non-Fixed cost in row {row}")
+            logger.debug("Skipping startup days for non-Fixed cost in row {}", row)
+        
+        # Apply column formulas
+        logger.debug("Applying formulas for row {} - Element: {}, Cost: {}", self.current_output_row, element_type, cost_type)
+        ColumnFormulas.apply_formulas(
+            target_sheet=target_sheet,
+            target_row=self.current_output_row,
+            element_type=element_type,
+            cost_type=cost_type,
+            source_sheet=source_sheet
+        )
         
         self.current_output_row += 1
     
@@ -136,74 +145,74 @@ class SchemaSheetProcessor(SheetProcessor):
     def process_mapped_columns(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
                              target_sheet: openpyxl.worksheet.worksheet.Worksheet) -> None:
         """Process columns based on mapping."""
-        try:
-            element_type = source_sheet.cell(row=row, column=1).value
-            
-            # Get column mapping for this file type
-            column_mapping = FileRules.get_column_mapping(self.filename)
-            
-            # Process Resource Unit (RU)
-            source_value = get_cell_value(source_sheet.cell(row=row, column=3))
-            ru_value = FileRules.apply_column_rules(self.filename, element_type, "ru", source_value)
-            if ru_value is not None:
-                target_cell = target_sheet.cell(row=self.current_output_row, column=column_mapping["ru"])
-                target_cell.value = ru_value
-                logger.debug(f"Set RU value: {ru_value} for row {row}")
-            
-            # Process other columns...
-            
-        except Exception as e:
-            logger.error(f"Error in process_mapped_columns: {str(e)}")
+        # Copy Resource Unit (RU)
+        self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
+        
+        # Copy Profit Center
+        self.copy_value(row, source_sheet, target_sheet, 6, 18)  # Profit Center -> Profit Center Prevalente
+        
+        # For SubElements, copy values from source
+        element_type = get_cell_value(source_sheet.cell(row=row, column=1))
+        if element_type == 'SubElement':
+            # Copy Fixed costs (H -> L, L -> N)
+            self.copy_value(row, source_sheet, target_sheet, 8, 12)   # H -> L (Startup Costo)
+            self.copy_value(row, source_sheet, target_sheet, 12, 14)  # L -> N (Startup Prezzo)
+            logger.debug("Copied Fixed costs H{} -> L{}, L{} -> N{}", row, self.current_output_row, row, self.current_output_row)
     
-    def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet, 
-                            target_sheet: openpyxl.worksheet.worksheet.Worksheet, 
-                            source_formulas: openpyxl.worksheet.worksheet.Worksheet) -> None:
-        """Process startup days for the given row."""
+    def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                           target_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                           source_formulas: openpyxl.worksheet.worksheet.Worksheet) -> None:
+        """Process startup days for a row."""
+        logger.info("Processing startup days for row {}", row)
+        
+        if not self.startup_analyzer:
+            logger.warning("No startup analyzer available")
+            return
+            
+        formula = source_formulas.cell(row=row, column=8).value
+        logger.info("Found value in column H: {}", formula)
+        
+        # Convert float to string if needed
+        if isinstance(formula, float):
+            formula = str(formula)
+        elif not isinstance(formula, str):
+            logger.warning("Value is not a string or float: {}", type(formula))
+            return
+            
         try:
-            logger.info(f"Processing startup days for row {row}")
-            
-            # Get element type and cost type from correct columns
-            element_type = get_cell_value(source_sheet.cell(row=row, column=1))  # Column A
-            cost_type = self.determine_type(row, source_sheet)
-            
-            formula = source_formulas.cell(row=row, column=8).value  # H column
-            
-            if not formula:
-                logger.debug(f"No formula found in column H for row {row}")
-                return
-            
-            logger.info(f"Found formula in column H: {formula}")
-            
-            if not self.startup_analyzer:
-                logger.warning("No startup analyzer available")
-                return
-            
             logger.info("Calling startup analyzer...")
-            logger.debug(f"Processing element type: {element_type}")
-            logger.debug(f"Processing cost type: {cost_type}")
+            # Get element type from column 1
+            element_type = get_cell_value(source_sheet.cell(row=row, column=1))
+            logger.debug("Processing element type: {}", element_type)
             
-            days = self.startup_analyzer.analyze_startup_days(
-                formula=formula,
-                primitive_formulas=self.primitive_formulas,
-                primitive_data=self.primitive_data,
-                row=row,
-                schema_sheet=source_sheet,
-                schema_formulas=source_formulas,
-                filename=self.filename,
-                element_type=element_type,
-                wbs_type=cost_type
+            if not self.primitive_data or not self.primitive_formulas:
+                logger.warning("Missing primitive sheets")
+                return
+                
+            # Get WBS type from column D
+            wbs_type = get_cell_value(source_sheet.cell(row=row, column=4))
+            logger.debug("WBS type for row {}: {}", row, wbs_type)
+            
+            startup_days = self.startup_analyzer.analyze_startup_days(
+                formula,
+                self.primitive_formulas,
+                self.primitive_data,
+                row,
+                source_sheet,
+                source_formulas,
+                self.filename,
+                element_type,
+                wbs_type
             )
             
-            if days is not None:
-                logger.info(f"Setting startup days to {days} for row {row}")
-                target_cell = target_sheet.cell(row=self.current_output_row, column=5)
-                target_cell.value = days
-                target_cell.number_format = '#,##0.000000'  # Formato con 6 decimali
+            if startup_days is not None:
+                logger.info("Got startup days: {}", startup_days)
+                target_sheet.cell(row=self.current_output_row, column=5).value = startup_days
             else:
-                logger.debug(f"No startup days determined for row {row}")
-            
+                logger.warning("No startup days returned from analyzer")
+                
         except Exception as e:
-            logger.error(f"Error analyzing startup days for row {row}: {str(e)}")
+            logger.error("Error analyzing startup days for row {}: {}", row, str(e))
     
     def process(self, source_sheet: openpyxl.worksheet.worksheet.Worksheet, target_sheet: openpyxl.worksheet.worksheet.Worksheet,
                 source_formulas: Optional[openpyxl.worksheet.worksheet.Worksheet] = None) -> bool:
@@ -225,5 +234,5 @@ class SchemaSheetProcessor(SheetProcessor):
             return True
             
         except Exception as e:
-            logger.error(f"Failed to process SCHEMA sheet: {str(e)}")
+            logger.error("Failed to process SCHEMA sheet: {}", str(e))
             return False

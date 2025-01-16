@@ -12,27 +12,24 @@ logger = get_logger()
 class WorkbookHandler:
     """Handles workbook operations like loading, saving, and sheet management."""
     
-    def __init__(self, input_file: str, output_file: str, template_file: str = None):
-        """Initialize with input and output file paths."""
-        self.input_file = input_file
-        self.output_file = output_file
-        self.template_file = template_file
-        self._filename = os.path.basename(input_file)
-        self.input_wb = None
-        self.input_wb_formulas = None  # Workbook with formulas
+    def __init__(self, input_file: str, output_file: str):
+        self.input_file = Path(input_file)
+        self.output_file = Path(output_file)
+        self.input_wb_data = None
+        self.input_wb_formulas = None
         self.output_wb = None
         
     @property
     def filename(self) -> str:
-        """Get the input filename without path."""
-        return self._filename
+        """Get input filename."""
+        return self.input_file.name
         
     def load_workbooks(self) -> bool:
-        """Load input and create output workbooks."""
+        """Load input workbooks with and without data_only."""
         try:
             logger.info("Loading input workbook...")
-            self.input_wb = openpyxl.load_workbook(self.input_file, data_only=True)
-            self.input_wb_formulas = openpyxl.load_workbook(self.input_file, data_only=False)
+            self.input_wb_data = openpyxl.load_workbook(self.input_file, data_only=True, keep_links=False)
+            self.input_wb_formulas = openpyxl.load_workbook(self.input_file, data_only=False, keep_links=False)
             return True
         except Exception as e:
             logger.error(f"Failed to load workbooks: {str(e)}")
@@ -42,53 +39,57 @@ class WorkbookHandler:
         """Create new output workbook."""
         try:
             logger.info("Creating new workbook...")
-            self.output_wb = openpyxl.Workbook()
+            self.output_wb = openpyxl.Workbook(write_only=False)
+            # Remove default sheet
             if 'Sheet' in self.output_wb.sheetnames:
-                del self.output_wb['Sheet']
+                self.output_wb.remove(self.output_wb['Sheet'])
             return True
         except Exception as e:
             logger.error(f"Failed to create output workbook: {str(e)}")
             return False
             
     def save_workbook(self) -> bool:
-        """Save the output workbook."""
+        """Save output workbook with temporary file handling."""
+        logger.info("Saving output workbook...")
         try:
-            if not self.output_wb:
-                logger.error("No output workbook to save")
-                return False
-                
-            logger.info("Saving output workbook...")
-            self.output_wb.save(self.output_file)
+            # Create temp file in same directory as output file
+            temp_dir = self.output_file.parent
+            temp_fd, temp_path = tempfile.mkstemp(dir=temp_dir, suffix='.xlsx')
+            os.close(temp_fd)
+            
+            # Save to temp file
+            self.output_wb.save(temp_path)
+            logger.debug(f"Saved to temporary file: {temp_path}")
+            
+            # Replace output file
+            if self.output_file.exists():
+                self.output_file.unlink()
+            shutil.move(temp_path, self.output_file)
             logger.info(f"Successfully saved to: {self.output_file}")
             return True
+            
         except Exception as e:
             logger.error(f"Failed to save workbook: {str(e)}")
+            if temp_path:
+                try:
+                    os.remove(temp_path)
+                except:
+                    pass
             return False
             
-    def get_sheet(self, sheet_name: str, data_only: bool = True) -> Optional[openpyxl.worksheet.worksheet.Worksheet]:
-        """Get sheet from input workbook."""
-        try:
-            if data_only:
-                return self.input_wb[sheet_name] if sheet_name in self.input_wb.sheetnames else None
-            else:
-                return self.input_wb_formulas[sheet_name] if sheet_name in self.input_wb_formulas.sheetnames else None
-        except Exception as e:
-            logger.error(f"Failed to get sheet {sheet_name}: {str(e)}")
+    def get_sheet(self, name: str, data_only: bool = True) -> Optional[openpyxl.worksheet.worksheet.Worksheet]:
+        """Get sheet from specified workbook."""
+        wb = self.input_wb_data if data_only else self.input_wb_formulas
+        if not wb or name not in wb.sheetnames:
             return None
+        return wb[name]
         
-    def create_sheet(self, sheet_name: str, index: int = None) -> Optional[openpyxl.worksheet.worksheet.Worksheet]:
-        """Create a new sheet in the output workbook."""
+    def create_sheet(self, name: str, index: Optional[int] = None) -> Optional[openpyxl.worksheet.worksheet.Worksheet]:
+        """Create new sheet in output workbook."""
         try:
-            if not self.output_wb:
-                self.output_wb = openpyxl.Workbook()
-                
-            if sheet_name in self.output_wb.sheetnames:
-                return self.output_wb[sheet_name]
-                
             if index is not None:
-                return self.output_wb.create_sheet(sheet_name, index)
-            else:
-                return self.output_wb.create_sheet(sheet_name)
+                return self.output_wb.create_sheet(name, index)
+            return self.output_wb.create_sheet(name)
         except Exception as e:
-            logger.error(f"Failed to create sheet {sheet_name}: {str(e)}")
+            logger.error(f"Failed to create sheet {name}: {str(e)}")
             return None
