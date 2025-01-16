@@ -70,8 +70,8 @@ class SchemaSheetProcessor(SheetProcessor):
             logger.error("Source or target sheet is None")
             return
             
-        # Create element from row
-        element = ElementService.create_element(row, source_sheet)
+        # Create element from row with primitive data for formula evaluation
+        element = ElementService.create_element(row, source_sheet, self.primitive_data)
         if not element:
             return
             

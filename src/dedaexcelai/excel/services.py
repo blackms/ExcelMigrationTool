@@ -11,7 +11,8 @@ class ElementService:
     """Service for handling elements."""
     
     @staticmethod
-    def create_element(row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet) -> Optional[Element]:
+    def create_element(row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                      primitive_sheet: Optional[openpyxl.worksheet.worksheet.Worksheet] = None) -> Optional[Element]:
         """Create an Element from a worksheet row."""
         try:
             element_type_str = get_cell_value(source_sheet.cell(row=row, column=1))
@@ -25,7 +26,7 @@ class ElementService:
                 return None
                 
             # Determine cost type
-            cost_type = ElementService._determine_cost_type(row, source_sheet)
+            cost_type = ElementService._determine_cost_type(row, source_sheet, primitive_sheet)
             
             # Calculate length for Elements
             length = None
@@ -45,24 +46,12 @@ class ElementService:
             return None
     
     @staticmethod
-    def _determine_cost_type(row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet) -> CostType:
+    def _determine_cost_type(row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
+                           primitive_sheet: Optional[openpyxl.worksheet.worksheet.Worksheet] = None) -> CostType:
         """Determine the cost type for a row."""
-        # Check WBS column (D) for FIXED
-        wbs = get_cell_value(source_sheet.cell(row=row, column=4))
-        if isinstance(wbs, str) and 'FIXED' in wbs.upper():
-            return CostType.FIXED_OPTIONAL
-            
-        # Check ricorrente (H) and canone (I)
-        ricorrente = get_cell_value(source_sheet.cell(row=row, column=8))
-        canone = get_cell_value(source_sheet.cell(row=row, column=9))
-        
-        # If has ricorrente but no canone, it's a startup cost (Fixed)
-        if (ricorrente and str(ricorrente).strip() and not str(ricorrente).strip().startswith('-') and
-            (not canone or not str(canone).strip() or str(canone).strip().startswith('-'))):
-            return CostType.FIXED_OPTIONAL
-            
-        # Default to Fee Optional
-        return CostType.FEE_OPTIONAL
+        from .structure_analyzer import determine_cost_type
+        cost_type_str = determine_cost_type(row, source_sheet, primitive_sheet)
+        return CostType(cost_type_str)
 
 class CostService:
     """Service for handling costs."""

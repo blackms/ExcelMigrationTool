@@ -61,18 +61,13 @@ class SchemaSheetProcessor(SheetProcessor):
     
     def determine_type(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet) -> str:
         """Determine if cost is Fee or Fixed based on values."""
-        # Check WBS column (D) for FIXED
-        wbs = get_cell_value(source_sheet.cell(row=row, column=4))
-        if isinstance(wbs, str) and 'FIXED' in wbs.upper():
-            return 'Fixed Optional'
-            
-        # Check ricorrente (H) and canone (I)
-        ricorrente = get_cell_value(source_sheet.cell(row=row, column=8))
-        canone = get_cell_value(source_sheet.cell(row=row, column=9))
+        # Check Unatantu (H) and Ricorrente (I)
+        unatantu = get_cell_value(source_sheet.cell(row=row, column=8))
+        ricorrente = get_cell_value(source_sheet.cell(row=row, column=9))
         
-        # If has ricorrente but no canone, it's a startup cost (Fixed)
-        if (ricorrente and str(ricorrente).strip() and not str(ricorrente).strip().startswith('-') and
-            (not canone or not str(canone).strip() or str(canone).strip().startswith('-'))):
+        # If Unatantu has a value and Ricorrente is 0 or empty, it's Fixed
+        if (unatantu is not None and str(unatantu).strip() and 
+            (ricorrente is None or str(ricorrente).strip() == '0' or str(ricorrente).strip() == '-')):
             return 'Fixed Optional'
             
         # Default to Fee Optional
@@ -111,9 +106,13 @@ class SchemaSheetProcessor(SheetProcessor):
         # Handle GG Startup for Fixed costs
         if cost_type.startswith('Fixed'):
             logger.info("Processing startup days for Fixed cost in row {}", row)
-            formula = source_formulas.cell(row=row, column=8).value  # Column H
-            logger.info("Found formula in column H: {}", formula)
-            self.process_startup_days(row, source_sheet, target_sheet, source_formulas)
+            # Get formula from Unatantu column (H)
+            formula = source_formulas.cell(row=row, column=8).value if source_formulas else None
+            if formula is None:
+                # If no formula, try to get direct value
+                formula = str(get_cell_value(source_sheet.cell(row=row, column=8)) or '')
+            logger.info("Found value in Unatantu column: {}", formula)
+            self.process_startup_days(row, source_sheet, target_sheet, source_formulas, formula)
         else:
             logger.debug("Skipping startup days for non-Fixed cost in row {}", row)
         
@@ -133,8 +132,15 @@ class SchemaSheetProcessor(SheetProcessor):
                              target_sheet: openpyxl.worksheet.worksheet.Worksheet,
                              element_type: str, cost_type: str) -> None:
         """Process columns based on mapping."""
-        # Copy Resource Unit (RU)
-        self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
+        from .file_rules import FileRules
+        
+        # Get RU value based on rules
+        ru_value = FileRules.get_resource_unit_rule(self.filename, element_type, {})
+        if ru_value:
+            target_sheet.cell(row=self.current_output_row, column=6).value = ru_value
+        else:
+            # Copy original Resource Unit if no rule applies
+            self.copy_value(row, source_sheet, target_sheet, 3, 6)  # Resource Unit -> RU
         
         # Copy Profit Center
         self.copy_value(row, source_sheet, target_sheet, 6, 18)  # Profit Center -> Profit Center Prevalente
@@ -156,7 +162,8 @@ class SchemaSheetProcessor(SheetProcessor):
     
     def process_startup_days(self, row: int, source_sheet: openpyxl.worksheet.worksheet.Worksheet,
                            target_sheet: openpyxl.worksheet.worksheet.Worksheet,
-                           source_formulas: openpyxl.worksheet.worksheet.Worksheet) -> None:
+                           source_formulas: openpyxl.worksheet.worksheet.Worksheet,
+                           formula: str) -> None:
         """Process startup days for a row."""
         logger.info("Processing startup days for row {}", row)
         
@@ -164,14 +171,8 @@ class SchemaSheetProcessor(SheetProcessor):
             logger.warning("No startup analyzer available")
             return
             
-        formula = source_formulas.cell(row=row, column=8).value
-        logger.info("Found value in column H: {}", formula)
-        
-        # Convert float to string if needed
-        if isinstance(formula, float):
-            formula = str(formula)
-        elif not isinstance(formula, str):
-            logger.warning("Value is not a string or float: {}", type(formula))
+        if not formula:
+            logger.warning("No formula provided")
             return
             
         try:
@@ -221,6 +222,11 @@ class SchemaSheetProcessor(SheetProcessor):
             # Find header row in source
             from .structure_analyzer import find_header_row
             self.header_row = find_header_row(source_sheet)
+            
+            # Get PRIMITIVE sheets from workbook
+            workbook = source_sheet.parent
+            self.primitive_data = workbook["PRIMITIVE"] if "PRIMITIVE" in workbook else None
+            self.primitive_formulas = workbook["PRIMITIVE"] if "PRIMITIVE" in workbook else None
             
             # Process rows
             for row in range(self.header_row + 1, source_sheet.max_row + 1):
