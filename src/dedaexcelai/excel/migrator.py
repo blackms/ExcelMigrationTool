@@ -1,99 +1,82 @@
+"""Excel migration module."""
 from typing import Optional
+import openpyxl
 from ..logger import get_logger
-from ..llm import StartupDaysAnalyzer
-from .workbook_handler import WorkbookHandler
-from .sheet_processor_factory import SheetProcessorFactory
+from .factory import create_sheet_processor
+from .workbook_handler import load_workbooks, create_output_workbook
+from ..llm.startup_analyzer import StartupDaysAnalyzer
 
 logger = get_logger()
 
-def migrate_excel(input_file: str, output_file: str, template_file: str, openai_key: Optional[str] = None) -> bool:
-    """
-    Migrate Excel file using new architecture with separate handlers and processors.
-    
-    Args:
-        input_file: Path to the input Excel file
-        output_file: Path where the output Excel file will be saved
-        template_file: Path to the template file (not used in new architecture)
-        openai_key: Optional OpenAI API key for startup days analysis
-        
-    Returns:
-        bool: True if migration was successful, False otherwise
-    """
+def migrate_excel(input_path: str, output_path: str, openai_key: Optional[str] = None) -> bool:
+    """Migrate Excel file to new format."""
     try:
-        # Initialize startup analyzer
-        logger.info("Initializing StartupDaysAnalyzer...")
-        startup_analyzer = StartupDaysAnalyzer(openai_key)
-        if startup_analyzer.client:
+        # Initialize startup analyzer if key provided
+        startup_analyzer = None
+        if openai_key:
+            logger.info("Initializing StartupDaysAnalyzer...")
+            startup_analyzer = StartupDaysAnalyzer(openai_key)
             logger.info("Successfully initialized StartupDaysAnalyzer with GPT-4")
         
-        # Initialize workbook handler
-        workbook_handler = WorkbookHandler(input_file, output_file)
-        
-        # Load workbooks and create output
-        if not workbook_handler.load_workbooks():
+        # Load workbooks
+        logger.info("Loading input workbook...")
+        source_workbook = load_workbooks(input_path)
+        if not source_workbook:
             return False
             
-        if not workbook_handler.create_output_workbook():
-            return False
-            
-        # Create processor factory
-        processor_factory = SheetProcessorFactory()
+        # Create output workbook
+        logger.info("Creating new workbook...")
+        target_workbook = create_output_workbook()
         
         # Process PRIMITIVE sheet
         logger.info("Creating PRIMITIVE processor...")
-        primitive_processor = processor_factory.create_primitive_processor()
+        primitive_processor = create_sheet_processor("PRIMITIVE")
         if not primitive_processor:
             logger.error("Failed to create PRIMITIVE processor")
             return False
             
-        source_primitive = workbook_handler.get_sheet('PRIMITIVE')
-        source_primitive_formulas = workbook_handler.get_sheet('PRIMITIVE', data_only=False)  # Get formulas version
-        if not source_primitive or not source_primitive_formulas:
-            logger.error("PRIMITIVE sheet not found in input workbook")
+        primitive_sheet = source_workbook["PRIMITIVE"]
+        target_primitive = target_workbook.create_sheet("PRIMITIVE")
+        if not primitive_processor.process(primitive_sheet, target_primitive):
+            logger.error("Failed to process PRIMITIVE sheet")
             return False
             
-        target_primitive = workbook_handler.create_sheet('PRIMITIVE')
-        if not target_primitive:
-            logger.error("Failed to create PRIMITIVE sheet in output workbook")
-            return False
-            
-        if not primitive_processor.process(source_primitive, target_primitive):
-            return False
-            
+        # Store PRIMITIVE sheets for startup analyzer
+        primitive_data = primitive_sheet
+        primitive_formulas = source_workbook["PRIMITIVE_FORMULAS"] if "PRIMITIVE_FORMULAS" in source_workbook else None
+        
         # Process SCHEMA sheet
         logger.info("Creating SCHEMA processor with startup analyzer...")
-        schema_processor = processor_factory.create_schema_processor(
-            startup_analyzer=startup_analyzer,
-            filename=workbook_handler.filename
-        )
+        schema_processor = create_sheet_processor("SCHEMA", startup_analyzer, input_path)
         if not schema_processor:
             logger.error("Failed to create SCHEMA processor")
             return False
             
-        # Set primitive sheets after creation
+        # Set primitive sheets for startup analyzer
         if hasattr(schema_processor, 'primitive_data'):
-            schema_processor.primitive_data = source_primitive
+            schema_processor.primitive_data = primitive_data
         if hasattr(schema_processor, 'primitive_formulas'):
-            schema_processor.primitive_formulas = source_primitive_formulas
-            
-        source_schema = workbook_handler.get_sheet('SCHEMA')
-        source_schema_formulas = workbook_handler.get_sheet('SCHEMA', 'formulas')
-        if not source_schema or not source_schema_formulas:
-            logger.error("SCHEMA sheet not found in input workbook")
-            return False
-            
-        target_schema = workbook_handler.create_sheet('SCHEMA', 0)  # Make it first sheet
-        if not target_schema:
-            logger.error("Failed to create SCHEMA sheet in output workbook")
-            return False
+            schema_processor.primitive_formulas = primitive_formulas
             
         logger.info("Processing SCHEMA sheet with startup analyzer...")
-        if not schema_processor.process(source_schema, target_schema, source_schema_formulas):
+        schema_sheet = source_workbook["SCHEMA"]
+        target_schema = target_workbook.create_sheet("SCHEMA")
+        schema_formulas = source_workbook["SCHEMA_FORMULAS"] if "SCHEMA_FORMULAS" in source_workbook else None
+        
+        if not schema_processor.process(schema_sheet, target_schema, schema_formulas):
+            logger.error("Failed to process SCHEMA sheet")
             return False
             
+        # Remove default sheet
+        if "Sheet" in target_workbook.sheetnames:
+            target_workbook.remove(target_workbook["Sheet"])
+            
         # Save output workbook
-        return workbook_handler.save_workbook()
+        target_workbook.save(output_path)
+        logger.info("Successfully saved output workbook to {}", output_path)
+        
+        return True
         
     except Exception as e:
-        logger.exception(f"Migration failed: {str(e)}")
+        logger.error("Failed to migrate Excel file: {}", str(e))
         return False
