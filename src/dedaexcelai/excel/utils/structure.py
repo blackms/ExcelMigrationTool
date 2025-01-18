@@ -1,7 +1,7 @@
 import openpyxl
 from typing import Optional
-from .cell_operations import get_cell_value
-from ...logger import get_logger
+from dedaexcelai.excel.utils.cell import get_cell_value
+from dedaexcelai.logger import get_logger
 
 logger = get_logger()
 

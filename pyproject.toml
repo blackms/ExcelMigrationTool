@@ -4,11 +4,12 @@ version = "0.1.0"
 description = "Cost of Ownership as a Service (COaaS) calculator generating Excel spreadsheets"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
-packages = [{include = "src"}]
+packages = [{include = "dedaexcelai", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
 openpyxl = "^3.1.2"
+loguru = "^0.7.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 import openpyxl
-from ...logger import get_logger
+from dedaexcelai.logger import get_logger
 
 logger = get_logger()
 

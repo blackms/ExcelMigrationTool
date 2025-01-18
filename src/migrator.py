@@ -1,8 +1,10 @@
 """Command line interface for Excel migration."""
 import argparse
 from dedaexcelai import migrate_excel, get_logger
+from dedaexcelai.logger import setup_logging
 
 logger = get_logger()
+setup_logging(verbose=True)  # Enable verbose logging since -v flag is used
 
 def main():
     """Main entry point."""

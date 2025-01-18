@@ -1,8 +1,8 @@
 from typing import Optional, Dict, Any
 import openpyxl
-from ..utils.cell import get_cell_value
-from ...logger import get_logger, blue, yellow, red, green
-from .file_rules import FileRules
+from dedaexcelai.excel.utils.cell import get_cell_value
+from dedaexcelai.logger import get_logger, blue, yellow, red, green
+from dedaexcelai.excel.rules.file_rules import FileRules
 
 logger = get_logger()
 
