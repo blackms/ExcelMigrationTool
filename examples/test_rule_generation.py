@@ -7,10 +7,10 @@ import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
-from excel_migration.tasks.base import MigrationTask, TaskBasedProcessor
+from excel_migration.tasks.base import MigrationTask, TaskBasedProcessor, SheetMapping
 from excel_migration.llm.agents import MultiAgentSystem
 from excel_migration.rules.engine import RuleEngine
-from excel_migration.core.interfaces import RuleGenerator, SheetAnalyzer
+from excel_migration.core.analyzers import ExcelSheetAnalyzer
 from excel_migration.vision.processor import SheetImageProcessor
 
 # Load environment variables
@@ -35,6 +35,7 @@ async def generate_and_test_rules():
         llm_system = MultiAgentSystem(llm)
         image_processor = SheetImageProcessor()
         rule_engine = RuleEngine(llm_provider="openai")
+        sheet_analyzer = ExcelSheetAnalyzer(image_processor)
         
         # Create task for rule generation
         generation_task = MigrationTask(
@@ -47,14 +48,14 @@ async def generate_and_test_rules():
                 "model": os.getenv("OPENAI_MODEL", "gpt-4")
             },
             sheet_mappings=[
-                {
-                    "source_sheet": "CustomerData",
-                    "target_sheet": "CustomerSummary"
-                },
-                {
-                    "source_sheet": "Transactions",
-                    "target_sheet": "TransactionSummary"
-                }
+                SheetMapping(
+                    source_sheet="CustomerData",
+                    target_sheet="CustomerSummary"
+                ),
+                SheetMapping(
+                    source_sheet="Transactions",
+                    target_sheet="TransactionSummary"
+                )
             ]
         )
 
@@ -62,7 +63,7 @@ async def generate_and_test_rules():
         logger.info("🔍 Analyzing example files to generate rules...")
         processor = TaskBasedProcessor(
             rule_generator=rule_engine,
-            sheet_analyzer=SheetAnalyzer(image_processor),
+            sheet_analyzer=sheet_analyzer,
             llm_provider=llm_system
         )
 
@@ -104,14 +105,14 @@ async def generate_and_test_rules():
                 "rules": rules
             },
             sheet_mappings=[
-                {
-                    "source_sheet": "CustomerData",
-                    "target_sheet": "CustomerSummary"
-                },
-                {
-                    "source_sheet": "Transactions",
-                    "target_sheet": "TransactionSummary"
-                }
+                SheetMapping(
+                    source_sheet="CustomerData",
+                    target_sheet="CustomerSummary"
+                ),
+                SheetMapping(
+                    source_sheet="Transactions",
+                    target_sheet="TransactionSummary"
+                )
             ]
         )
 
@@ -135,8 +136,8 @@ async def generate_and_test_rules():
 
         # Provide summary
         logger.info("\n📝 Summary:")
-        logger.info(f"- Source sheets: {', '.join(m['source_sheet'] for m in test_task.sheet_mappings)}")
-        logger.info(f"- Target sheets: {', '.join(m['target_sheet'] for m in test_task.sheet_mappings)}")
+        logger.info(f"- Source sheets: {', '.join(m.source_sheet for m in test_task.sheet_mappings)}")
+        logger.info(f"- Target sheets: {', '.join(m.target_sheet for m in test_task.sheet_mappings)}")
         logger.info(f"- Total rules generated: {len(rules)}")
         logger.info(f"- Rules file: {rules_file}")
         logger.info(f"- Test output: {test_output}")

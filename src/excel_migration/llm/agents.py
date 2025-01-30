@@ -128,6 +128,70 @@ class MultiAgentSystem:
             logger.error(f"Multi-agent task processing failed: {str(e)}")
             return None
 
+    async def analyze_task(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Analyze a task context and provide insights."""
+        try:
+            # Extract relevant information from context
+            sheet_analysis = context.get("sheet_analysis", {})
+            mapping = context.get("mapping", {})
+            
+            # Create analysis prompt
+            analysis_prompt = ChatPromptTemplate.from_messages([
+                ("system", """You are an expert at analyzing Excel data structures and migrations.
+                Analyze the provided sheet structure and mapping to provide insights for migration.
+                Consider data types, formulas, and potential transformation needs."""),
+                ("user", """Sheet Analysis: {sheet_analysis}
+                Mapping: {mapping}
+                Context: {context}""")
+            ])
+            
+            analysis_chain = LLMChain(
+                llm=self.llm,
+                prompt=analysis_prompt
+            )
+            
+            # Get analysis
+            result = await analysis_chain.arun(
+                sheet_analysis=str(sheet_analysis),
+                mapping=str(mapping),
+                context=str(context)
+            )
+            
+            # Parse and structure the analysis
+            return {
+                "insights": result,
+                "recommendations": self._extract_recommendations(result),
+                "warnings": self._extract_warnings(result)
+            }
+            
+        except Exception as e:
+            logger.error(f"Task analysis failed: {str(e)}")
+            return {
+                "insights": "Analysis failed",
+                "recommendations": [],
+                "warnings": [str(e)]
+            }
+    
+    def _extract_recommendations(self, analysis: str) -> List[str]:
+        """Extract recommendations from analysis text."""
+        # Simple extraction - split on newlines and look for recommendation-like statements
+        recommendations = []
+        for line in analysis.split('\n'):
+            line = line.strip().lower()
+            if any(word in line for word in ['recommend', 'suggest', 'should', 'could']):
+                recommendations.append(line)
+        return recommendations
+    
+    def _extract_warnings(self, analysis: str) -> List[str]:
+        """Extract warnings from analysis text."""
+        # Simple extraction - split on newlines and look for warning-like statements
+        warnings = []
+        for line in analysis.split('\n'):
+            line = line.strip().lower()
+            if any(word in line for word in ['warning', 'caution', 'careful', 'note']):
+                warnings.append(line)
+        return warnings
+
 class AgentFactory:
     """Factory for creating specialized agents."""
     

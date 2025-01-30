@@ -64,18 +64,23 @@ class MigrationTask:
         """Validate sheet existence and mappings."""
         try:
             # Check source sheets
-            with openpyxl.load_workbook(self.source_file, read_only=True) as wb:
-                source_sheets = set(wb.sheetnames)
-                for mapping in self.sheet_mappings:
-                    if mapping.source_sheet not in source_sheets:
-                        raise ValueError(f"Sheet not found in source file: {mapping.source_sheet}")
+            wb = openpyxl.load_workbook(self.source_file, read_only=True)
+            source_sheets = set(wb.sheetnames)
+            wb.close()
+
+            for mapping in self.sheet_mappings:
+                if mapping.source_sheet not in source_sheets:
+                    raise ValueError(f"Sheet not found in source file: {mapping.source_sheet}")
 
             # Check example sheets if provided
             if self.example_source and self.example_target:
-                with openpyxl.load_workbook(self.example_source, read_only=True) as wb:
-                    example_source_sheets = set(wb.sheetnames)
-                with openpyxl.load_workbook(self.example_target, read_only=True) as wb:
-                    example_target_sheets = set(wb.sheetnames)
+                wb = openpyxl.load_workbook(self.example_source, read_only=True)
+                example_source_sheets = set(wb.sheetnames)
+                wb.close()
+
+                wb = openpyxl.load_workbook(self.example_target, read_only=True)
+                example_target_sheets = set(wb.sheetnames)
+                wb.close()
                 
                 for mapping in self.example_sheet_mappings:
                     if mapping.source_sheet not in example_source_sheets:
