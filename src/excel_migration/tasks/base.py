@@ -213,6 +213,11 @@ class TaskBasedProcessor(TaskProcessor):
     async def process_sheet(self, task: Task, mapping: SheetMapping) -> bool:
         """Process a single sheet mapping."""
         try:
+            # Load source data
+            source_data = self._load_sheet_data(task.source_file, mapping.source_sheet)
+            task.context["source_data"] = source_data
+            task.context["target_data"] = {}
+            
             # Analyze source sheet
             analysis = await self.sheet_analyzer.analyze_sheet(
                 task.source_file, 
@@ -233,11 +238,75 @@ class TaskBasedProcessor(TaskProcessor):
                     if not success:
                         return False
             
+            # Save target data if in migration mode
+            if task.task_type == "migrate":
+                self._save_sheet_data(
+                    task.target_file,
+                    mapping.target_sheet,
+                    task.context["target_data"]
+                )
+            
             return True
             
         except Exception as e:
             logger.exception(f"Sheet processing failed: {str(e)}")
             return False
+    
+    def _load_sheet_data(self, file_path: Path, sheet_name: str) -> Dict[str, Any]:
+        """Load data from a sheet into a dictionary."""
+        try:
+            wb = openpyxl.load_workbook(file_path, read_only=True)
+            ws = wb[sheet_name]
+            
+            # Get headers from first row
+            headers = []
+            for cell in ws[1]:
+                if cell.value:
+                    headers.append(str(cell.value))
+            
+            # Load data
+            data = {}
+            for row in list(ws.rows)[1:]:  # Skip header row
+                for header, cell in zip(headers, row):
+                    if cell.value:
+                        data[header] = cell.value
+            
+            wb.close()
+            return data
+            
+        except Exception as e:
+            logger.error(f"Failed to load sheet data: {str(e)}")
+            return {}
+    
+    def _save_sheet_data(self, file_path: Path, sheet_name: str, data: Dict[str, Any]):
+        """Save data to a sheet."""
+        try:
+            # Create new workbook if file doesn't exist
+            if not file_path.exists():
+                wb = openpyxl.Workbook()
+                wb.remove(wb.active)  # Remove default sheet
+            else:
+                wb = openpyxl.load_workbook(file_path)
+            
+            # Create or get sheet
+            if sheet_name in wb.sheetnames:
+                ws = wb[sheet_name]
+            else:
+                ws = wb.create_sheet(sheet_name)
+            
+            # Write headers
+            headers = list(data.keys())
+            for col, header in enumerate(headers, 1):
+                ws.cell(row=1, column=col, value=header)
+            
+            # Write data
+            for col, header in enumerate(headers, 1):
+                ws.cell(row=2, column=col, value=data[header])
+            
+            wb.save(file_path)
+            
+        except Exception as e:
+            logger.error(f"Failed to save sheet data: {str(e)}")
     
     async def _generate_rules_from_examples(self, task: Task):
         """Generate rules from example files."""
@@ -271,7 +340,9 @@ class TaskBasedProcessor(TaskProcessor):
             # Execute rule
             return await executor.execute(rule, {
                 "task": task,
-                "mapping": mapping
+                "mapping": mapping,
+                "source_data": task.context.get("source_data", {}),
+                "target_data": task.context.get("target_data", {})
             })
             
         except Exception as e:
