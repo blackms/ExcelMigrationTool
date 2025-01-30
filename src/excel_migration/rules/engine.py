@@ -3,9 +3,10 @@ from typing import Any, Dict, List, Optional
 import json
 from pathlib import Path
 import logging
+import asyncio
 
 from ..core.models import MigrationRule, RuleType, ValidationResult
-from ..llm.chain import TransformationChain, LLMProvider
+from ..llm.chain import LLMProvider, ChainManager, ExcelProcessor, ProcessingCallback
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +15,12 @@ class RuleEngine:
     
     def __init__(self, llm_provider: str = "openai", **llm_kwargs):
         """Initialize the rule engine."""
+        callbacks = [ProcessingCallback()]
+        llm_kwargs['callbacks'] = callbacks
+        
         self.llm = LLMProvider.create_llm(llm_provider, **llm_kwargs)
-        self.transformation_chain = TransformationChain(self.llm)
+        self.chain_manager = ChainManager(self.llm)
+        self.processor = ExcelProcessor(self.chain_manager)
         
     def load_rules(self, rules_file: str) -> List[MigrationRule]:
         """Load rules from a JSON configuration file."""
@@ -41,9 +46,9 @@ class RuleEngine:
             logger.error(f"Failed to load rules from {rules_file}: {str(e)}")
             raise
 
-    def execute_rule(self, rule: MigrationRule, 
-                    source_values: Dict[str, Any],
-                    context: Optional[Dict[str, Any]] = None) -> Any:
+    async def execute_rule(self, rule: MigrationRule, 
+                         source_values: Dict[str, Any],
+                         context: Optional[Dict[str, Any]] = None) -> Any:
         """Execute a single migration rule."""
         try:
             # Check conditions first
@@ -52,15 +57,15 @@ class RuleEngine:
 
             # Execute based on rule type
             if rule.rule_type == RuleType.COPY:
-                return self._execute_copy(rule, source_values)
+                return await self._execute_copy(rule, source_values)
             elif rule.rule_type == RuleType.TRANSFORM:
-                return self._execute_transform(rule, source_values, context)
+                return await self._execute_transform(rule, source_values, context)
             elif rule.rule_type == RuleType.COMPUTE:
-                return self._execute_compute(rule, source_values, context)
+                return await self._execute_compute(rule, source_values, context)
             elif rule.rule_type == RuleType.AGGREGATE:
-                return self._execute_aggregate(rule, source_values, context)
+                return await self._execute_aggregate(rule, source_values, context)
             elif rule.rule_type == RuleType.VALIDATE:
-                return self._execute_validate(rule, source_values, context)
+                return await self._execute_validate(rule, source_values, context)
             else:
                 raise ValueError(f"Unsupported rule type: {rule.rule_type}")
 
@@ -116,8 +121,8 @@ class RuleEngine:
             logger.error(f"Error checking conditions: {str(e)}")
             return False
 
-    def _execute_copy(self, rule: MigrationRule,
-                     source_values: Dict[str, Any]) -> Any:
+    async def _execute_copy(self, rule: MigrationRule,
+                          source_values: Dict[str, Any]) -> Any:
         """Execute a copy rule."""
         if len(rule.source_columns) != 1:
             raise ValueError("Copy rule must have exactly one source column")
@@ -125,18 +130,22 @@ class RuleEngine:
         source_col = rule.source_columns[0]
         return source_values.get(source_col)
 
-    def _execute_transform(self, rule: MigrationRule,
-                         source_values: Dict[str, Any],
-                         context: Optional[Dict[str, Any]]) -> Any:
+    async def _execute_transform(self, rule: MigrationRule,
+                               source_values: Dict[str, Any],
+                               context: Optional[Dict[str, Any]]) -> Any:
         """Execute a transform rule."""
         if not rule.transformation and not rule.llm_prompt:
             raise ValueError("Transform rule must have either transformation or llm_prompt")
 
         if rule.llm_prompt:
             # Use LLM for complex transformations
-            return self.transformation_chain.transform_value(
+            transformation_rules = {
+                "prompt": rule.llm_prompt,
+                "steps": [{"type": "transform", "description": rule.llm_prompt}]
+            }
+            return await self.processor.process_transformation(
                 source_values,
-                rule.llm_prompt,
+                transformation_rules,
                 context
             )
         else:
@@ -144,14 +153,23 @@ class RuleEngine:
             # This could be extended to support different transformation types
             return eval(rule.transformation, {"__builtins__": {}}, source_values)
 
-    def _execute_compute(self, rule: MigrationRule,
-                        source_values: Dict[str, Any],
-                        context: Optional[Dict[str, Any]]) -> Any:
+    async def _execute_compute(self, rule: MigrationRule,
+                             source_values: Dict[str, Any],
+                             context: Optional[Dict[str, Any]]) -> Any:
         """Execute a compute rule."""
         if not rule.transformation:
             raise ValueError("Compute rule must have a transformation")
 
-        # Create a safe computation context
+        # For complex computations, use the formula analysis agent
+        if self._is_complex_computation(rule.transformation):
+            formula_agent = self.processor.get_or_create_agent("formula")
+            result = await formula_agent.process_task(
+                f"Compute result using formula: {rule.transformation}",
+                {"values": source_values, **(context or {})}
+            )
+            return result
+
+        # For simple computations, use direct evaluation
         compute_context = {
             **source_values,
             "sum": sum,
@@ -163,14 +181,23 @@ class RuleEngine:
         
         return eval(rule.transformation, {"__builtins__": {}}, compute_context)
 
-    def _execute_aggregate(self, rule: MigrationRule,
-                         source_values: Dict[str, Any],
-                         context: Optional[Dict[str, Any]]) -> Any:
+    async def _execute_aggregate(self, rule: MigrationRule,
+                               source_values: Dict[str, Any],
+                               context: Optional[Dict[str, Any]]) -> Any:
         """Execute an aggregate rule."""
         if not rule.transformation:
             raise ValueError("Aggregate rule must have a transformation")
 
-        # Similar to compute but with aggregate functions
+        # For complex aggregations, use the transformation agent
+        if self._is_complex_aggregation(rule.transformation):
+            transformation_agent = self.processor.get_or_create_agent("transformation")
+            result = await transformation_agent.process_task(
+                f"Aggregate values using: {rule.transformation}",
+                {"values": source_values, **(context or {})}
+            )
+            return result
+
+        # For simple aggregations, use direct evaluation
         agg_context = {
             **source_values,
             "sum": sum,
@@ -182,27 +209,27 @@ class RuleEngine:
         
         return eval(rule.transformation, {"__builtins__": {}}, agg_context)
 
-    def _execute_validate(self, rule: MigrationRule,
-                         source_values: Dict[str, Any],
-                         context: Optional[Dict[str, Any]]) -> ValidationResult:
+    async def _execute_validate(self, rule: MigrationRule,
+                              source_values: Dict[str, Any],
+                              context: Optional[Dict[str, Any]]) -> ValidationResult:
         """Execute a validate rule."""
         if not rule.transformation and not rule.llm_prompt:
             raise ValueError("Validate rule must have either transformation or llm_prompt")
 
         try:
             if rule.llm_prompt:
-                # Use LLM for complex validations
-                is_valid = self.transformation_chain.validate_value(
-                    source_values,
-                    rule.llm_prompt,
-                    context
+                # Use validation agent for complex validations
+                validation_agent = self.processor.get_or_create_agent("validation")
+                result = await validation_agent.process_task(
+                    f"Validate data using rules: {rule.llm_prompt}",
+                    {"data": source_values, **(context or {})}
                 )
                 return ValidationResult(
-                    is_valid=is_valid,
-                    message=None if is_valid else "Failed LLM validation"
+                    is_valid=result.lower().startswith("valid"),
+                    message=result
                 )
             else:
-                # Use predefined validation logic
+                # Use direct validation for simple rules
                 validation_context = {
                     **source_values,
                     "len": len,
@@ -226,3 +253,16 @@ class RuleEngine:
                 is_valid=False,
                 message=f"Validation error: {str(e)}"
             )
+
+    def _is_complex_computation(self, transformation: str) -> bool:
+        """Determine if a computation requires the formula agent."""
+        # Add logic to determine complexity
+        return len(transformation.split()) > 5 or 'if' in transformation
+
+    def _is_complex_aggregation(self, transformation: str) -> bool:
+        """Determine if an aggregation requires the transformation agent."""
+        # Add logic to determine complexity
+        return len(transformation.split()) > 5 or any(
+            keyword in transformation 
+            for keyword in ['filter', 'map', 'lambda']
+        )

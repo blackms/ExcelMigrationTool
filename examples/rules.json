@@ -8,53 +8,74 @@
     },
     {
       "type": "transform",
-      "source_columns": ["B", "C"],
-      "target_column": "D",
-      "transformation": "float(B) * float(C)",
-      "description": "Multiply values from columns B and C"
+      "source_columns": ["B"],
+      "target_column": "C",
+      "llm_prompt": "Convert technical specifications into user-friendly descriptions. Format the output as a clear, concise paragraph.",
+      "description": "Use LLM to transform technical specs into readable descriptions"
     },
     {
       "type": "compute",
-      "source_columns": ["E", "F", "G"],
-      "target_column": "H",
-      "transformation": "sum([float(E), float(F), float(G)])",
-      "description": "Sum values from columns E, F, and G"
+      "source_columns": ["D", "E", "F"],
+      "target_column": "G",
+      "transformation": "float(D) > 1000 ? float(D) * float(E) * (1 - float(F)) : float(D) * float(E)",
+      "description": "Complex computation using formula agent for conditional pricing"
     },
     {
       "type": "transform",
-      "source_columns": ["I"],
+      "source_columns": ["H", "I"],
       "target_column": "J",
-      "llm_prompt": "Convert the technical description in column I to a user-friendly format",
-      "description": "Use LLM to make technical descriptions more readable"
+      "llm_prompt": "Analyze the product features in column H and market trends in column I. Generate optimized product recommendations.",
+      "description": "Use multi-agent system for advanced product analysis"
     },
     {
       "type": "validate",
-      "source_columns": ["K"],
-      "target_column": "L",
-      "conditions": {
-        "K": {
-          "operator": ">",
-          "value": 0
-        }
-      },
-      "transformation": "float(K) > 0 and float(K) < 1000000",
-      "description": "Validate that column K contains a positive number less than 1,000,000"
+      "source_columns": ["K", "L", "M"],
+      "target_column": "N",
+      "llm_prompt": "Validate the following business rules: 1. If K is a service, L must contain valid service levels 2. M must contain compatible configuration options for the service level 3. Check for consistency between service type, level, and configuration",
+      "description": "Complex validation using validation agent"
     },
     {
       "type": "aggregate",
-      "source_columns": ["M", "N", "O"],
-      "target_column": "P",
-      "transformation": "avg([float(x) for x in [M, N, O] if x])",
-      "description": "Calculate average of columns M, N, and O, ignoring empty values"
+      "source_columns": ["O", "P", "Q", "R"],
+      "target_column": "S",
+      "transformation": "sum([float(x) * 1.5 if float(x) > 1000 else float(x) for x in [O, P, Q, R] if float(x) > 0]) / len([O, P, Q, R])",
+      "description": "Complex aggregation using transformation agent"
+    },
+    {
+      "type": "transform",
+      "source_columns": ["T"],
+      "target_column": "U",
+      "llm_prompt": "Analyze the Excel formulas in column T. Optimize them for better performance and readability.",
+      "description": "Use formula agent to optimize Excel formulas"
     }
   ],
   "sheet_mapping": {
-    "Sheet1": "Output1",
-    "Sheet2": "Output2"
+    "Source": "Processed",
+    "RawData": "Analyzed"
   },
   "variables": {
-    "margin_rate": 0.3,
+    "default_margin": 0.3,
     "tax_rate": 0.2,
-    "currency": "EUR"
+    "currency": "EUR",
+    "min_threshold": 1000,
+    "weight_factor": 1.5
+  },
+  "llm_settings": {
+    "temperature": 0.7,
+    "max_tokens": 2000,
+    "model_settings": {
+      "formula_analysis": {
+        "temperature": 0.2,
+        "max_tokens": 1000
+      },
+      "validation": {
+        "temperature": 0.3,
+        "max_tokens": 1500
+      },
+      "transformation": {
+        "temperature": 0.7,
+        "max_tokens": 2000
+      }
+    }
   }
 }
