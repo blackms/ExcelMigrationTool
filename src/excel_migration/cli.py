@@ -3,6 +3,7 @@ import argparse
 from pathlib import Path
 from typing import List, Optional
 import sys
+import asyncio
 from loguru import logger
 
 from .tasks.base import MigrationTask, TaskRegistry, TaskBasedProcessor
@@ -42,6 +43,7 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     
+    # File arguments
     parser.add_argument(
         "source",
         type=Path,
@@ -54,6 +56,32 @@ def parse_args() -> argparse.Namespace:
         help="Target Excel file path"
     )
     
+    # Sheet selection
+    parser.add_argument(
+        "--source-sheets",
+        nargs="+",
+        help="Specific sheets to process from source file"
+    )
+    
+    parser.add_argument(
+        "--target-sheets",
+        nargs="+",
+        help="Corresponding target sheet names"
+    )
+    
+    parser.add_argument(
+        "--example-source-sheets",
+        nargs="+",
+        help="Specific sheets to use from example source file"
+    )
+    
+    parser.add_argument(
+        "--example-target-sheets",
+        nargs="+",
+        help="Corresponding sheets from example target file"
+    )
+    
+    # Task configuration
     parser.add_argument(
         "--task-type",
         choices=["migrate", "analyze", "validate"],
@@ -73,6 +101,7 @@ def parse_args() -> argparse.Namespace:
         help="Example target file for rule generation"
     )
     
+    # Visual analysis
     parser.add_argument(
         "--screenshots",
         type=Path,
@@ -80,6 +109,13 @@ def parse_args() -> argparse.Namespace:
         help="Screenshots of Excel sheets for additional analysis"
     )
     
+    parser.add_argument(
+        "--screenshot-sheet-mapping",
+        nargs="+",
+        help="Mapping of screenshots to sheet names (format: screenshot.png:SheetName)"
+    )
+    
+    # Rules and LLM
     parser.add_argument(
         "--rules",
         type=Path,
@@ -98,6 +134,7 @@ def parse_args() -> argparse.Namespace:
         help="Specific model to use with the LLM provider"
     )
     
+    # Logging and debug
     parser.add_argument(
         "--log-level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
@@ -135,7 +172,25 @@ def parse_args() -> argparse.Namespace:
         help="Enable debug mode"
     )
     
-    return parser.parse_args()
+    args = parser.parse_args()
+    
+    # Validate sheet mappings
+    if args.source_sheets and args.target_sheets:
+        if len(args.source_sheets) != len(args.target_sheets):
+            parser.error("Number of source and target sheets must match")
+    
+    if args.example_source_sheets and args.example_target_sheets:
+        if len(args.example_source_sheets) != len(args.example_target_sheets):
+            parser.error("Number of example source and target sheets must match")
+    
+    if args.screenshot_sheet_mapping:
+        try:
+            screenshot_mappings = [mapping.split(":") for mapping in args.screenshot_sheet_mapping]
+            args.screenshot_map = {screenshot: sheet for screenshot, sheet in screenshot_mappings}
+        except ValueError:
+            parser.error("Invalid screenshot mapping format. Use 'screenshot.png:SheetName'")
+    
+    return args
 
 async def run_task(args: argparse.Namespace) -> bool:
     """Run a migration task with the provided arguments."""
@@ -157,6 +212,15 @@ async def run_task(args: argparse.Namespace) -> bool:
         # Create task registry
         registry = TaskRegistry()
         
+        # Prepare sheet mappings
+        sheet_mapping = {}
+        if args.source_sheets and args.target_sheets:
+            sheet_mapping = dict(zip(args.source_sheets, args.target_sheets))
+        
+        example_sheet_mapping = {}
+        if args.example_source_sheets and args.example_target_sheets:
+            example_sheet_mapping = dict(zip(args.example_source_sheets, args.example_target_sheets))
+        
         # Create task
         task = MigrationTask(
             source_file=args.source,
@@ -166,7 +230,10 @@ async def run_task(args: argparse.Namespace) -> bool:
             context={
                 "llm_provider": args.llm_provider,
                 "model": args.model,
-                "debug": args.debug
+                "debug": args.debug,
+                "sheet_mapping": sheet_mapping,
+                "example_sheet_mapping": example_sheet_mapping,
+                "screenshot_mapping": getattr(args, "screenshot_map", {})
             },
             example_source=args.example_source,
             example_target=args.example_target,

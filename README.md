@@ -1,29 +1,29 @@
-# Excel Migration Framework
+# 📊 Excel Migration Framework
 
 A powerful framework for migrating Excel data using configurable rules, multimodal analysis, and LLM integration. This framework allows you to define complex migration rules, learn from examples, and leverage visual analysis of Excel sheets.
 
-## Features
+## ✨ Features
 
-- Task-centric approach for Excel migrations
-- Support for multiple LLM providers through LangChain
-- Multimodal analysis capabilities:
-  - Direct Excel file processing
-  - Screenshot analysis and data extraction
-  - Visual structure recognition
-  - OCR for text extraction
-- Rule generation from example files
-- Flexible rule types:
-  - Direct copy
-  - Value transformation
-  - Computed fields
-  - Aggregations
-  - Validation rules
-- LLM-powered transformations
-- Configurable via JSON rules
-- Comprehensive logging with loguru
-- SOLID principles and clean architecture
+- 🎯 Task-centric approach for Excel migrations
+- 🤖 Support for multiple LLM providers through LangChain
+- 👁️ Multimodal analysis capabilities:
+  - 📑 Direct Excel file processing
+  - 📸 Screenshot analysis and data extraction
+  - 🔍 Visual structure recognition
+  - 📝 OCR for text extraction
+- 🧠 Rule generation from example files
+- 🛠️ Flexible rule types:
+  - 📋 Direct copy
+  - 🔄 Value transformation
+  - 🧮 Computed fields
+  - 📊 Aggregations
+  - ✅ Validation rules
+- 🤖 LLM-powered transformations
+- ⚙️ Configurable via JSON rules
+- 📝 Comprehensive logging with loguru
+- 🏗️ SOLID principles and clean architecture
 
-## Installation
+## 🚀 Installation
 
 ```bash
 # Using pip
@@ -33,38 +33,51 @@ pip install excel-migration-framework
 poetry add excel-migration-framework
 ```
 
-## Quick Start
+## 🏃‍♂️ Quick Start
 
-### Basic Usage
+### 📌 Basic Usage
 
 ```bash
 # Simple migration with rules
 excel-migrate source.xlsx target.xlsx --rules rules.json
 
-# Generate rules from example files
+# Process specific sheets
+excel-migrate source.xlsx target.xlsx \
+    --source-sheets "Sheet1" "Sheet2" \
+    --target-sheets "Output1" "Output2"
+
+# Generate rules from example files with sheet selection
 excel-migrate source.xlsx target.xlsx \
     --example-source example_source.xlsx \
-    --example-target example_target.xlsx
+    --example-target example_target.xlsx \
+    --example-source-sheets "Template1" \
+    --example-target-sheets "Result1"
 
-# Include screenshots for visual analysis
+# Include screenshots with sheet mapping
 excel-migrate source.xlsx target.xlsx \
-    --screenshots sheet1.png sheet2.png
+    --screenshots sheet1.png sheet2.png \
+    --screenshot-sheet-mapping "sheet1.png:Sheet1" "sheet2.png:Sheet2"
 ```
 
-### Python API
+### 💻 Python API
 
 ```python
 from excel_migration.tasks.base import MigrationTask
 from excel_migration.core.processor import TaskBasedProcessor
 from pathlib import Path
 
-# Create a migration task
+# Create a migration task with sheet selection
 task = MigrationTask(
     source_file=Path("source.xlsx"),
     target_file=Path("target.xlsx"),
     task_type="migrate",
     description="Migrate customer data",
-    context={},
+    context={
+        "sheet_mapping": {
+            "CustomerData": "Processed_Customers",
+            "Transactions": "Processed_Transactions"
+        }
+    },
     screenshots=[Path("sheet1.png")]
 )
 
@@ -73,80 +86,94 @@ processor = TaskBasedProcessor(...)
 success = await processor.process(task)
 ```
 
-## Task Types
+## 🎯 Task Types
 
-### Migration Task
+### 🔄 Migration Task
 Migrates data from source to target Excel files.
 
 ```bash
-excel-migrate source.xlsx target.xlsx --task-type migrate
+excel-migrate source.xlsx target.xlsx \
+    --task-type migrate \
+    --source-sheets "Data" \
+    --target-sheets "Processed"
 ```
 
-### Analysis Task
+### 🔍 Analysis Task
 Analyzes Excel files and provides insights.
 
 ```bash
-excel-migrate source.xlsx target.xlsx --task-type analyze
+excel-migrate source.xlsx target.xlsx \
+    --task-type analyze \
+    --source-sheets "Financial" "Metrics"
 ```
 
-### Validation Task
+### ✅ Validation Task
 Validates data against rules.
 
 ```bash
-excel-migrate source.xlsx target.xlsx --task-type validate
+excel-migrate source.xlsx target.xlsx \
+    --task-type validate \
+    --source-sheets "Input" \
+    --rules validation_rules.json
 ```
 
-## Multimodal Analysis
+## 🔮 Multimodal Analysis
 
 The framework can analyze Excel sheets through multiple approaches:
 
-1. Direct File Analysis
-   - Structure analysis
-   - Formula parsing
-   - Data type detection
+1. 📊 Direct File Analysis
+   - 🔍 Structure analysis
+   - 📐 Formula parsing
+   - 🏷️ Data type detection
 
-2. Visual Analysis (from screenshots)
-   - Table structure detection
-   - Cell boundary recognition
-   - Text extraction (OCR)
-   - Layout analysis
+2. 👁️ Visual Analysis (from screenshots)
+   - 📏 Table structure detection
+   - 🔲 Cell boundary recognition
+   - 📝 Text extraction (OCR)
+   - 🎨 Layout analysis
 
-3. LLM Integration
-   - Natural language understanding
-   - Complex pattern recognition
-   - Context-aware transformations
+3. 🧠 LLM Integration
+   - 💭 Natural language understanding
+   - 🔄 Complex pattern recognition
+   - 📚 Context-aware transformations
 
-## Rule Generation
+## ⚡ Rule Generation
 
 Rules can be generated automatically by analyzing example files:
 
 ```bash
-# Generate rules from examples
+# Generate rules from specific sheets in examples
 excel-migrate source.xlsx target.xlsx \
     --example-source example_source.xlsx \
     --example-target example_target.xlsx \
+    --example-source-sheets "Template" \
+    --example-target-sheets "Final" \
     --output-rules rules.json
 ```
 
 The framework will:
-1. Analyze source and target examples
-2. Identify patterns and transformations
-3. Generate appropriate rules
-4. Save rules for future use
+1. 🔍 Analyze source and target examples
+2. 🧮 Identify patterns and transformations
+3. ✨ Generate appropriate rules
+4. 💾 Save rules for future use
 
-## Configuration
+## ⚙️ Configuration
 
-### LLM Providers
+### 🤖 LLM Providers
 
 ```bash
 # Use OpenAI
-excel-migrate source.xlsx target.xlsx --llm-provider openai --model gpt-4
+excel-migrate source.xlsx target.xlsx \
+    --llm-provider openai \
+    --model gpt-4
 
 # Use Anthropic
-excel-migrate source.xlsx target.xlsx --llm-provider anthropic --model claude-2
+excel-migrate source.xlsx target.xlsx \
+    --llm-provider anthropic \
+    --model claude-2
 ```
 
-### Logging
+### 📝 Logging
 
 ```bash
 # Set log level
@@ -156,9 +183,9 @@ excel-migrate source.xlsx target.xlsx --log-level DEBUG
 excel-migrate source.xlsx target.xlsx --log-file migration.log
 ```
 
-## Advanced Features
+## 🔧 Advanced Features
 
-### Custom Rule Types
+### 🛠️ Custom Rule Types
 
 Create custom rule types by implementing the Rule interface:
 
@@ -171,7 +198,7 @@ class CustomRule(Rule):
         pass
 ```
 
-### Event Handling
+### 📡 Event Handling
 
 Subscribe to migration events:
 
@@ -185,7 +212,7 @@ emitter = EventEmitter()
 emitter.on("cell_processed", on_cell_processed)
 ```
 
-### Caching
+### 💾 Caching
 
 Enable caching for better performance:
 
@@ -193,11 +220,11 @@ Enable caching for better performance:
 excel-migrate source.xlsx target.xlsx --cache-dir ./cache
 ```
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Development Setup
+### 🛠️ Development Setup
 
 ```bash
 # Clone repository
@@ -210,6 +237,6 @@ poetry install
 poetry run pytest
 ```
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
