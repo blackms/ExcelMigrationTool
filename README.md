@@ -1,20 +1,27 @@
 # Excel Migration Framework
 
-A flexible framework for migrating Excel data using configurable rules and LLM integration. This framework allows you to define complex migration rules and transformations, with support for multiple LLM providers through LangChain.
+A powerful framework for migrating Excel data using configurable rules, multimodal analysis, and LLM integration. This framework allows you to define complex migration rules, learn from examples, and leverage visual analysis of Excel sheets.
 
 ## Features
 
-- Rule-based Excel data migration
-- Support for multiple LLM providers (OpenAI, Anthropic, etc.)
+- Task-centric approach for Excel migrations
+- Support for multiple LLM providers through LangChain
+- Multimodal analysis capabilities:
+  - Direct Excel file processing
+  - Screenshot analysis and data extraction
+  - Visual structure recognition
+  - OCR for text extraction
+- Rule generation from example files
 - Flexible rule types:
   - Direct copy
   - Value transformation
   - Computed fields
   - Aggregations
   - Validation rules
-- LLM-powered transformations for complex cases
-- Configurable via JSON rules files
-- Extensible architecture
+- LLM-powered transformations
+- Configurable via JSON rules
+- Comprehensive logging with loguru
+- SOLID principles and clean architecture
 
 ## Installation
 
@@ -28,196 +35,180 @@ poetry add excel-migration-framework
 
 ## Quick Start
 
-1. Create a rules configuration file (e.g., `rules.json`):
+### Basic Usage
 
-```json
-{
-  "rules": [
-    {
-      "type": "copy",
-      "source_columns": ["A"],
-      "target_column": "B",
-      "description": "Copy values from column A to B"
-    }
-  ],
-  "sheet_mapping": {
-    "Sheet1": "Output1"
-  }
-}
+```bash
+# Simple migration with rules
+excel-migrate source.xlsx target.xlsx --rules rules.json
+
+# Generate rules from example files
+excel-migrate source.xlsx target.xlsx \
+    --example-source example_source.xlsx \
+    --example-target example_target.xlsx
+
+# Include screenshots for visual analysis
+excel-migrate source.xlsx target.xlsx \
+    --screenshots sheet1.png sheet2.png
 ```
 
-2. Use the framework in your code:
+### Python API
 
 ```python
-from excel_migration.core.models import MigrationContext
-from excel_migration.core.processor import ExcelMigrationProcessor
-from excel_migration.rules.engine import RuleEngine
+from excel_migration.tasks.base import MigrationTask
+from excel_migration.core.processor import TaskBasedProcessor
+from pathlib import Path
 
-# Initialize the rule engine
-rule_engine = RuleEngine(
-    llm_provider="openai",
-    api_key="your-api-key"  # For LLM-powered transformations
+# Create a migration task
+task = MigrationTask(
+    source_file=Path("source.xlsx"),
+    target_file=Path("target.xlsx"),
+    task_type="migrate",
+    description="Migrate customer data",
+    context={},
+    screenshots=[Path("sheet1.png")]
 )
 
-# Load rules
-rules = rule_engine.load_rules("rules.json")
-
-# Create migration context
-context = MigrationContext(
-    source_file="source.xlsx",
-    target_file="target.xlsx",
-    rules=rules,
-    sheet_mapping={"Sheet1": "Output1"}
-)
-
-# Execute migration
-processor = ExcelMigrationProcessor(context)
-success = processor.process()
+# Process the task
+processor = TaskBasedProcessor(...)
+success = await processor.process(task)
 ```
 
-## Rule Types
+## Task Types
 
-### Copy Rule
-Directly copies values from source to target columns.
+### Migration Task
+Migrates data from source to target Excel files.
 
-```json
-{
-  "type": "copy",
-  "source_columns": ["A"],
-  "target_column": "B"
-}
+```bash
+excel-migrate source.xlsx target.xlsx --task-type migrate
 ```
 
-### Transform Rule
-Applies transformations to source values.
+### Analysis Task
+Analyzes Excel files and provides insights.
 
-```json
-{
-  "type": "transform",
-  "source_columns": ["B", "C"],
-  "target_column": "D",
-  "transformation": "float(B) * float(C)"
-}
+```bash
+excel-migrate source.xlsx target.xlsx --task-type analyze
 ```
 
-### Compute Rule
-Computes new values based on source data.
+### Validation Task
+Validates data against rules.
 
-```json
-{
-  "type": "compute",
-  "source_columns": ["E", "F", "G"],
-  "target_column": "H",
-  "transformation": "sum([float(E), float(F), float(G)])"
-}
+```bash
+excel-migrate source.xlsx target.xlsx --task-type validate
 ```
 
-### Aggregate Rule
-Performs aggregations on source data.
+## Multimodal Analysis
 
-```json
-{
-  "type": "aggregate",
-  "source_columns": ["M", "N", "O"],
-  "target_column": "P",
-  "transformation": "avg([float(x) for x in [M, N, O] if x])"
-}
+The framework can analyze Excel sheets through multiple approaches:
+
+1. Direct File Analysis
+   - Structure analysis
+   - Formula parsing
+   - Data type detection
+
+2. Visual Analysis (from screenshots)
+   - Table structure detection
+   - Cell boundary recognition
+   - Text extraction (OCR)
+   - Layout analysis
+
+3. LLM Integration
+   - Natural language understanding
+   - Complex pattern recognition
+   - Context-aware transformations
+
+## Rule Generation
+
+Rules can be generated automatically by analyzing example files:
+
+```bash
+# Generate rules from examples
+excel-migrate source.xlsx target.xlsx \
+    --example-source example_source.xlsx \
+    --example-target example_target.xlsx \
+    --output-rules rules.json
 ```
 
-### Validate Rule
-Validates data according to specified rules.
+The framework will:
+1. Analyze source and target examples
+2. Identify patterns and transformations
+3. Generate appropriate rules
+4. Save rules for future use
 
-```json
-{
-  "type": "validate",
-  "source_columns": ["K"],
-  "target_column": "L",
-  "transformation": "float(K) > 0 and float(K) < 1000000"
-}
+## Configuration
+
+### LLM Providers
+
+```bash
+# Use OpenAI
+excel-migrate source.xlsx target.xlsx --llm-provider openai --model gpt-4
+
+# Use Anthropic
+excel-migrate source.xlsx target.xlsx --llm-provider anthropic --model claude-2
 ```
 
-## LLM Integration
+### Logging
 
-The framework supports LLM-powered transformations for complex cases:
+```bash
+# Set log level
+excel-migrate source.xlsx target.xlsx --log-level DEBUG
 
-```json
-{
-  "type": "transform",
-  "source_columns": ["I"],
-  "target_column": "J",
-  "llm_prompt": "Convert the technical description to user-friendly format"
-}
+# Log to file
+excel-migrate source.xlsx target.xlsx --log-file migration.log
 ```
 
-Configure LLM provider in your code:
+## Advanced Features
+
+### Custom Rule Types
+
+Create custom rule types by implementing the Rule interface:
 
 ```python
-rule_engine = RuleEngine(
-    llm_provider="openai",  # or "anthropic"
-    api_key="your-api-key",
-    model_name="gpt-4",  # optional
-    temperature=0.7  # optional
-)
+from excel_migration.core.interfaces import Rule
+
+class CustomRule(Rule):
+    async def apply(self, data: Any, context: Dict[str, Any]) -> Any:
+        # Implement custom logic
+        pass
 ```
 
-## Conditions
+### Event Handling
 
-Rules can include conditions for selective application:
-
-```json
-{
-  "type": "transform",
-  "source_columns": ["A"],
-  "target_column": "B",
-  "conditions": {
-    "A": {
-      "operator": ">",
-      "value": 0
-    }
-  }
-}
-```
-
-Available operators:
-- `==`: Equal to
-- `!=`: Not equal to
-- `>`: Greater than
-- `<`: Less than
-- `in`: Value in list
-- `contains`: String contains
-
-## Variables
-
-Global variables can be defined in the rules file:
-
-```json
-{
-  "variables": {
-    "margin_rate": 0.3,
-    "tax_rate": 0.2,
-    "currency": "EUR"
-  }
-}
-```
-
-These variables are available in transformations and computations.
-
-## Error Handling
-
-The framework provides detailed logging and error handling:
+Subscribe to migration events:
 
 ```python
-import logging
+from excel_migration.core.interfaces import EventEmitter
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+def on_cell_processed(data: Dict[str, Any]):
+    print(f"Processed cell: {data}")
+
+emitter = EventEmitter()
+emitter.on("cell_processed", on_cell_processed)
+```
+
+### Caching
+
+Enable caching for better performance:
+
+```bash
+excel-migrate source.xlsx target.xlsx --cache-dir ./cache
 ```
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/excel-migration-framework.git
+
+# Install dependencies
+poetry install
+
+# Run tests
+poetry run pytest
+```
 
 ## License
 
