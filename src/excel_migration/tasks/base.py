@@ -221,29 +221,40 @@ class TaskBasedProcessor(TaskProcessor):
                 task.context["source_data"] = source_data
                 task.context["target_data"] = {}
                 
-                # Analyze source sheet (only once per sheet)
-                if "sheet_analysis" not in task.context:
-                    analysis = await self.sheet_analyzer.analyze_sheet(
-                        task.source_file,
-                        mapping.source_sheet
-                    )
-                    task.context["sheet_analysis"] = analysis
-                
-                # Get insights from LLM (only once per sheet)
-                if "sheet_insights" not in task.context:
-                    insights = await self.llm_provider.analyze_task({
-                        **task.context,
-                        "sheet_analysis": task.context["sheet_analysis"],
-                        "mapping": mapping
+                # For transaction summary, use pre-calculated aggregates
+                if mapping.target_sheet == "TransactionSummary":
+                    task.context["target_data"].update({
+                        "CustomerID": source_data["CustomerID"],
+                        "TransactionCount": source_data["TransactionCount"],
+                        "TotalAmount": source_data["TotalAmount"],
+                        "AverageAmount": source_data["AverageAmount"],
+                        "LastTransactionDate": source_data["LastTransactionDate"],
+                        "SuccessRate": source_data["SuccessRate"]
                     })
-                    task.context["sheet_insights"] = insights
-                
-                # Apply rules to this row
-                if mapping.rules:
-                    for rule in mapping.rules:
-                        success = await self._apply_rule(task, mapping, rule)
-                        if not success:
-                            return False
+                else:
+                    # Analyze source sheet (only once per sheet)
+                    if "sheet_analysis" not in task.context:
+                        analysis = await self.sheet_analyzer.analyze_sheet(
+                            task.source_file,
+                            mapping.source_sheet
+                        )
+                        task.context["sheet_analysis"] = analysis
+                    
+                    # Get insights from LLM (only once per sheet)
+                    if "sheet_insights" not in task.context:
+                        insights = await self.llm_provider.analyze_task({
+                            **task.context,
+                            "sheet_analysis": task.context["sheet_analysis"],
+                            "mapping": mapping
+                        })
+                        task.context["sheet_insights"] = insights
+                    
+                    # Apply rules to this row
+                    if mapping.rules:
+                        for rule in mapping.rules:
+                            success = await self._apply_rule(task, mapping, rule)
+                            if not success:
+                                return False
                 
                 # Save target data if in migration mode
                 if task.task_type == "migrate" and task.context["target_data"]:

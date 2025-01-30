@@ -255,8 +255,11 @@ class RuleExecutor:
                 return 0
             
             field_name = match.group(1)
-            value = values.get(field_name)
+            if field_name == "TransactionID":
+                transactions = values.get("Transactions", [])
+                return len(transactions)
             
+            value = values.get(field_name)
             if isinstance(value, list):
                 return len(value)
             return 1 if value is not None else 0
@@ -274,8 +277,11 @@ class RuleExecutor:
                 return 0
             
             field_name, condition = match.groups()
-            value = values.get(field_name)
+            if "Transactions" in values:
+                transactions = values["Transactions"]
+                return sum(1 for t in transactions if str(t.get(field_name)) == condition)
             
+            value = values.get(field_name)
             if isinstance(value, list):
                 return sum(1 for v in value if str(v) == condition)
             return 1 if str(value) == condition else 0
@@ -293,8 +299,11 @@ class RuleExecutor:
                 return 0.0
             
             field_name = match.group(1)
-            value = values.get(field_name)
+            if "Transactions" in values:
+                transactions = values["Transactions"]
+                return sum(float(t.get(field_name, 0)) for t in transactions)
             
+            value = values.get(field_name)
             if isinstance(value, list):
                 return sum(float(v) for v in value if v is not None)
             return float(value) if value is not None else 0.0
@@ -312,8 +321,12 @@ class RuleExecutor:
                 return 0.0
             
             field_name = match.group(1)
-            value = values.get(field_name)
+            if "Transactions" in values:
+                transactions = values["Transactions"]
+                amounts = [float(t.get(field_name, 0)) for t in transactions]
+                return sum(amounts) / len(amounts) if amounts else 0.0
             
+            value = values.get(field_name)
             if isinstance(value, list):
                 valid_values = [float(v) for v in value if v is not None]
                 return sum(valid_values) / len(valid_values) if valid_values else 0.0
