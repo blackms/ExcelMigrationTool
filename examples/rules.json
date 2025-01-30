@@ -1,0 +1,60 @@
+{
+  "rules": [
+    {
+      "type": "copy",
+      "source_columns": ["A"],
+      "target_column": "A",
+      "description": "Copy values directly from column A"
+    },
+    {
+      "type": "transform",
+      "source_columns": ["B", "C"],
+      "target_column": "D",
+      "transformation": "float(B) * float(C)",
+      "description": "Multiply values from columns B and C"
+    },
+    {
+      "type": "compute",
+      "source_columns": ["E", "F", "G"],
+      "target_column": "H",
+      "transformation": "sum([float(E), float(F), float(G)])",
+      "description": "Sum values from columns E, F, and G"
+    },
+    {
+      "type": "transform",
+      "source_columns": ["I"],
+      "target_column": "J",
+      "llm_prompt": "Convert the technical description in column I to a user-friendly format",
+      "description": "Use LLM to make technical descriptions more readable"
+    },
+    {
+      "type": "validate",
+      "source_columns": ["K"],
+      "target_column": "L",
+      "conditions": {
+        "K": {
+          "operator": ">",
+          "value": 0
+        }
+      },
+      "transformation": "float(K) > 0 and float(K) < 1000000",
+      "description": "Validate that column K contains a positive number less than 1,000,000"
+    },
+    {
+      "type": "aggregate",
+      "source_columns": ["M", "N", "O"],
+      "target_column": "P",
+      "transformation": "avg([float(x) for x in [M, N, O] if x])",
+      "description": "Calculate average of columns M, N, and O, ignoring empty values"
+    }
+  ],
+  "sheet_mapping": {
+    "Sheet1": "Output1",
+    "Sheet2": "Output2"
+  },
+  "variables": {
+    "margin_rate": 0.3,
+    "tax_rate": 0.2,
+    "currency": "EUR"
+  }
+}
