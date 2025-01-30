@@ -18,6 +18,11 @@ A powerful framework for migrating Excel data using configurable rules, multimod
   - 🧮 Computed fields
   - 📊 Aggregations
   - ✅ Validation rules
+- 🔌 Plugin-based rule execution:
+  - 🧩 Extensible formula executors
+  - 🔄 Custom transformations
+  - 🎨 Modular design
+  - 🛡️ SOLID principles
 - 🤖 LLM-powered transformations
 - ⚙️ Configurable via JSON rules
 - 📝 Comprehensive logging with loguru
@@ -85,6 +90,76 @@ task = MigrationTask(
 processor = TaskBasedProcessor(...)
 success = await processor.process(task)
 ```
+
+## 🔌 Plugin System
+
+The framework uses a flexible plugin system for formula execution and value transformations, following SOLID principles:
+
+### 🧩 Formula Executors
+
+```python
+from excel_migration.plugins.interfaces import FormulaExecutor
+from typing import Any, Dict
+
+class CustomFormulaExecutor(FormulaExecutor):
+    """Custom formula executor plugin."""
+    
+    formula_type = "CUSTOM"
+    
+    def can_execute(self, formula: str) -> bool:
+        """Check if this executor can handle the formula."""
+        return formula.startswith("CUSTOM(")
+    
+    def execute(self, formula: str, values: Dict[str, Any]) -> Any:
+        """Execute the custom formula."""
+        # Implement custom formula logic
+        pass
+
+# Register the plugin
+registry = PluginRegistry()
+registry.register_formula_executor(CustomFormulaExecutor())
+```
+
+### 🔄 Transformation Handlers
+
+```python
+from excel_migration.plugins.interfaces import TransformationHandler
+from typing import Any, Dict
+
+class CustomTransformer(TransformationHandler):
+    """Custom transformation plugin."""
+    
+    transformation_type = "custom_format"
+    
+    def can_transform(self, transformation: Dict[str, Any]) -> bool:
+        """Check if this handler can process the transformation."""
+        return transformation.get("type") == self.transformation_type
+    
+    def transform(self, value: Any, params: Dict[str, Any]) -> Any:
+        """Transform the value according to parameters."""
+        # Implement custom transformation logic
+        pass
+
+# Register the plugin
+registry.register_transformation_handler(CustomTransformer())
+```
+
+### 📦 Built-in Plugins
+
+The framework includes several built-in plugins:
+
+#### Formula Executors:
+- 📅 `DateDiffExecutor`: Calculate date differences
+- 🔢 `CountExecutor`: Count values or records
+- 🎯 `CountIfExecutor`: Conditional counting
+- ➕ `SumExecutor`: Sum numeric values
+- 📊 `AverageExecutor`: Calculate averages
+
+#### Transformation Handlers:
+- 📅 `DateTimeTransformer`: Format dates and times
+- 🔢 `NumericTransformer`: Format numbers
+- ✅ `BooleanTransformer`: Convert to boolean values
+- 🔤 `ConcatenateTransformer`: Join multiple values
 
 ## 🎯 Task Types
 
