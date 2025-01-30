@@ -214,37 +214,44 @@ class TaskBasedProcessor(TaskProcessor):
         """Process a single sheet mapping."""
         try:
             # Load source data
-            source_data = self._load_sheet_data(task.source_file, mapping.source_sheet)
-            task.context["source_data"] = source_data
-            task.context["target_data"] = {}
+            source_rows = self._load_sheet_data(task.source_file, mapping.source_sheet)
             
-            # Analyze source sheet
-            analysis = await self.sheet_analyzer.analyze_sheet(
-                task.source_file, 
-                mapping.source_sheet
-            )
-            
-            # Get insights from LLM
-            insights = await self.llm_provider.analyze_task({
-                **task.context,
-                "sheet_analysis": analysis,
-                "mapping": mapping
-            })
-            
-            # Apply rules
-            if mapping.rules:
-                for rule in mapping.rules:
-                    success = await self._apply_rule(task, mapping, rule)
-                    if not success:
-                        return False
-            
-            # Save target data if in migration mode
-            if task.task_type == "migrate":
-                self._save_sheet_data(
-                    task.target_file,
-                    mapping.target_sheet,
-                    task.context["target_data"]
-                )
+            # Process each row
+            for source_data in source_rows:
+                task.context["source_data"] = source_data
+                task.context["target_data"] = {}
+                
+                # Analyze source sheet (only once per sheet)
+                if "sheet_analysis" not in task.context:
+                    analysis = await self.sheet_analyzer.analyze_sheet(
+                        task.source_file,
+                        mapping.source_sheet
+                    )
+                    task.context["sheet_analysis"] = analysis
+                
+                # Get insights from LLM (only once per sheet)
+                if "sheet_insights" not in task.context:
+                    insights = await self.llm_provider.analyze_task({
+                        **task.context,
+                        "sheet_analysis": task.context["sheet_analysis"],
+                        "mapping": mapping
+                    })
+                    task.context["sheet_insights"] = insights
+                
+                # Apply rules to this row
+                if mapping.rules:
+                    for rule in mapping.rules:
+                        success = await self._apply_rule(task, mapping, rule)
+                        if not success:
+                            return False
+                
+                # Save target data if in migration mode
+                if task.task_type == "migrate" and task.context["target_data"]:
+                    self._save_sheet_data(
+                        task.target_file,
+                        mapping.target_sheet,
+                        task.context["target_data"]
+                    )
             
             return True
             
@@ -252,8 +259,8 @@ class TaskBasedProcessor(TaskProcessor):
             logger.exception(f"Sheet processing failed: {str(e)}")
             return False
     
-    def _load_sheet_data(self, file_path: Path, sheet_name: str) -> Dict[str, Any]:
-        """Load data from a sheet into a dictionary."""
+    def _load_sheet_data(self, file_path: Path, sheet_name: str) -> List[Dict[str, Any]]:
+        """Load data from a sheet into a list of dictionaries."""
         try:
             wb = openpyxl.load_workbook(file_path, read_only=True)
             ws = wb[sheet_name]
@@ -265,18 +272,21 @@ class TaskBasedProcessor(TaskProcessor):
                     headers.append(str(cell.value))
             
             # Load data
-            data = {}
+            data_rows = []
             for row in list(ws.rows)[1:]:  # Skip header row
+                row_data = {}
                 for header, cell in zip(headers, row):
-                    if cell.value:
-                        data[header] = cell.value
+                    if cell.value is not None:
+                        row_data[header] = cell.value
+                if row_data:  # Only add non-empty rows
+                    data_rows.append(row_data)
             
             wb.close()
-            return data
+            return data_rows
             
         except Exception as e:
             logger.error(f"Failed to load sheet data: {str(e)}")
-            return {}
+            return []
     
     def _save_sheet_data(self, file_path: Path, sheet_name: str, data: Dict[str, Any]):
         """Save data to a sheet."""
@@ -284,7 +294,8 @@ class TaskBasedProcessor(TaskProcessor):
             # Create new workbook if file doesn't exist
             if not file_path.exists():
                 wb = openpyxl.Workbook()
-                wb.remove(wb.active)  # Remove default sheet
+                if sheet_name != wb.active.title:
+                    wb.remove(wb.active)  # Remove default sheet only if it's not the one we want
             else:
                 wb = openpyxl.load_workbook(file_path)
             
@@ -294,16 +305,21 @@ class TaskBasedProcessor(TaskProcessor):
             else:
                 ws = wb.create_sheet(sheet_name)
             
-            # Write headers
+            # Write headers if sheet is empty
+            if ws.max_row == 0:
+                headers = list(data.keys())
+                for col, header in enumerate(headers, 1):
+                    ws.cell(row=1, column=col, value=header)
+            
+            # Write data row
+            row_num = ws.max_row + 1
             headers = list(data.keys())
             for col, header in enumerate(headers, 1):
-                ws.cell(row=1, column=col, value=header)
+                ws.cell(row=row_num, column=col, value=data[header])
             
-            # Write data
-            for col, header in enumerate(headers, 1):
-                ws.cell(row=2, column=col, value=data[header])
-            
+            # Save workbook
             wb.save(file_path)
+            logger.debug(f"Saved data to sheet {sheet_name} in {file_path}")
             
         except Exception as e:
             logger.error(f"Failed to save sheet data: {str(e)}")

@@ -10,6 +10,10 @@ def verify_output():
     print("📊 Verifying output file contents...")
     print("=" * 60)
     
+    if not output_file.exists():
+        print("\n❌ Output file not found!")
+        return
+    
     wb = openpyxl.load_workbook(output_file, read_only=True)
     
     # Check CustomerSummary sheet
@@ -18,15 +22,27 @@ def verify_output():
         print("\n🧑 CustomerSummary Sheet:")
         print("-" * 40)
         
+        # Get all rows
+        rows = list(ws.rows)
+        if not rows:
+            print("Sheet is empty!")
+            return
+        
         # Print headers
-        headers = [cell.value for cell in ws[1] if cell.value]
-        print("Headers:", ", ".join(headers))
+        headers = [str(cell.value) for cell in rows[0] if cell.value is not None]
+        if headers:
+            print("Headers:", ", ".join(headers))
+        else:
+            print("No headers found!")
         
         # Print first few rows
-        print("\nSample Data (first 3 rows):")
-        for row in list(ws.rows)[1:4]:  # Skip header, take next 3 rows
-            row_data = [str(cell.value) for cell in row if cell.value is not None]
-            print(" | ".join(row_data))
+        if len(rows) > 1:
+            print("\nSample Data (first 3 rows):")
+            for row in rows[1:min(4, len(rows))]:  # Skip header, take next 3 rows
+                row_data = [str(cell.value) if cell.value is not None else "" for cell in row]
+                print(" | ".join(row_data))
+        else:
+            print("No data rows found!")
     
     # Check TransactionSummary sheet
     if "TransactionSummary" in wb.sheetnames:
@@ -34,15 +50,27 @@ def verify_output():
         print("\n💰 TransactionSummary Sheet:")
         print("-" * 40)
         
+        # Get all rows
+        rows = list(ws.rows)
+        if not rows:
+            print("Sheet is empty!")
+            return
+        
         # Print headers
-        headers = [cell.value for cell in ws[1] if cell.value]
-        print("Headers:", ", ".join(headers))
+        headers = [str(cell.value) for cell in rows[0] if cell.value is not None]
+        if headers:
+            print("Headers:", ", ".join(headers))
+        else:
+            print("No headers found!")
         
         # Print first few rows
-        print("\nSample Data (first 3 rows):")
-        for row in list(ws.rows)[1:4]:  # Skip header, take next 3 rows
-            row_data = [str(cell.value) for cell in row if cell.value is not None]
-            print(" | ".join(row_data))
+        if len(rows) > 1:
+            print("\nSample Data (first 3 rows):")
+            for row in rows[1:min(4, len(rows))]:  # Skip header, take next 3 rows
+                row_data = [str(cell.value) if cell.value is not None else "" for cell in row]
+                print(" | ".join(row_data))
+        else:
+            print("No data rows found!")
     
     wb.close()
     print("\n" + "=" * 60)
