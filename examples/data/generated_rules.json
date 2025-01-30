@@ -19,17 +19,6 @@
   },
   {
     "type": "field_mapping",
-    "source_field": "LastLoginDate",
-    "target_field": "LastLoginDate",
-    "transformation": {
-      "type": "datetime_format",
-      "params": {
-        "format": "%Y-%m-%d"
-      }
-    }
-  },
-  {
-    "type": "field_mapping",
     "source_field": [
       "FirstName",
       "LastName"
@@ -59,6 +48,17 @@
     }
   },
   {
+    "type": "field_mapping",
+    "source_field": "LastLoginDate",
+    "target_field": "LastLoginDate",
+    "transformation": {
+      "type": "datetime_format",
+      "params": {
+        "format": "%Y-%m-%d"
+      }
+    }
+  },
+  {
     "type": "calculation",
     "target_field": "DaysSinceRegistration",
     "formula": "DATEDIF([RegistrationDate], TODAY(), 'D')",
@@ -77,30 +77,48 @@
     }
   },
   {
-    "type": "calculation",
+    "type": "field_mapping",
+    "source_field": "TransactionCount",
     "target_field": "TransactionCount",
-    "formula": "COUNT([TransactionID])",
-    "description": "Count total number of transactions",
-    "source_fields": [
-      "TransactionID"
-    ]
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
   },
   {
-    "type": "calculation",
+    "type": "field_mapping",
+    "source_field": "TotalAmount",
+    "target_field": "TotalAmount",
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
+  },
+  {
+    "type": "field_mapping",
+    "source_field": "AverageAmount",
     "target_field": "AverageAmount",
-    "formula": "AVERAGE([Amount])",
-    "description": "Average transaction amount",
-    "source_fields": [
-      "Amount"
-    ]
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
   },
   {
-    "type": "calculation",
+    "type": "field_mapping",
+    "source_field": "LastTransactionDate",
+    "target_field": "LastTransactionDate",
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
+  },
+  {
+    "type": "field_mapping",
+    "source_field": "SuccessRate",
     "target_field": "SuccessRate",
-    "formula": "COUNT_IF([Status], 'Completed') / COUNT([Status])",
-    "description": "Percentage of completed transactions",
-    "source_fields": [
-      "Status"
-    ]
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
   }
 ]

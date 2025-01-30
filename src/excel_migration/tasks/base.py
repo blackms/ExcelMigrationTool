@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 from loguru import logger
 import openpyxl
+from datetime import datetime
 
 from ..core.interfaces import (
     Task, TaskHandler, TaskProcessor, RuleGenerator,
@@ -221,8 +222,9 @@ class TaskBasedProcessor(TaskProcessor):
                 task.context["source_data"] = source_data
                 task.context["target_data"] = {}
                 
-                # For transaction summary, use pre-calculated aggregates
+                # Handle different sheet mappings
                 if mapping.target_sheet == "TransactionSummary":
+                    # For transaction summary, use pre-calculated aggregates
                     task.context["target_data"].update({
                         "CustomerID": source_data["CustomerID"],
                         "TransactionCount": source_data["TransactionCount"],
@@ -231,30 +233,40 @@ class TaskBasedProcessor(TaskProcessor):
                         "LastTransactionDate": source_data["LastTransactionDate"],
                         "SuccessRate": source_data["SuccessRate"]
                     })
-                else:
-                    # Analyze source sheet (only once per sheet)
-                    if "sheet_analysis" not in task.context:
-                        analysis = await self.sheet_analyzer.analyze_sheet(
-                            task.source_file,
-                            mapping.source_sheet
-                        )
-                        task.context["sheet_analysis"] = analysis
-                    
-                    # Get insights from LLM (only once per sheet)
-                    if "sheet_insights" not in task.context:
-                        insights = await self.llm_provider.analyze_task({
-                            **task.context,
-                            "sheet_analysis": task.context["sheet_analysis"],
-                            "mapping": mapping
-                        })
-                        task.context["sheet_insights"] = insights
-                    
-                    # Apply rules to this row
-                    if mapping.rules:
-                        for rule in mapping.rules:
-                            success = await self._apply_rule(task, mapping, rule)
-                            if not success:
-                                return False
+                elif mapping.target_sheet == "CustomerSummary":
+                    # For customer summary, map customer data fields
+                    task.context["target_data"].update({
+                        "CustomerID": source_data["CustomerID"],
+                        "FullName": f"{source_data['FirstName']} {source_data['LastName']}",
+                        "Email": source_data["Email"],
+                        "DaysSinceRegistration": (datetime.now() - datetime.strptime(source_data["RegistrationDate"], "%Y-%m-%d")).days,
+                        "LastLoginDate": source_data["LastLoginDate"],
+                        "IsActive": source_data["Status"] == "Active"
+                    })
+                
+                # Analyze source sheet (only once per sheet)
+                if "sheet_analysis" not in task.context:
+                    analysis = await self.sheet_analyzer.analyze_sheet(
+                        task.source_file,
+                        mapping.source_sheet
+                    )
+                    task.context["sheet_analysis"] = analysis
+                
+                # Get insights from LLM (only once per sheet)
+                if "sheet_insights" not in task.context:
+                    insights = await self.llm_provider.analyze_task({
+                        **task.context,
+                        "sheet_analysis": task.context["sheet_analysis"],
+                        "mapping": mapping
+                    })
+                    task.context["sheet_insights"] = insights
+                
+                # Apply rules to this row
+                if mapping.rules:
+                    for rule in mapping.rules:
+                        success = await self._apply_rule(task, mapping, rule)
+                        if not success:
+                            return False
                 
                 # Save target data if in migration mode
                 if task.task_type == "migrate" and task.context["target_data"]:
@@ -335,37 +347,54 @@ class TaskBasedProcessor(TaskProcessor):
     def _save_sheet_data(self, file_path: Path, sheet_name: str, data: Dict[str, Any]):
         """Save data to a sheet."""
         try:
+            logger.info(f"Saving data to {sheet_name} in {file_path}")
+            logger.info(f"Data to save: {data}")
+            
             # Create new workbook if file doesn't exist
             if not file_path.exists():
+                logger.info("Creating new workbook")
                 wb = openpyxl.Workbook()
                 wb.remove(wb.active)  # Remove default sheet
             else:
+                logger.info("Loading existing workbook")
                 wb = openpyxl.load_workbook(file_path)
             
             # Create or get sheet
+            headers = list(data.keys())
             if sheet_name in wb.sheetnames:
+                logger.info(f"Using existing sheet: {sheet_name}")
                 ws = wb[sheet_name]
+                # Write headers if sheet is empty or headers don't match
+                if ws.max_row == 0 or any(ws.cell(row=1, column=i+1).value != header for i, header in enumerate(headers)):
+                    logger.info("Writing headers to existing sheet")
+                    for col, header in enumerate(headers, 1):
+                        ws.cell(row=1, column=col, value=header)
             else:
+                logger.info(f"Creating new sheet: {sheet_name}")
                 ws = wb.create_sheet(sheet_name)
                 # Write headers for new sheet
-                headers = list(data.keys())
+                logger.info(f"Writing headers: {headers}")
                 for col, header in enumerate(headers, 1):
                     ws.cell(row=1, column=col, value=header)
             
             # Get current row count (excluding header)
             data_rows = max(0, ws.max_row - 1)
+            logger.info(f"Current data rows: {data_rows}")
             
             # Write data row
             row_num = data_rows + 2  # Add 2 (1 for header, 1 for new row)
-            for col, (header, value) in enumerate(data.items(), 1):
-                ws.cell(row=row_num, column=col, value=value)
+            logger.info(f"Writing data to row {row_num}")
+            for col, (header, value) in enumerate(headers, 1):
+                logger.info(f"Writing {header}: {value}")
+                ws.cell(row=row_num, column=col, value=data[header])
             
             # Save workbook
             wb.save(file_path)
-            logger.debug(f"Saved row {data_rows + 1} to sheet {sheet_name} in {file_path}")
+            logger.info(f"Successfully saved row {data_rows + 1} to sheet {sheet_name}")
             
         except Exception as e:
             logger.error(f"Failed to save sheet data: {str(e)}")
+            logger.exception("Detailed error:")
     
     async def _generate_rules_from_examples(self, task: Task):
         """Generate rules from example files."""
