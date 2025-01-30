@@ -4,9 +4,9 @@ from pathlib import Path
 import logging
 from dotenv import load_dotenv
 
-from excel_migration.core.models import MigrationContext
-from excel_migration.core.processor import ExcelMigrationProcessor
-from excel_migration.rules.engine import RuleEngine
+from src.excel_migration.core.models import MigrationContext
+from src.excel_migration.core.processor import ExcelMigrationProcessor
+from src.excel_migration.rules.engine import RuleEngine
 
 # Load environment variables from .env file
 load_dotenv()
@@ -30,7 +30,7 @@ def main():
         rule_engine = RuleEngine(
             llm_provider="openai",
             api_key=api_key,
-            model_name="gpt-4",
+            model_name="gpt-4o",
             temperature=0.7
         )
 
