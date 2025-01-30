@@ -384,9 +384,10 @@ class TaskBasedProcessor(TaskProcessor):
             # Write data row
             row_num = data_rows + 2  # Add 2 (1 for header, 1 for new row)
             logger.info(f"Writing data to row {row_num}")
-            for col, (header, value) in enumerate(headers, 1):
+            for col, header in enumerate(headers, 1):
+                value = data[header]
                 logger.info(f"Writing {header}: {value}")
-                ws.cell(row=row_num, column=col, value=data[header])
+                ws.cell(row=row_num, column=col, value=value)
             
             # Save workbook
             wb.save(file_path)
