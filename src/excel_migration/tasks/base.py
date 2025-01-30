@@ -273,13 +273,46 @@ class TaskBasedProcessor(TaskProcessor):
             
             # Load data
             data_rows = []
-            for row in list(ws.rows)[1:]:  # Skip header row
-                row_data = {}
-                for header, cell in zip(headers, row):
-                    if cell.value is not None:
-                        row_data[header] = cell.value
-                if row_data:  # Only add non-empty rows
-                    data_rows.append(row_data)
+            rows = list(ws.rows)[1:]  # Skip header row
+            
+            if sheet_name == "CustomerData":
+                # For CustomerData, each row is a separate customer
+                for row in rows:
+                    row_data = {}
+                    for header, cell in zip(headers, row):
+                        if cell.value is not None:
+                            row_data[header] = cell.value
+                    if row_data:  # Only add non-empty rows
+                        data_rows.append(row_data)
+            
+            elif sheet_name == "Transactions":
+                # For Transactions, group by CustomerID
+                customer_transactions = {}
+                for row in rows:
+                    row_data = {}
+                    customer_id = None
+                    for header, cell in zip(headers, row):
+                        if cell.value is not None:
+                            row_data[header] = cell.value
+                            if header == "CustomerID":
+                                customer_id = cell.value
+                    
+                    if customer_id and row_data:
+                        if customer_id not in customer_transactions:
+                            customer_transactions[customer_id] = []
+                        customer_transactions[customer_id].append(row_data)
+                
+                # Convert grouped transactions to list format
+                for customer_id, transactions in customer_transactions.items():
+                    data_rows.append({
+                        "CustomerID": customer_id,
+                        "Transactions": transactions,
+                        "TransactionCount": len(transactions),
+                        "TotalAmount": sum(float(t["Amount"]) for t in transactions),
+                        "AverageAmount": sum(float(t["Amount"]) for t in transactions) / len(transactions),
+                        "LastTransactionDate": max(t["Date"] for t in transactions),
+                        "SuccessRate": len([t for t in transactions if t["Status"] == "Completed"]) / len(transactions)
+                    })
             
             wb.close()
             return data_rows
@@ -294,8 +327,7 @@ class TaskBasedProcessor(TaskProcessor):
             # Create new workbook if file doesn't exist
             if not file_path.exists():
                 wb = openpyxl.Workbook()
-                if sheet_name != wb.active.title:
-                    wb.remove(wb.active)  # Remove default sheet only if it's not the one we want
+                wb.remove(wb.active)  # Remove default sheet
             else:
                 wb = openpyxl.load_workbook(file_path)
             
@@ -304,22 +336,22 @@ class TaskBasedProcessor(TaskProcessor):
                 ws = wb[sheet_name]
             else:
                 ws = wb.create_sheet(sheet_name)
-            
-            # Write headers if sheet is empty
-            if ws.max_row == 0:
+                # Write headers for new sheet
                 headers = list(data.keys())
                 for col, header in enumerate(headers, 1):
                     ws.cell(row=1, column=col, value=header)
             
+            # Get current row count (excluding header)
+            data_rows = max(0, ws.max_row - 1)
+            
             # Write data row
-            row_num = ws.max_row + 1
-            headers = list(data.keys())
-            for col, header in enumerate(headers, 1):
-                ws.cell(row=row_num, column=col, value=data[header])
+            row_num = data_rows + 2  # Add 2 (1 for header, 1 for new row)
+            for col, (header, value) in enumerate(data.items(), 1):
+                ws.cell(row=row_num, column=col, value=value)
             
             # Save workbook
             wb.save(file_path)
-            logger.debug(f"Saved data to sheet {sheet_name} in {file_path}")
+            logger.debug(f"Saved row {data_rows + 1} to sheet {sheet_name} in {file_path}")
             
         except Exception as e:
             logger.error(f"Failed to save sheet data: {str(e)}")
