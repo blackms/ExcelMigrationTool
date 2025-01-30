@@ -311,6 +311,7 @@ class TaskBasedProcessor(TaskProcessor):
     async def _generate_rules_from_examples(self, task: Task):
         """Generate rules from example files."""
         try:
+            all_rules = []
             for mapping in task.example_sheet_mappings:
                 rules = await self.rule_generator.generate_rules(
                     task.example_source,
@@ -318,12 +319,17 @@ class TaskBasedProcessor(TaskProcessor):
                     mapping.source_sheet,
                     mapping.target_sheet
                 )
+                all_rules.extend(rules)
+                
                 # Find corresponding task mapping
                 for task_mapping in task.sheet_mappings:
                     if (task_mapping.source_sheet == mapping.source_sheet and
                         task_mapping.target_sheet == mapping.target_sheet):
                         task_mapping.rules = rules
                         break
+            
+            # Store all generated rules in task context
+            task.context["generated_rules"] = all_rules
                 
         except Exception as e:
             logger.exception(f"Rule generation failed: {str(e)}")
