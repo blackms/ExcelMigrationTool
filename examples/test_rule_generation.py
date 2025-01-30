@@ -3,12 +3,18 @@ import asyncio
 from pathlib import Path
 from loguru import logger
 import json
+import os
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
 
 from excel_migration.tasks.base import MigrationTask, TaskBasedProcessor
 from excel_migration.llm.agents import MultiAgentSystem
 from excel_migration.rules.engine import RuleEngine
 from excel_migration.core.interfaces import RuleGenerator, SheetAnalyzer
 from excel_migration.vision.processor import SheetImageProcessor
+
+# Load environment variables
+load_dotenv()
 
 async def generate_and_test_rules():
     """Generate rules from example files and test them."""
@@ -19,12 +25,14 @@ async def generate_and_test_rules():
         target_file = data_dir / "target.xlsx"
         rules_file = data_dir / "generated_rules.json"
 
-        # Initialize components
-        llm_system = MultiAgentSystem(
-            provider="openai",
-            model="gpt-4"
+        # Initialize LLM
+        llm = ChatOpenAI(
+            model_name=os.getenv("OPENAI_MODEL", "gpt-4"),
+            temperature=float(os.getenv("OPENAI_TEMPERATURE", "0.7"))
         )
-        
+
+        # Initialize components
+        llm_system = MultiAgentSystem(llm)
         image_processor = SheetImageProcessor()
         rule_engine = RuleEngine(llm_provider="openai")
         
@@ -36,7 +44,7 @@ async def generate_and_test_rules():
             description="Generate rules from example files",
             context={
                 "llm_provider": "openai",
-                "model": "gpt-4"
+                "model": os.getenv("OPENAI_MODEL", "gpt-4")
             },
             sheet_mappings=[
                 {
@@ -92,7 +100,7 @@ async def generate_and_test_rules():
             description="Test generated rules",
             context={
                 "llm_provider": "openai",
-                "model": "gpt-4",
+                "model": os.getenv("OPENAI_MODEL", "gpt-4"),
                 "rules": rules
             },
             sheet_mappings=[

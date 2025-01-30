@@ -1,8 +1,9 @@
 """LangChain integration for Excel migrations."""
 from typing import Any, Dict, Optional, List
-from langchain.chat_models import ChatOpenAI, ChatAnthropic
+from langchain_openai import ChatOpenAI
+from langchain_community.chat_models import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate
-from langchain.schema import BaseLanguageModel
+from langchain_core.language_models import BaseLanguageModel
 from langchain.chains import LLMChain
 from langchain.chains.base import Chain
 from langchain.memory import ConversationBufferMemory

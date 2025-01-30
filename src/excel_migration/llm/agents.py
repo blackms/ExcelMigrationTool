@@ -4,7 +4,7 @@ from langchain.agents import AgentType, initialize_agent
 from langchain.agents.tools import Tool
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
-from langchain.schema import BaseLanguageModel
+from langchain_core.language_models import BaseLanguageModel
 from langchain.tools import BaseTool
 import logging
 
