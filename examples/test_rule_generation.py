@@ -10,6 +10,7 @@ from langchain_openai import ChatOpenAI
 from excel_migration.tasks.base import MigrationTask, TaskBasedProcessor, SheetMapping
 from excel_migration.llm.agents import MultiAgentSystem
 from excel_migration.rules.engine import RuleEngine
+from excel_migration.rules.executor import RuleExecutor
 from excel_migration.core.analyzers import ExcelSheetAnalyzer
 from excel_migration.vision.processor import SheetImageProcessor
 
@@ -36,6 +37,7 @@ async def generate_and_test_rules():
         image_processor = SheetImageProcessor()
         rule_engine = RuleEngine(llm_provider="openai")
         sheet_analyzer = ExcelSheetAnalyzer(image_processor)
+        rule_executor = RuleExecutor()
         
         # Create task for rule generation
         generation_task = MigrationTask(
@@ -45,9 +47,23 @@ async def generate_and_test_rules():
             description="Generate rules from example files",
             context={
                 "llm_provider": "openai",
-                "model": os.getenv("OPENAI_MODEL", "gpt-4")
+                "model": os.getenv("OPENAI_MODEL", "gpt-4"),
+                "rule_executor": rule_executor
             },
             sheet_mappings=[
+                SheetMapping(
+                    source_sheet="CustomerData",
+                    target_sheet="CustomerSummary"
+                ),
+                SheetMapping(
+                    source_sheet="Transactions",
+                    target_sheet="TransactionSummary"
+                )
+            ],
+            # Use the same files as examples
+            example_source=source_file,
+            example_target=target_file,
+            example_sheet_mappings=[
                 SheetMapping(
                     source_sheet="CustomerData",
                     target_sheet="CustomerSummary"
@@ -102,7 +118,8 @@ async def generate_and_test_rules():
             context={
                 "llm_provider": "openai",
                 "model": os.getenv("OPENAI_MODEL", "gpt-4"),
-                "rules": rules
+                "rules": rules,
+                "rule_executor": rule_executor
             },
             sheet_mappings=[
                 SheetMapping(

@@ -1,268 +1,271 @@
-"""Rule engine for Excel migrations."""
-from typing import Any, Dict, List, Optional
-import json
+"""Rule generation and execution engine."""
 from pathlib import Path
-import logging
-import asyncio
-
-from ..core.models import MigrationRule, RuleType, ValidationResult
-from ..llm.chain import LLMProvider, ChainManager, ExcelProcessor, ProcessingCallback
-
-logger = logging.getLogger(__name__)
+from typing import Dict, Any, List, Optional
+import openpyxl
+from loguru import logger
+from langchain_openai import ChatOpenAI
 
 class RuleEngine:
-    """Engine for managing and executing migration rules."""
+    """Engine for generating and executing migration rules."""
     
-    def __init__(self, llm_provider: str = "openai", **llm_kwargs):
+    def __init__(self, llm_provider: str = "openai"):
         """Initialize the rule engine."""
-        callbacks = [ProcessingCallback()]
-        llm_kwargs['callbacks'] = callbacks
-        
-        self.llm = LLMProvider.create_llm(llm_provider, **llm_kwargs)
-        self.chain_manager = ChainManager(self.llm)
-        self.processor = ExcelProcessor(self.chain_manager)
-        
-    def load_rules(self, rules_file: str) -> List[MigrationRule]:
-        """Load rules from a JSON configuration file."""
+        self.llm = ChatOpenAI(
+            model_name="gpt-4",
+            temperature=0.7
+        )
+        logger.debug(f"Initialized rule engine with {llm_provider}")
+
+    async def generate_rules(
+        self,
+        source_file: Path,
+        target_file: Path,
+        source_sheet: str,
+        target_sheet: str
+    ) -> List[Dict[str, Any]]:
+        """Generate migration rules by analyzing example files."""
         try:
-            with open(rules_file, 'r') as f:
-                rules_data = json.load(f)
+            # Analyze source and target structures
+            source_structure = self._analyze_sheet(source_file, source_sheet)
+            target_structure = self._analyze_sheet(target_file, target_sheet)
             
-            rules = []
-            for rule_data in rules_data['rules']:
-                rule = MigrationRule(
-                    rule_type=RuleType[rule_data['type'].upper()],
-                    source_columns=rule_data['source_columns'],
-                    target_column=rule_data['target_column'],
-                    conditions=rule_data.get('conditions'),
-                    transformation=rule_data.get('transformation'),
-                    llm_prompt=rule_data.get('llm_prompt')
-                )
-                rules.append(rule)
+            # Generate rules based on analysis
+            rules = await self._generate_rules_from_analysis(
+                source_structure,
+                target_structure
+            )
             
             return rules
             
         except Exception as e:
-            logger.error(f"Failed to load rules from {rules_file}: {str(e)}")
+            logger.error(f"Rule generation failed: {str(e)}")
+            return []
+
+    def _analyze_sheet(self, file_path: Path, sheet_name: str) -> Dict[str, Any]:
+        """Analyze sheet structure and content."""
+        try:
+            wb = openpyxl.load_workbook(file_path, read_only=True)
+            ws = wb[sheet_name]
+            
+            analysis = {
+                "sheet_name": sheet_name,
+                "headers": [],
+                "data_types": {},
+                "sample_data": []
+            }
+            
+            # Get headers
+            for cell in ws[1]:
+                if cell.value:
+                    analysis["headers"].append(str(cell.value))
+            
+            # Analyze data types and get samples
+            for col_idx, header in enumerate(analysis["headers"], 1):
+                col_letter = openpyxl.utils.get_column_letter(col_idx)
+                values = []
+                for row in range(2, min(7, ws.max_row + 1)):  # Sample first 5 data rows
+                    cell = ws[f"{col_letter}{row}"]
+                    if cell.value:
+                        values.append(str(cell.value))
+                
+                if values:
+                    analysis["data_types"][header] = self._infer_data_type(values)
+                    analysis["sample_data"].append({
+                        "header": header,
+                        "samples": values
+                    })
+            
+            wb.close()
+            return analysis
+            
+        except Exception as e:
+            logger.error(f"Sheet analysis failed: {str(e)}")
             raise
 
-    async def execute_rule(self, rule: MigrationRule, 
-                         source_values: Dict[str, Any],
-                         context: Optional[Dict[str, Any]] = None) -> Any:
-        """Execute a single migration rule."""
+    def _infer_data_type(self, values: List[str]) -> str:
+        """Infer data type from sample values."""
         try:
-            # Check conditions first
-            if not self._check_conditions(rule.conditions, source_values, context):
-                return None
+            # Try numeric
+            float(values[0])
+            return "numeric"
+        except ValueError:
+            pass
+        
+        # Check date format
+        date_indicators = ["/", "-", ":", "AM", "PM"]
+        if any(ind in values[0] for ind in date_indicators):
+            return "datetime"
+        
+        # Check boolean
+        bool_values = ["true", "false", "yes", "no", "0", "1"]
+        if all(v.lower() in bool_values for v in values):
+            return "boolean"
+        
+        return "text"
 
-            # Execute based on rule type
-            if rule.rule_type == RuleType.COPY:
-                return await self._execute_copy(rule, source_values)
-            elif rule.rule_type == RuleType.TRANSFORM:
-                return await self._execute_transform(rule, source_values, context)
-            elif rule.rule_type == RuleType.COMPUTE:
-                return await self._execute_compute(rule, source_values, context)
-            elif rule.rule_type == RuleType.AGGREGATE:
-                return await self._execute_aggregate(rule, source_values, context)
-            elif rule.rule_type == RuleType.VALIDATE:
-                return await self._execute_validate(rule, source_values, context)
-            else:
-                raise ValueError(f"Unsupported rule type: {rule.rule_type}")
+    async def _generate_rules_from_analysis(
+        self,
+        source: Dict[str, Any],
+        target: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
+        """Generate rules by comparing source and target structures."""
+        rules = []
+        
+        # Direct field mappings
+        for target_header in target["headers"]:
+            # Find best matching source field
+            source_field = self._find_matching_field(
+                target_header,
+                source["headers"],
+                source["data_types"]
+            )
+            
+            if source_field:
+                rules.append({
+                    "type": "field_mapping",
+                    "source_field": source_field,
+                    "target_field": target_header,
+                    "transformation": self._get_transformation_rule(
+                        source["data_types"].get(source_field),
+                        target_header
+                    )
+                })
+        
+        # Add any necessary data transformations
+        transformation_rules = await self._generate_transformation_rules(
+            source,
+            target
+        )
+        rules.extend(transformation_rules)
+        
+        return rules
 
+    def _find_matching_field(
+        self,
+        target_field: str,
+        source_fields: List[str],
+        source_types: Dict[str, str]
+    ) -> str:
+        """Find best matching source field for target field."""
+        # Direct match
+        if target_field in source_fields:
+            return target_field
+        
+        # Fuzzy match based on common variations
+        target_normalized = target_field.lower().replace(" ", "").replace("_", "")
+        for source_field in source_fields:
+            source_normalized = source_field.lower().replace(" ", "").replace("_", "")
+            if source_normalized == target_normalized:
+                return source_field
+            
+            # Handle common field variations
+            if target_normalized.endswith("id") and source_normalized.endswith("id"):
+                if target_normalized[:-2] in source_normalized:
+                    return source_field
+            
+            if target_normalized.endswith("name") and source_normalized.endswith("name"):
+                if target_normalized[:-4] in source_normalized:
+                    return source_field
+        
+        return ""
+
+    def _get_transformation_rule(self, source_type: str, target_field: str) -> Dict[str, Any]:
+        """Get appropriate transformation rule based on field types."""
+        transformation = {
+            "type": "direct",  # Default to direct copy
+            "params": {}
+        }
+        
+        # Add type-specific transformations
+        if source_type == "datetime":
+            transformation.update({
+                "type": "datetime_format",
+                "params": {
+                    "format": self._infer_date_format(target_field)
+                }
+            })
+        elif source_type == "numeric":
+            transformation.update({
+                "type": "numeric_format",
+                "params": {
+                    "decimal_places": 2 if "amount" in target_field.lower() else 0,
+                    "thousands_separator": True
+                }
+            })
+        
+        return transformation
+
+    def _infer_date_format(self, field_name: str) -> str:
+        """Infer date format based on field name."""
+        if any(word in field_name.lower() for word in ["time", "timestamp"]):
+            return "%Y-%m-%d %H:%M:%S"
+        return "%Y-%m-%d"
+
+    async def _generate_transformation_rules(
+        self,
+        source: Dict[str, Any],
+        target: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
+        """Generate complex transformation rules."""
+        rules = []
+        
+        # Look for calculated fields
+        for target_header in target["headers"]:
+            if not self._find_matching_field(target_header, source["headers"], source["data_types"]):
+                # This might be a calculated field
+                rule = await self._infer_calculation_rule(
+                    target_header,
+                    source,
+                    target
+                )
+                if rule:
+                    rules.append(rule)
+        
+        return rules
+
+    async def _infer_calculation_rule(
+        self,
+        target_field: str,
+        source: Dict[str, Any],
+        target: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
+        """Infer calculation rule for a target field."""
+        try:
+            # Use LLM to suggest calculation
+            prompt = f"""Given a target field '{target_field}' and available source fields:
+            {', '.join(source['headers'])}
+            
+            Suggest a calculation rule to derive the target field.
+            Consider the sample data:
+            {source['sample_data']}
+            
+            Respond with a JSON object containing:
+            - type: calculation
+            - formula: the calculation formula
+            - description: explanation of the calculation
+            """
+            
+            response = await self.llm.ainvoke(prompt)
+            
+            # Parse and validate response
+            if isinstance(response, dict) and "formula" in response:
+                return {
+                    "type": "calculation",
+                    "target_field": target_field,
+                    "formula": response["formula"],
+                    "description": response.get("description", ""),
+                    "source_fields": self._extract_source_fields(response["formula"])
+                }
+            
+            return None
+            
         except Exception as e:
-            logger.error(f"Failed to execute rule: {str(e)}")
+            logger.error(f"Failed to infer calculation rule: {str(e)}")
             return None
 
-    def _check_conditions(self, conditions: Optional[Dict[str, Any]],
-                        source_values: Dict[str, Any],
-                        context: Optional[Dict[str, Any]]) -> bool:
-        """Check if conditions are met for rule execution."""
-        if not conditions:
-            return True
-
-        try:
-            for field, condition in conditions.items():
-                if field not in source_values:
-                    return False
-
-                value = source_values[field]
-                
-                # Handle different condition types
-                if isinstance(condition, dict):
-                    operator = condition.get('operator', '==')
-                    target = condition.get('value')
-                    
-                    if operator == '==':
-                        if value != target:
-                            return False
-                    elif operator == '!=':
-                        if value == target:
-                            return False
-                    elif operator == '>':
-                        if not value > target:
-                            return False
-                    elif operator == '<':
-                        if not value < target:
-                            return False
-                    elif operator == 'in':
-                        if value not in target:
-                            return False
-                    elif operator == 'contains':
-                        if target not in str(value):
-                            return False
-                else:
-                    # Simple equality check
-                    if value != condition:
-                        return False
-
-            return True
-
-        except Exception as e:
-            logger.error(f"Error checking conditions: {str(e)}")
-            return False
-
-    async def _execute_copy(self, rule: MigrationRule,
-                          source_values: Dict[str, Any]) -> Any:
-        """Execute a copy rule."""
-        if len(rule.source_columns) != 1:
-            raise ValueError("Copy rule must have exactly one source column")
-        
-        source_col = rule.source_columns[0]
-        return source_values.get(source_col)
-
-    async def _execute_transform(self, rule: MigrationRule,
-                               source_values: Dict[str, Any],
-                               context: Optional[Dict[str, Any]]) -> Any:
-        """Execute a transform rule."""
-        if not rule.transformation and not rule.llm_prompt:
-            raise ValueError("Transform rule must have either transformation or llm_prompt")
-
-        if rule.llm_prompt:
-            # Use LLM for complex transformations
-            transformation_rules = {
-                "prompt": rule.llm_prompt,
-                "steps": [{"type": "transform", "description": rule.llm_prompt}]
-            }
-            return await self.processor.process_transformation(
-                source_values,
-                transformation_rules,
-                context
-            )
-        else:
-            # Use predefined transformation
-            # This could be extended to support different transformation types
-            return eval(rule.transformation, {"__builtins__": {}}, source_values)
-
-    async def _execute_compute(self, rule: MigrationRule,
-                             source_values: Dict[str, Any],
-                             context: Optional[Dict[str, Any]]) -> Any:
-        """Execute a compute rule."""
-        if not rule.transformation:
-            raise ValueError("Compute rule must have a transformation")
-
-        # For complex computations, use the formula analysis agent
-        if self._is_complex_computation(rule.transformation):
-            formula_agent = self.processor.get_or_create_agent("formula")
-            result = await formula_agent.process_task(
-                f"Compute result using formula: {rule.transformation}",
-                {"values": source_values, **(context or {})}
-            )
-            return result
-
-        # For simple computations, use direct evaluation
-        compute_context = {
-            **source_values,
-            "sum": sum,
-            "len": len,
-            "min": min,
-            "max": max,
-            "round": round
-        }
-        
-        return eval(rule.transformation, {"__builtins__": {}}, compute_context)
-
-    async def _execute_aggregate(self, rule: MigrationRule,
-                               source_values: Dict[str, Any],
-                               context: Optional[Dict[str, Any]]) -> Any:
-        """Execute an aggregate rule."""
-        if not rule.transformation:
-            raise ValueError("Aggregate rule must have a transformation")
-
-        # For complex aggregations, use the transformation agent
-        if self._is_complex_aggregation(rule.transformation):
-            transformation_agent = self.processor.get_or_create_agent("transformation")
-            result = await transformation_agent.process_task(
-                f"Aggregate values using: {rule.transformation}",
-                {"values": source_values, **(context or {})}
-            )
-            return result
-
-        # For simple aggregations, use direct evaluation
-        agg_context = {
-            **source_values,
-            "sum": sum,
-            "avg": lambda x: sum(x) / len(x) if x else 0,
-            "count": len,
-            "min": min,
-            "max": max
-        }
-        
-        return eval(rule.transformation, {"__builtins__": {}}, agg_context)
-
-    async def _execute_validate(self, rule: MigrationRule,
-                              source_values: Dict[str, Any],
-                              context: Optional[Dict[str, Any]]) -> ValidationResult:
-        """Execute a validate rule."""
-        if not rule.transformation and not rule.llm_prompt:
-            raise ValueError("Validate rule must have either transformation or llm_prompt")
-
-        try:
-            if rule.llm_prompt:
-                # Use validation agent for complex validations
-                validation_agent = self.processor.get_or_create_agent("validation")
-                result = await validation_agent.process_task(
-                    f"Validate data using rules: {rule.llm_prompt}",
-                    {"data": source_values, **(context or {})}
-                )
-                return ValidationResult(
-                    is_valid=result.lower().startswith("valid"),
-                    message=result
-                )
-            else:
-                # Use direct validation for simple rules
-                validation_context = {
-                    **source_values,
-                    "len": len,
-                    "sum": sum,
-                    "min": min,
-                    "max": max,
-                    "isinstance": isinstance,
-                    "str": str,
-                    "int": int,
-                    "float": float
-                }
-                
-                is_valid = eval(rule.transformation, {"__builtins__": {}}, validation_context)
-                return ValidationResult(
-                    is_valid=bool(is_valid),
-                    message=None if is_valid else "Failed validation check"
-                )
-
-        except Exception as e:
-            return ValidationResult(
-                is_valid=False,
-                message=f"Validation error: {str(e)}"
-            )
-
-    def _is_complex_computation(self, transformation: str) -> bool:
-        """Determine if a computation requires the formula agent."""
-        # Add logic to determine complexity
-        return len(transformation.split()) > 5 or 'if' in transformation
-
-    def _is_complex_aggregation(self, transformation: str) -> bool:
-        """Determine if an aggregation requires the transformation agent."""
-        # Add logic to determine complexity
-        return len(transformation.split()) > 5 or any(
-            keyword in transformation 
-            for keyword in ['filter', 'map', 'lambda']
-        )
+    def _extract_source_fields(self, formula: str) -> List[str]:
+        """Extract source field names from a formula."""
+        # Simple extraction - look for field-like patterns
+        import re
+        field_pattern = r'\[([^\]]+)\]'  # Fields in [brackets]
+        return re.findall(field_pattern, formula)
