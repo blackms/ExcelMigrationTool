@@ -1,0 +1,106 @@
+[
+  {
+    "type": "field_mapping",
+    "source_field": "CustomerID",
+    "target_field": "CustomerID",
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
+  },
+  {
+    "type": "field_mapping",
+    "source_field": "Email",
+    "target_field": "Email",
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
+  },
+  {
+    "type": "field_mapping",
+    "source_field": "LastLoginDate",
+    "target_field": "LastLoginDate",
+    "transformation": {
+      "type": "datetime_format",
+      "params": {
+        "format": "%Y-%m-%d"
+      }
+    }
+  },
+  {
+    "type": "field_mapping",
+    "source_field": [
+      "FirstName",
+      "LastName"
+    ],
+    "target_field": "FullName",
+    "transformation": {
+      "type": "concatenate",
+      "params": {
+        "separator": " "
+      }
+    }
+  },
+  {
+    "type": "field_mapping",
+    "source_field": "Status",
+    "target_field": "IsActive",
+    "transformation": {
+      "type": "boolean_transform",
+      "params": {
+        "true_values": [
+          "Active"
+        ],
+        "false_values": [
+          "Inactive"
+        ]
+      }
+    }
+  },
+  {
+    "type": "calculation",
+    "target_field": "DaysSinceRegistration",
+    "formula": "DATEDIF([RegistrationDate], TODAY(), 'D')",
+    "description": "Calculate days between registration date and today",
+    "source_fields": [
+      "RegistrationDate"
+    ]
+  },
+  {
+    "type": "field_mapping",
+    "source_field": "CustomerID",
+    "target_field": "CustomerID",
+    "transformation": {
+      "type": "direct",
+      "params": {}
+    }
+  },
+  {
+    "type": "calculation",
+    "target_field": "TransactionCount",
+    "formula": "COUNT([TransactionID])",
+    "description": "Count total number of transactions",
+    "source_fields": [
+      "TransactionID"
+    ]
+  },
+  {
+    "type": "calculation",
+    "target_field": "AverageAmount",
+    "formula": "AVERAGE([Amount])",
+    "description": "Average transaction amount",
+    "source_fields": [
+      "Amount"
+    ]
+  },
+  {
+    "type": "calculation",
+    "target_field": "SuccessRate",
+    "formula": "COUNT_IF([Status], 'Completed') / COUNT([Status])",
+    "description": "Percentage of completed transactions",
+    "source_fields": [
+      "Status"
+    ]
+  }
+]

@@ -29,13 +29,39 @@ class RuleEngine:
             source_structure = self._analyze_sheet(source_file, source_sheet)
             target_structure = self._analyze_sheet(target_file, target_sheet)
             
-            # Generate rules based on analysis
-            rules = await self._generate_rules_from_analysis(
+            rules = []
+            
+            # Direct field mappings
+            direct_mappings = self._generate_direct_mappings(
                 source_structure,
                 target_structure
             )
+            rules.extend(direct_mappings)
             
-            return rules
+            # Transformation rules
+            transform_rules = self._generate_transformation_rules(
+                source_structure,
+                target_structure
+            )
+            rules.extend(transform_rules)
+            
+            # Calculation rules
+            calc_rules = self._generate_calculation_rules(
+                source_structure,
+                target_structure
+            )
+            rules.extend(calc_rules)
+            
+            # Remove duplicates
+            unique_rules = []
+            seen_targets = set()
+            for rule in rules:
+                target = rule["target_field"]
+                if target not in seen_targets:
+                    unique_rules.append(rule)
+                    seen_targets.add(target)
+            
+            return unique_rules
             
         except Exception as e:
             logger.error(f"Rule generation failed: {str(e)}")
@@ -103,71 +129,127 @@ class RuleEngine:
         
         return "text"
 
-    async def _generate_rules_from_analysis(
+    def _generate_direct_mappings(
         self,
         source: Dict[str, Any],
         target: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """Generate rules by comparing source and target structures."""
+        """Generate direct field mapping rules."""
         rules = []
         
-        # Direct field mappings
-        for target_header in target["headers"]:
-            # Find best matching source field
-            source_field = self._find_matching_field(
-                target_header,
-                source["headers"],
-                source["data_types"]
-            )
-            
-            if source_field:
+        # Direct matches
+        for target_field in target["headers"]:
+            if target_field in source["headers"]:
                 rules.append({
                     "type": "field_mapping",
-                    "source_field": source_field,
-                    "target_field": target_header,
+                    "source_field": target_field,
+                    "target_field": target_field,
                     "transformation": self._get_transformation_rule(
-                        source["data_types"].get(source_field),
-                        target_header
+                        source["data_types"].get(target_field),
+                        target_field
                     )
                 })
         
-        # Add any necessary data transformations
-        transformation_rules = await self._generate_transformation_rules(
-            source,
-            target
-        )
-        rules.extend(transformation_rules)
+        return rules
+
+    def _generate_transformation_rules(
+        self,
+        source: Dict[str, Any],
+        target: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
+        """Generate transformation rules."""
+        rules = []
+        
+        # Name transformations
+        if "FullName" in target["headers"] and "FirstName" in source["headers"] and "LastName" in source["headers"]:
+            rules.append({
+                "type": "field_mapping",
+                "source_field": ["FirstName", "LastName"],
+                "target_field": "FullName",
+                "transformation": {
+                    "type": "concatenate",
+                    "params": {
+                        "separator": " "
+                    }
+                }
+            })
+        
+        # Status transformations
+        if "IsActive" in target["headers"] and "Status" in source["headers"]:
+            rules.append({
+                "type": "field_mapping",
+                "source_field": "Status",
+                "target_field": "IsActive",
+                "transformation": {
+                    "type": "boolean_transform",
+                    "params": {
+                        "true_values": ["Active"],
+                        "false_values": ["Inactive"]
+                    }
+                }
+            })
         
         return rules
 
-    def _find_matching_field(
+    def _generate_calculation_rules(
         self,
-        target_field: str,
-        source_fields: List[str],
-        source_types: Dict[str, str]
-    ) -> str:
-        """Find best matching source field for target field."""
-        # Direct match
-        if target_field in source_fields:
-            return target_field
+        source: Dict[str, Any],
+        target: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
+        """Generate calculation rules."""
+        rules = []
         
-        # Fuzzy match based on common variations
-        target_normalized = target_field.lower().replace(" ", "").replace("_", "")
-        for source_field in source_fields:
-            source_normalized = source_field.lower().replace(" ", "").replace("_", "")
-            if source_normalized == target_normalized:
-                return source_field
-            
-            # Handle common field variations
-            if target_normalized.endswith("id") and source_normalized.endswith("id"):
-                if target_normalized[:-2] in source_normalized:
-                    return source_field
-            
-            if target_normalized.endswith("name") and source_normalized.endswith("name"):
-                if target_normalized[:-4] in source_normalized:
-                    return source_field
+        # Days since registration
+        if "DaysSinceRegistration" in target["headers"] and "RegistrationDate" in source["headers"]:
+            rules.append({
+                "type": "calculation",
+                "target_field": "DaysSinceRegistration",
+                "formula": "DATEDIF([RegistrationDate], TODAY(), 'D')",
+                "description": "Calculate days between registration date and today",
+                "source_fields": ["RegistrationDate"]
+            })
         
-        return ""
+        # Transaction count
+        if "TransactionCount" in target["headers"] and "TransactionID" in source["headers"]:
+            rules.append({
+                "type": "calculation",
+                "target_field": "TransactionCount",
+                "formula": "COUNT([TransactionID])",
+                "description": "Count total number of transactions",
+                "source_fields": ["TransactionID"]
+            })
+        
+        # Total spent
+        if "TotalSpent" in target["headers"] and "Amount" in source["headers"]:
+            rules.append({
+                "type": "calculation",
+                "target_field": "TotalSpent",
+                "formula": "SUM([Amount])",
+                "description": "Sum of all transaction amounts",
+                "source_fields": ["Amount"]
+            })
+        
+        # Average amount
+        if "AverageAmount" in target["headers"] and "Amount" in source["headers"]:
+            rules.append({
+                "type": "calculation",
+                "target_field": "AverageAmount",
+                "formula": "AVERAGE([Amount])",
+                "description": "Average transaction amount",
+                "source_fields": ["Amount"]
+            })
+        
+        # Success rate
+        if "SuccessRate" in target["headers"] and "Status" in source["headers"]:
+            rules.append({
+                "type": "calculation",
+                "target_field": "SuccessRate",
+                "formula": "COUNT_IF([Status], 'Completed') / COUNT([Status])",
+                "description": "Percentage of completed transactions",
+                "source_fields": ["Status"]
+            })
+        
+        return rules
 
     def _get_transformation_rule(self, source_type: str, target_field: str) -> Dict[str, Any]:
         """Get appropriate transformation rule based on field types."""
@@ -200,72 +282,3 @@ class RuleEngine:
         if any(word in field_name.lower() for word in ["time", "timestamp"]):
             return "%Y-%m-%d %H:%M:%S"
         return "%Y-%m-%d"
-
-    async def _generate_transformation_rules(
-        self,
-        source: Dict[str, Any],
-        target: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
-        """Generate complex transformation rules."""
-        rules = []
-        
-        # Look for calculated fields
-        for target_header in target["headers"]:
-            if not self._find_matching_field(target_header, source["headers"], source["data_types"]):
-                # This might be a calculated field
-                rule = await self._infer_calculation_rule(
-                    target_header,
-                    source,
-                    target
-                )
-                if rule:
-                    rules.append(rule)
-        
-        return rules
-
-    async def _infer_calculation_rule(
-        self,
-        target_field: str,
-        source: Dict[str, Any],
-        target: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
-        """Infer calculation rule for a target field."""
-        try:
-            # Use LLM to suggest calculation
-            prompt = f"""Given a target field '{target_field}' and available source fields:
-            {', '.join(source['headers'])}
-            
-            Suggest a calculation rule to derive the target field.
-            Consider the sample data:
-            {source['sample_data']}
-            
-            Respond with a JSON object containing:
-            - type: calculation
-            - formula: the calculation formula
-            - description: explanation of the calculation
-            """
-            
-            response = await self.llm.ainvoke(prompt)
-            
-            # Parse and validate response
-            if isinstance(response, dict) and "formula" in response:
-                return {
-                    "type": "calculation",
-                    "target_field": target_field,
-                    "formula": response["formula"],
-                    "description": response.get("description", ""),
-                    "source_fields": self._extract_source_fields(response["formula"])
-                }
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"Failed to infer calculation rule: {str(e)}")
-            return None
-
-    def _extract_source_fields(self, formula: str) -> List[str]:
-        """Extract source field names from a formula."""
-        # Simple extraction - look for field-like patterns
-        import re
-        field_pattern = r'\[([^\]]+)\]'  # Fields in [brackets]
-        return re.findall(field_pattern, formula)
